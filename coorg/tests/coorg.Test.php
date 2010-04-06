@@ -7,7 +7,7 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 
 	public function setUp() {
 		CoOrg::setSite('http://www.test.info/');
-		CoOrg::spoofReferrer('http://www.test.info/some/part/of/the/site');
+		CoOrg::spoofReferer('http://www.test.info/some/part/of/the/site');
 		$config = new Config('config/tests.config.php');
 		CoOrg::init($config, 'coorg/tests/mocks/app', 'coorg/tests/mocks/plugins');
 	}
@@ -28,7 +28,7 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		CoOrg::process('theta/epsilon');
 		$this->assertEquals(Header::$errorCode, '404 Not Found');
 		$this->assertEquals('theta/epsilon', CoOrgSmarty::$vars['request']);
-		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referrer']);
+		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referer']);
 		$this->assertEquals('Request not found: Theta', CoOrgSmarty::$vars['exception']->getMessage());
 		
 		$this->assertEquals('extends:base.html.tpl|notfound.html.tpl', CoOrgSmarty::$renderedTemplate);
@@ -39,7 +39,7 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		CoOrg::process('alpha/doesnotexists');
 		$this->assertEquals(Header::$errorCode, '404 Not Found');
 		$this->assertEquals('alpha/doesnotexists', CoOrgSmarty::$vars['request']);
-		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referrer']);
+		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referer']);
 		$this->assertEquals('Request not found: AlphaDoesnotexists', CoOrgSmarty::$vars['exception']->getMessage());
 		
 		$this->assertEquals('extends:base.html.tpl|notfound.html.tpl', CoOrgSmarty::$renderedTemplate);
@@ -51,7 +51,7 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		
 		$this->assertEquals(Header::$errorCode, '500 Internal Server Error');
 		$this->assertEquals('alpha/fiveparameters/one/two/three', CoOrgSmarty::$vars['request']);
-		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referrer']);
+		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referer']);
 		$this->assertEquals('Not enough parameters supplied', CoOrgSmarty::$vars['exception']->getMessage());
 		
 		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);
@@ -109,21 +109,21 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		                                           
 		$this->assertEquals(Header::$errorCode, '500 Internal Server Error');
 		$this->assertEquals('alpha/postrequired', CoOrgSmarty::$vars['request']);
-		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referrer']);
+		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referer']);
 		$this->assertEquals('Wrong request method', CoOrgSmarty::$vars['exception']->getMessage());
 		
 		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);
 	}
 	
-	public function testProcessPostRequestWrongReferrer()
+	public function testProcessPostRequestWrongReferer()
 	{
-		CoOrg::spoofReferrer('http://someothershit.com');
+		CoOrg::spoofReferer('http://someothershit.com');
 		CoOrg::process('alpha/post', array('p1' => 'value1',
 		                                   'p2' => 'value2'), true);
 
 		$this->assertEquals(Header::$errorCode, '500 Internal Server Error');
 		$this->assertEquals('alpha/post', CoOrgSmarty::$vars['request']);
-		$this->assertEquals('http://someothershit.com', CoOrgSmarty::$vars['referrer']);
+		$this->assertEquals('http://someothershit.com', CoOrgSmarty::$vars['referer']);
 		$this->assertEquals('Wrong request method', CoOrgSmarty::$vars['exception']->getMessage());
 		
 		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);

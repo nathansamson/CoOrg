@@ -7,7 +7,7 @@ class CoOrg {
 
 	private static $_controllers = array();
 	private static $_site = null;
-	private static $_referrer = null;
+	private static $_referer = null;
 	private static $_appdir;
 
 	public static function init(Config $config, $appdir, $pluginsDir)
@@ -23,6 +23,19 @@ class CoOrg {
 
 	public static function run()
 	{
+		require_once 'coorg/democks.class.php';
+		$config = new Config('config/config.php');
+		CoOrg::init($config, 'app', 'plugins');
+		
+		if (array_key_exists('HTTP_REFERER', $_SERVER))
+		{
+			self::$_referer = $_SERVER['HTTP_REFERER'];
+		}
+		else
+		{
+			self::$_referer = '';
+		}
+	
 		$params = array();
 		$post = false;
 		if (array_key_exists('r', $_GET)) {
@@ -43,6 +56,7 @@ class CoOrg {
 
 	public static function process($request, $params = array(), $post = false)
 	{
+		error_reporting(E_ALL);
 		self::normalizeRequest($request);
 		if ($request == '') $request = 'home';
 		$requestParams = explode('/', $request);
@@ -59,7 +73,7 @@ class CoOrg {
 				throw new WrongRequestMethodException();
 			}
 			
-			if ($post && strpos(self::$_referrer, self::$_site) === false)
+			if ($post && strpos(self::$_referer, self::$_site) === false)
 			{
 				throw new WrongRequestMethodException();
 			}
@@ -70,7 +84,7 @@ class CoOrg {
 			}
 			catch (Exception $e)
 			{
-				$controllerClass->systemError($request, self::$_referrer, $e);
+				$controllerClass->systemError($request, self::$_referer, $e);
 			}
 		}
 		catch (RequestNotFoundException $e)
@@ -78,7 +92,7 @@ class CoOrg {
 			$controller = new Controller();
 			$controller->init('.', self::$_appdir);
 			
-			$controller->notFound($request, self::$_referrer, $e);
+			$controller->notFound($request, self::$_referer, $e);
 			return;
 		}
 		catch (Exception $e)
@@ -86,7 +100,7 @@ class CoOrg {
 			$controller = new Controller();
 			$controller->init('.', self::$_appdir);
 			
-			$controller->systemError($request, self::$_referrer, $e);
+			$controller->systemError($request, self::$_referer, $e);
 			return;
 		}
 	}
@@ -98,15 +112,16 @@ class CoOrg {
 		self::$_site = $url;
 	}
 	
-	public static function spoofReferrer($referrer)
+	public static function spoofReferer($referer)
 	{
-		self::$_referrer = $referrer;
+		self::$_referer = $referer;
 	}
 	
 	/* == Private Functions == */
 	
 	private static function normalizeRequest(&$request)
 	{
+		if (strlen($request) == 0) return;
 		while ($request[strlen($request)-1] == '/')
 		{
 			$request = substr($request, 0, strlen($request) - 1);

@@ -20,20 +20,20 @@ class Controller {
 		return in_array($name, $this->post);
 	}
 	
-	public function notFound($request, $referrer, $exception)
+	public function notFound($request, $referer, $exception)
 	{
 		$this->exception = $exception;
-		$this->referrer = $referrer;
+		$this->referer = $referer;
 		$this->request = $request;
 		
 		Header::setErrorCode('404 Not Found');
 		$this->render('notfound', true);
 	}
 	
-	public function systemError($request, $referrer, $exception)
+	public function systemError($request, $referer, $exception)
 	{
 		$this->exception = $exception;
-		$this->referrer = $referrer;
+		$this->referer = $referer;
 		$this->request = $request;
 		
 		Header::setErrorCode('500 Internal Server Error');
