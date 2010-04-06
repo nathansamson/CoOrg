@@ -15,8 +15,6 @@ class AlphaController extends Controller {
 	
 	public static $postRequiredExecuted = false;
 	
-	protected $post = array('postrequired');
-	
 	public function index($p1 = '', $p2 = '') {
 		self::$indexExecuted = true;
 		self::$indexParams = array($p1, $p2);
@@ -44,6 +42,9 @@ class AlphaController extends Controller {
 		self::$postParams = array($p1, $p2, $p3, $p4);
 	}
 	
+	/**
+	 * @post
+	*/
 	public function postrequired()
 	{
 		self::$postRequiredExecuted = true;

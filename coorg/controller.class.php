@@ -6,8 +6,6 @@ class Controller {
 	private $_renderType = 'html';
 	private $_tplPath;
 	private $_appPath;
-
-	protected $post = array();
 	
 	public function init($path, $appPath = 'app/')
 	{
@@ -17,7 +15,27 @@ class Controller {
 	
 	public function isPost($name)
 	{
-		return in_array($name, $this->post);
+		$reflectionClass = new ReflectionClass($this);
+		$reflectionMethod = $reflectionClass->getMethod($name);
+		
+		$comment = $reflectionMethod->getDocComment();
+		
+		$lines = explode("\n", $comment);
+		
+		foreach ($lines as $line)
+		{
+			$line = trim($line);
+			if (strlen($line) == 0) continue;
+			if ($line[0] == '*')
+			{
+				$line = trim(substr($line, 1));
+				if ($line == '@post')
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public function notFound($request, $referer, $exception)
