@@ -48,6 +48,19 @@ class AlphaController extends Controller {
 	{
 		self::$postRequiredExecuted = true;
 	}
+	
+	public function show($id, $param)
+	{
+		$this->object = $id;
+		$this->param = $param;
+		
+		$this->render('show');
+	}
+	
+	public function bogus()
+	{
+		$this->render('bogus');
+	}
 }
 
 ?>

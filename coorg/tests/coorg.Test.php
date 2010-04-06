@@ -8,7 +8,8 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 	public function setUp() {
 		CoOrg::setSite('http://www.test.info/');
 		CoOrg::spoofReferrer('http://www.test.info/some/part/of/the/site');
-		CoOrg::init('coorg/tests/mocks/');
+		$config = new Config('config/tests.config.php');
+		CoOrg::init($config, 'coorg/tests/mocks/app', 'coorg/tests/mocks/plugins');
 	}
 	
 	public function tearDown() {
@@ -22,28 +23,38 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array('gamma', 'delta'), AlphaController::$betaParams);
 	}
 	
-	/**
-	 * @expectedException RequestNotFoundException
-	*/
 	public function testProcessNormalRequestControllerNotFound()
 	{
 		CoOrg::process('theta/epsilon');
+		$this->assertEquals(Header::$errorCode, '404 Not Found');
+		$this->assertEquals('theta/epsilon', CoOrgSmarty::$vars['request']);
+		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referrer']);
+		$this->assertEquals('Request not found: Theta', CoOrgSmarty::$vars['exception']->getMessage());
+		
+		$this->assertEquals('extends:base.html.tpl|notfound.html.tpl', CoOrgSmarty::$renderedTemplate);
 	}
 	
-	/**
-	 * @expectedException RequestNotFoundException
-	*/
 	public function testProcessNormalRequestActionNotFound()
 	{
-		CoOrg::process('alpha/epsilon');
+		CoOrg::process('alpha/doesnotexists');
+		$this->assertEquals(Header::$errorCode, '404 Not Found');
+		$this->assertEquals('alpha/doesnotexists', CoOrgSmarty::$vars['request']);
+		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referrer']);
+		$this->assertEquals('Request not found: AlphaDoesnotexists', CoOrgSmarty::$vars['exception']->getMessage());
+		
+		$this->assertEquals('extends:base.html.tpl|notfound.html.tpl', CoOrgSmarty::$renderedTemplate);
 	}
 	
-	/**
-	 * @expectedException NotEnoughParametersException
-	*/
 	public function testProcessNormalRequestNotEnoughParameters()
 	{
 		CoOrg::process('alpha/fiveparameters/one/two/three');
+		
+		$this->assertEquals(Header::$errorCode, '500 Internal Server Error');
+		$this->assertEquals('alpha/fiveparameters/one/two/three', CoOrgSmarty::$vars['request']);
+		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referrer']);
+		$this->assertEquals('Not enough parameters supplied', CoOrgSmarty::$vars['exception']->getMessage());
+		
+		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);
 	}
 	
 	public function testProcessIndexRequest() {
@@ -92,22 +103,30 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		                    AlphaController::$postParams);
 	}
 	
-	/**
-	 * @expectedException RequestNotFoundException
-	*/
 	public function testProcessNormalRequestPostRequired() {
 		CoOrg::process('alpha/postrequired', array('p1' => 'value1',
 		                                           'p2' => 'value2'), false);
+		                                           
+		$this->assertEquals(Header::$errorCode, '500 Internal Server Error');
+		$this->assertEquals('alpha/postrequired', CoOrgSmarty::$vars['request']);
+		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referrer']);
+		$this->assertEquals('Wrong request method', CoOrgSmarty::$vars['exception']->getMessage());
+		
+		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);
 	}
 	
-	/**
-	 * @expectedException RequestNotFoundException
-	*/
 	public function testProcessPostRequestWrongReferrer()
 	{
 		CoOrg::spoofReferrer('http://someothershit.com');
 		CoOrg::process('alpha/post', array('p1' => 'value1',
 		                                   'p2' => 'value2'), true);
+
+		$this->assertEquals(Header::$errorCode, '500 Internal Server Error');
+		$this->assertEquals('alpha/post', CoOrgSmarty::$vars['request']);
+		$this->assertEquals('http://someothershit.com', CoOrgSmarty::$vars['referrer']);
+		$this->assertEquals('Wrong request method', CoOrgSmarty::$vars['exception']->getMessage());
+		
+		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);
 	}
 
 }

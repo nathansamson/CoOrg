@@ -1,42 +1,20 @@
 <?php
 
 require_once 'coorg/controller.class.php';
+require_once 'coorg/config.class.php';
 
 class CoOrg {
 
 	private static $_controllers = array();
 	private static $_site = null;
 	private static $_referrer = null;
+	private static $_appdir;
 
-	public static function init($basedir)
+	public static function init(Config $config, $appdir, $pluginsDir)
 	{
-		foreach (scandir($basedir) as $subdir)
-		{
-			if ($subdir[0] == '.') continue;
-			$dir = $basedir.'/'.$subdir;
-			
-			if (is_dir($dir))
-			{
-				// Scan files in dir
-				foreach (scandir($dir) as $sfile)
-				{
-					if ($sfile[0] == '.') continue;
-					$file = $dir . '/' . $sfile;
-					if (is_file($file))
-					{
-						$pos = strrpos($sfile, '.controller.php');
-						if ($pos !== false)
-						{
-							$firstPart = substr($sfile, 0, $pos);
-							self::$_controllers[$firstPart] = array(
-							        'file' => $sfile,
-							        'path' => $subdir,
-							        'fullpath' => $file);
-						}
-					}
-				}
-			}
-		}
+		self::loadDir($pluginsDir, $config->get('enabled_plugins'));
+		self::loadDir($appdir, null);
+		self::$_appdir = $appdir;
 	}
 	
 	public static function clear()
@@ -45,24 +23,22 @@ class CoOrg {
 
 	public static function run()
 	{
-		$requestContainsFullParams = false;
+		$params = array();
+		$post = false;
 		if (array_key_exists('r', $_GET)) {
 			$request = $_GET['r'];
 			if (count($_GET) > 1) {
-				$requestContainsFullParams = true;
 				$params = $_GET;
 			}
 		} else if (array_key_exists('r', $_POST)) {
 			$request = $_POST['r'];
 			$params = $_POST;
+			$post = true;
 		} else {
 			$request = '';
 		}
 		
-		if ($requestContainsFullParams) {
-			$params = array();
-		}
-		self::process($request, $params, !$requestContainsFullParams);
+		self::process($request, $params, $post);
 	}
 
 	public static function process($request, $params = array(), $post = false)
@@ -72,29 +48,46 @@ class CoOrg {
 		$requestParams = explode('/', $request);
 		
 		$controllerName = ucfirst(array_shift($requestParams));
-		list($controllerClass, $action, $params) = 
-		  self::findController($controllerName, $requestParams, $params, $post);
 		
-		if ($controllerClass && $action)
+		try
 		{
+			list($controllerClass, $action, $params) = 
+	                      self::findController($controllerName, $requestParams,
+	                                           $params, $post);
 			if (!$post && $controllerClass->isPost($action))
 			{
-				throw new RequestNotFoundException('');
+				throw new WrongRequestMethodException();
 			}
 			
 			if ($post && strpos(self::$_referrer, self::$_site) === false)
 			{
-				throw new RequestNotFoundException('');
+				throw new WrongRequestMethodException();
 			}
 		
-			call_user_func_array(array($controllerClass, $action), $params);
+			try
+			{
+				call_user_func_array(array($controllerClass, $action), $params);
+			}
+			catch (Exception $e)
+			{
+				$controllerClass->systemError($request, self::$_referrer, $e);
+			}
 		}
-		else
+		catch (RequestNotFoundException $e)
 		{
-			var_dump($action);
-			var_dump($controllerClass);
-			die('SHIT');
-			// Error 404
+			$controller = new Controller();
+			$controller->init('.', self::$_appdir);
+			
+			$controller->notFound($request, self::$_referrer, $e);
+			return;
+		}
+		catch (Exception $e)
+		{
+			$controller = new Controller();
+			$controller->init('.', self::$_appdir);
+			
+			$controller->systemError($request, self::$_referrer, $e);
+			return;
 		}
 	}
 	
@@ -145,6 +138,8 @@ class CoOrg {
 			    $methodInfo->isPublic())
 			{
 				$controllerClass = new $controllerClassName;
+				$path = dirname(self::$_controllers[$controllerID]['fullpath']);
+				$controllerClass->init($path.'/views/', self::$_appdir);
 				
 				if ($params)
 				{
@@ -201,9 +196,58 @@ class CoOrg {
 			throw new RequestNotFoundException($controllerName);
 		}
 	}
+	
+	private static function loadDir($basedir, $restrict)
+	{
+		foreach (scandir($basedir) as $subdir)
+		{
+			if ($subdir[0] == '.') continue;
+			$dir = $basedir.'/'.$subdir;
+			
+			if ($restrict != null && !in_array($subdir, $restrict)) continue;
+			
+			if (is_dir($dir))
+			{
+				// Scan files in dir
+				foreach (scandir($dir) as $sfile)
+				{
+					if ($sfile[0] == '.') continue;
+					$file = $dir . '/' . $sfile;
+					if (is_file($file))
+					{
+						$pos = strrpos($sfile, '.controller.php');
+						if ($pos !== false)
+						{
+							$firstPart = substr($sfile, 0, $pos);
+							self::$_controllers[$firstPart] = array(
+							        'file' => $sfile,
+							        'path' => $subdir,
+							        'fullpath' => $file);
+						}
+					}
+				}
+			}
+		}
+	}
+	
 }
 
-class NotEnoughParametersException extends Exception {}
+class WrongRequestMethodException extends Exception
+{
+	public function __construct()
+	{
+		parent::__construct('Wrong request method');
+	}
+}
+
+
+class NotEnoughParametersException extends Exception
+{
+	public function __construct()
+	{
+		parent::__construct('Not enough parameters supplied');
+	}
+}
 
 class RequestNotFoundException extends Exception
 {
