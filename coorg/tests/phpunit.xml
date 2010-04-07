@@ -1,0 +1,4 @@
+<phpunit bootstrap="coorg/tests/bootstrap.php"
+         backupGlobals="false"
+         backupStaticAttributes="false">
+</phpunit>
