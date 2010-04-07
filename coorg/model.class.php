@@ -9,6 +9,8 @@ class Model
 {
 	private $_properties = array();
 	private $_primaries = array();
+	private $_shadowProperties = array();
+	private $_internalProperties = array();
 	protected $_saved = false;
 	
 	public function __construct()
@@ -25,18 +27,34 @@ class Model
 			{
 				$line = trim(substr($line, 1));
 			}
-			if (substr($line, 0, strlen('@property')) == '@property' ||
-			    substr($line, 0, strlen('@primaryproperty')) == '@primaryproperty')
+			if (preg_match('/^@(internal|shadow|primary)?property/', $line))
 			{
-				if (substr($line, 0, strlen('@property')) == '@property')
+				$shadow = false;
+				$primary = false;
+				$internal = false;
+				if (strpos($line, '@property') === 0)
 				{
-					$primary = false;
 					$pDesc = trim(substr($line, strlen('@property')));
 				}
-				else
+				else if (strpos($line, '@shadowproperty') === 0)
+				{
+					$shadow = true;
+					$pDesc = trim(substr($line, strlen('@shadowproperty')));
+				}
+				else if (strpos($line, '@internalproperty') === 0)
+				{
+					$internal = true;
+					$pDesc = trim(substr($line, strlen('@internalproperty')));
+				}
+				else if (strpos($line, '@primaryproperty') === 0)
 				{
 					$primary = true;
 					$pDesc = trim(substr($line, strlen('@primaryproperty')));
+				}
+				else
+				{
+					var_dump($line);
+					die();
 				}
 				$desc = explode(';', $pDesc, 2);
 				$descFirst = explode(' ', $desc[0], 2);
@@ -56,7 +74,18 @@ class Model
 					}
 					eval('$p->'.$e.';');
 				}
-				$this->_properties[$name] = $p;
+				if ($shadow)
+				{
+					$this->_shadowProperties[$name] = $p;
+				}
+				else if ($internal)
+				{
+					$this->_internalProperties[$name] = $p;
+				}
+				else
+				{
+					$this->_properties[$name] = $p;
+				}
 				if ($primary)
 				{
 					$this->_primaries[$name] = $p;
@@ -69,12 +98,14 @@ class Model
 	{
 		if ($this->_saved)
 		{
+			$this->beforeUpdate();
 			$this->validate('update');
 			$this->update();
 			$this->setSaved();
 		}
 		else
 		{
+			$this->beforeInsert();
 			$this->validate('insert');
 			$this->insert();
 			$this->setSaved();
@@ -99,7 +130,18 @@ class Model
 			$fnc = 'get';
 		}
 		
-		return $this->_properties[$name]->$fnc();
+		if (array_key_exists($name, $this->_properties))
+		{
+			return $this->_properties[$name]->$fnc();
+		}
+		else if (array_key_exists($name, $this->_shadowProperties) && $fnc != 'get')
+		{
+			return $this->_shadowProperties[$name]->$fnc();
+		}
+		else
+		{
+			throw new Exception('Attribute not found.');
+		}
 	}
 	
 	public function __set($key, $value)
@@ -116,14 +158,46 @@ class Model
 			$fnc = 'set';
 		}
 		
-		$this->_properties[$name]->$fnc($value);
+		if (array_key_exists($name, $this->_properties))
+		{
+			$this->_properties[$name]->$fnc($value);
+		}
+		else if (array_key_exists($name, $this->_shadowProperties))
+		{
+			$this->_shadowProperties[$name]->$fnc($value);
+		}
+		else
+		{
+			throw new Exception('Attribute not found.');
+		}
+	}
+	
+	protected function property($name)
+	{
+		$allProperties = array_merge($this->_properties,
+		                             $this->_shadowProperties,
+		                             $this->_internalProperties);
+		
+		if (array_key_exists($name, $allProperties))
+		{
+			return $allProperties[$name];
+		}
+		else
+		{
+			throw new Exception('Property "'.$name.'" not found');
+		}
+	}
+	
+	protected function dbproperties()
+	{
+		return array_merge($this->_properties, $this->_internalProperties);
 	}
 
 	protected function update()
 	{
 		$qs = 'UPDATE ' . $this->tableName() . ' SET ';
 		$sets = array();
-		foreach ($this->_properties as $k => $p)
+		foreach ($this->dbproperties() as $k => $p)
 		{
 			if ($p->changed())
 			{
@@ -152,7 +226,7 @@ class Model
 		$q = DB::prepare($qs);
 		foreach ($properties as $k)
 		{
-			$q->bindValue(':'.$k, $this->_properties[$k]->db());
+			$q->bindValue(':'.$k, $this->property($k)->db());
 		}
 		foreach ($this->_primaries as $pk => $pp)
 		{
@@ -164,7 +238,7 @@ class Model
 	protected function insert()
 	{
 		$properties = array();
-		foreach ($this->_properties as $k => $p)
+		foreach ($this->dbproperties() as $k => $p)
 		{
 			if ($p->db() != null)
 			{
@@ -179,7 +253,7 @@ class Model
 		$q = DB::prepare($qs);
 		foreach ($properties as $p)
 		{
-			$q->bindValue(':'.$p, $this->_properties[$p]->db());
+			$q->bindValue(':'.$p, $this->property($p)->db());
 		}
 		$q->execute();
 	}
@@ -187,7 +261,7 @@ class Model
 	protected function validate($type)
 	{
 		$error = false;
-		foreach ($this->_properties as $p)
+		foreach (array_merge($this->_properties, $this->_shadowProperties) as $p)
 		{
 			if (!$p->validate($type))
 			{
@@ -209,6 +283,14 @@ class Model
 		{
 			$p->setUnchanged();
 		}
+	}
+	
+	protected function beforeUpdate()
+	{
+	}
+	
+	protected function beforeInsert()
+	{
 	}
 }
 

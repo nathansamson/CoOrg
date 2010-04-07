@@ -14,6 +14,7 @@ function prepare()
 	 name VARCHAR(256) PRIMARY KEY,
 	 description VARCHAR(65000),
 	 email VARCHAR(256) UNIQUE NOT NULL,
+	 rot13name VARCHAR(64) NOT NULL,
 	 conditional INT)');
 	$q->execute();
 }

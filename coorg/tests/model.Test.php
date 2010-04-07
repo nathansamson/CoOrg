@@ -9,6 +9,8 @@ include_once 'coorg/model.test.class.php';
  * @property description String('Description');
  * @property email Email('Email'); required
  * @property conditional Integer('Conditional value'); required only('special') 
+ * @shadowproperty shadowProperty String('Shadow'); required only('insert')
+ * @internalproperty rot13name String('Name', 64); required
 */
 class MockModel extends Model
 {
@@ -25,6 +27,11 @@ class MockModel extends Model
 		parent::validate('special');
 	}
 	
+	public function checkInternalP($p)
+	{
+		return $p == $this->property('rot13name', $p)->get();
+	}
+	
 	public static function getByName($name)
 	{
 		$q = DB::prepare('SELECT * FROM Mock WHERE name=:name');
@@ -33,6 +40,7 @@ class MockModel extends Model
 		if ($row = $q->fetch(PDO::FETCH_ASSOC))
 		{
 			$user = new MockModel($row['name'], $row['description'], $row['email']);
+			$user->property('rot13name')->set($row['rot13name']);
 			$user->setSaved();
 			return $user;
 		}
@@ -40,6 +48,17 @@ class MockModel extends Model
 		{
 			return null;
 		}
+	}
+	
+	
+	protected function beforeInsert()
+	{
+		$this->property('rot13name')->set(str_rot13($this->name));
+	}
+	
+	protected function beforeUpdate()
+	{
+		$this->property('rot13name')->set(str_rot13($this->name));
 	}
 }
 
@@ -54,6 +73,7 @@ class ModelTest extends CoOrgModelTest
 	public function testModelCreate()
 	{
 		$m = new MockModel('nathan', null, 'email@email.com');
+		$m->shadowProperty = 'Some Value';
 		$m->save();
 		
 		$m = MockModel::getByName('nathan');
@@ -69,8 +89,10 @@ class ModelTest extends CoOrgModelTest
 	public function testModelUpdate()
 	{
 		$m = new MockModel('nathan', null, 'email@email.com');
+		$m->shadowProperty = 'Some Value';
 		$m->save();
 		$m = new MockModel('nele', null, 'email2@email.com');
+		$m->shadowProperty = 'Some Value';
 		$m->save();
 		
 		$m = MockModel::getByName('nathan');
@@ -94,8 +116,10 @@ class ModelTest extends CoOrgModelTest
 	public function testModelKeyUpdate()
 	{
 		$nathan = new MockModel('nathan', null, 'email@email.com');
+		$nathan->shadowProperty = 'Some Value';
 		$nathan->save();
 		$nele = new MockModel('nele', null, 'email2@email.com');
+		$nele->shadowProperty = 'Some Value';
 		$nele->save();
 		
 		$nathan->name = 'someothername';
@@ -121,6 +145,7 @@ class ModelTest extends CoOrgModelTest
 	public function testValidation()
 	{
 		$n = new MockModel('', '', 'email@email.com');
+		$n->shadowProperty = '...';
 		try
 		{
 			$n->save();
@@ -135,6 +160,7 @@ class ModelTest extends CoOrgModelTest
 	public function testConditionalValidationRequired()
 	{
 		$n = new MockModel('a', 'b', 'email@mail.com');
+		$n->shadowProperty = '...';
 		$n->save();
 		
 		try
@@ -152,6 +178,7 @@ class ModelTest extends CoOrgModelTest
 	public function testConditionalValidationNotRequiredButWrong()
 	{
 		$n = new MockModel('a', 'b', 'cccc@bcc.com');
+		$n->shadowProperty = '...';
 		$n->conditional = 'aple';
 		
 		try
@@ -164,6 +191,37 @@ class ModelTest extends CoOrgModelTest
 			$this->assertEquals('Conditional value is not a valid number', 
 			                    $n->conditional_error);
 		}
+	}
+	
+	public function testShadowProperty()
+	{
+		$n = new MockModel('a', '', 'cccc@bcc.com');
+		
+		try
+		{
+			$n->save(); // Do not set the shadow property required on insert.
+			$this->fail('Expected exception');
+		}
+		catch (ValidationException $e)
+		{
+			$this->assertEquals('Shadow is required', $n->shadowProperty_error);
+		}
+	}
+	
+	public function testInternalProperty()
+	{
+		$n = new MockModel('abczyx', '', 'cccc@bcc.com');
+		$n->shadowProperty = '...';
+		$n->save();
+		
+		$n = MockModel::getByName('abczyx');
+		$this->assertTrue($n->checkInternalP('nopmlk'));
+		
+		$n->name = 'nopmlk';
+		$n->save();
+		
+		$n = MockModel::getByName('nopmlk');
+		$this->assertTrue($n->checkInternalP('abczyx'));
 	}
 }
 
