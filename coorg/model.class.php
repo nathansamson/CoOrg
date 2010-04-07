@@ -273,7 +273,14 @@ class Model
 	
 	protected function tableName()
 	{
-		return substr(get_class($this), 0, -strlen('Model'));
+		if (strpos(get_class($this), 'Model') !== false)
+		{
+			return substr(get_class($this), 0, -strlen('Model'));
+		}
+		else
+		{
+			return get_class($this);
+		}
 	}
 	
 	protected function setSaved()

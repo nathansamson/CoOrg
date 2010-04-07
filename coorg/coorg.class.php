@@ -225,13 +225,12 @@ class CoOrg {
 	
 	private static function loadDir($basedir, $restrict)
 	{
+		if ($basedir == null) return;
 		foreach (scandir($basedir) as $subdir)
 		{
 			if ($subdir[0] == '.') continue;
 			$dir = $basedir.'/'.$subdir;
-			
 			if ($restrict != null && !in_array($subdir, $restrict)) continue;
-			
 			if (is_dir($dir))
 			{
 				// Scan files in dir
@@ -275,7 +274,6 @@ class CoOrg {
 			}
 		}
 	}
-	
 }
 
 class WrongRequestMethodException extends Exception
