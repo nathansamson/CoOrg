@@ -129,6 +129,17 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);
 	}
 
+	public function testAutoloadOfModels()
+	{
+		$this->assertEquals('silly', Alpha::returnSilly());
+		
+		// Beta is a model in a plugin that is not loaded.
+		$this->assertFalse(class_exists('Beta'));
+		
+		
+		// See if loading models not in the model directory works
+		$this->assertEquals('silly', AlphaNotInDir::returnSilly());
+	}
 }
 
 ?>

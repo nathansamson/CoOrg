@@ -6,6 +6,7 @@ require_once 'coorg/config.class.php';
 class CoOrg {
 
 	private static $_controllers = array();
+	private static $_models = array();
 	private static $_site = null;
 	private static $_referer = null;
 	private static $_appdir;
@@ -15,6 +16,7 @@ class CoOrg {
 		self::loadDir($pluginsDir, $config->get('enabled_plugins'));
 		self::loadDir($appdir, null);
 		self::$_appdir = $appdir;
+		spl_autoload_register(array('CoOrg', 'loadModel'));
 	}
 	
 	public static function clear()
@@ -102,6 +104,15 @@ class CoOrg {
 			
 			$controller->systemError($request, self::$_referer, $e);
 			return;
+		}
+	}
+	
+	public static function loadModel($name)
+	{
+		$name = strtolower($name);
+		if (array_key_exists($name, self::$_models))
+		{
+			include_once self::$_models[$name];
 		}
 	}
 	
@@ -238,6 +249,26 @@ class CoOrg {
 							        'file' => $sfile,
 							        'path' => $subdir,
 							        'fullpath' => $file);
+						}
+						$pos = strrpos($sfile, '.model.php');
+						if ($pos !== false)
+						{
+							$firstPart = substr($sfile, 0, $pos);
+							self::$_models[$firstPart] = $file;
+						}
+					}
+					else if (is_dir($file) && $sfile == 'models')
+					{
+						foreach (scandir($file) as $smodel)
+						{
+							if ($smodel[0] == '.') continue;
+							$model = $file . '/' . $smodel;
+							$pos = strrpos($smodel, '.model.php');
+							if ($pos !== false)
+							{
+								$firstPart = substr($smodel, 0, $pos);
+								self::$_models[$firstPart] = $model;
+							}
 						}
 					}
 				}
