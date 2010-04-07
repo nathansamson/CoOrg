@@ -24,7 +24,6 @@ abstract class Property
 	protected $_value = null;
 	protected $_errors = array();
 	protected $_required = false;
-	protected $_changed = false;
 	protected $_oldValue = null;
 	
 	public function __construct($name)
@@ -40,7 +39,6 @@ abstract class Property
 	public function set($value)
 	{
 		$this->_value = $value;
-		$this->_changed = true;
 	}
 	
 	public function raw()
@@ -105,13 +103,12 @@ abstract class Property
 	
 	public function changed()
 	{
-		return $this->_changed;
+		return $this->db() != $this->old();
 	}
 	
 	public function setUnchanged()
 	{
 		$this->_oldValue = $this->_value;
-		$this->_changed = false;
 	}
 	
 	protected function toDB($value)

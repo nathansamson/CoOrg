@@ -14,6 +14,11 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('azerty', $s->get());
 		$this->assertEquals('azerty', $s->db());
 		
+		$s->set('qwerty');
+		$this->assertTrue($s->changed());
+		$s->set(' azerty');
+		$this->assertFalse($s->changed());
+		
 		$s->set('');
 		$this->assertEquals('azerty', $s->old());
 		$this->assertNull($s->get());
@@ -97,6 +102,11 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('valid@valid.com', $s->get());
 		$this->assertEquals('valid@valid.com', $s->db());
 		$this->assertTrue($s->validate(''));
+		
+		$s->set('qwerty@qwerty.com');
+		$this->assertTrue($s->changed());
+		$s->set(' valid@valid.com');
+		$this->assertFalse($s->changed());
 		
 		$s->set('  ');
 		$this->assertEquals('valid@valid.com', $s->old());
@@ -298,6 +308,11 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(24, $i->old());
 		$this->assertEquals(24, $i->get());
 		$this->assertEquals(24, $i->db());
+		
+		$i->set('38');
+		$this->assertTrue($i->changed());
+		$i->set(' 24');
+		$this->assertFalse($i->changed());
 		
 		$i->set('+2234 ');
 		$this->assertTrue($i->validate(''));
