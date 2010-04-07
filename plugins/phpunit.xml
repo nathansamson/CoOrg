@@ -1,0 +1,4 @@
+<phpunit bootstrap="plugins/testsboots.php"
+         backupGlobals="false"
+         backupStaticAttributes="false">
+</phpunit>
