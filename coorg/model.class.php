@@ -11,7 +11,6 @@ class Model
 	private $_primaries = array();
 	private $_shadowProperties = array();
 	private $_internalProperties = array();
-	protected $_saved = false;
 	
 	public function __construct()
 	{
@@ -93,25 +92,7 @@ class Model
 			}
 		}
 	}
-
-	public function save()
-	{
-		if ($this->_saved)
-		{
-			$this->beforeUpdate();
-			$this->validate('update');
-			$this->update();
-			$this->setSaved();
-		}
-		else
-		{
-			$this->beforeInsert();
-			$this->validate('insert');
-			$this->insert();
-			$this->setSaved();
-		}
-	}
-
+	
 	public function __get($key)
 	{
 		$uPos = strrpos($key, '_');
@@ -188,9 +169,55 @@ class Model
 		}
 	}
 	
+	protected function validate($type)
+	{
+		$error = false;
+		foreach (array_merge($this->_properties, $this->_shadowProperties) as $p)
+		{
+			if (!$p->validate($type))
+			{
+				$error = true;
+			}
+		}
+		if ($error) throw new ValidationException();
+	}
+	
 	protected function dbproperties()
 	{
 		return array_merge($this->_properties, $this->_internalProperties);
+	}
+	
+	protected function primaries()
+	{
+		return $this->_primaries;
+	}
+	
+	protected function properties()
+	{
+		return $this->_properties;
+	}
+}
+
+class DBModel extends Model
+{
+	protected $_saved = false;
+
+	public function save()
+	{
+		if ($this->_saved)
+		{
+			$this->beforeUpdate();
+			$this->validate('update');
+			$this->update();
+			$this->setSaved();
+		}
+		else
+		{
+			$this->beforeInsert();
+			$this->validate('insert');
+			$this->insert();
+			$this->setSaved();
+		}
 	}
 
 	protected function update()
@@ -217,7 +244,7 @@ class Model
 		$qs .= ' WHERE ';
 		
 		$pwheres = array();
-		foreach ($this->_primaries as $pk => $pp)
+		foreach ($this->primaries() as $pk => $pp)
 		{
 			$pwheres[] = $pk . '=:p'.$pk;
 		}
@@ -228,7 +255,7 @@ class Model
 		{
 			$q->bindValue(':'.$k, $this->property($k)->db());
 		}
-		foreach ($this->_primaries as $pk => $pp)
+		foreach ($this->primaries() as $pk => $pp)
 		{
 			$q->bindValue(':p'.$pk, $pp->old());
 		}
@@ -258,19 +285,6 @@ class Model
 		$q->execute();
 	}
 	
-	protected function validate($type)
-	{
-		$error = false;
-		foreach (array_merge($this->_properties, $this->_shadowProperties) as $p)
-		{
-			if (!$p->validate($type))
-			{
-				$error = true;
-			}
-		}
-		if ($error) throw new ValidationException();
-	}
-	
 	protected function tableName()
 	{
 		if (strpos(get_class($this), 'Model') !== false)
@@ -286,7 +300,7 @@ class Model
 	protected function setSaved()
 	{
 		$this->_saved = true;
-		foreach ($this->_properties as $p)
+		foreach ($this->properties() as $p)
 		{
 			$p->setUnchanged();
 		}

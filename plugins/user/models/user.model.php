@@ -11,7 +11,7 @@
  * @internalproperty passwordHash String('Password hash', 128); required
  * @internalproperty passwordHashKey String('Pasword hash key', 32); required
 */
-class User extends Model
+class User extends DBModel
 {
 	public function __construct($username, $email)
 	{

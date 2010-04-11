@@ -8,7 +8,7 @@
  * @shadowproperty shadowProperty String('Shadow'); required only('insert')
  * @internalproperty rot13name String('Name', 64); required
 */
-class MockModel extends Model
+class MockModel extends DBModel
 {
 	public function __construct($name, $description, $email)
 	{
