@@ -1,9 +1,5 @@
 <?php
 
-include_once 'PHPUnit/Framework.php';
-include_once 'coorg/model.class.php';
-include_once 'coorg/model.test.class.php';
-
 /**
  * @primaryproperty name String('Name', 64); required
  * @property description String('Description');

@@ -1,8 +1,7 @@
 <?php
 
-include_once 'lib/smarty/Smarty.class.php';
-
-class Header {
+class Header implements IHeader
+{
 	public static function setErrorCode($code)
 	{
 		header('HTTP/1.1 ' . $code);
@@ -12,8 +11,12 @@ class Header {
 	{
 		header('Content-Type: ' . $ct);
 	}
+	
+	public static function redirect($to)
+	{
+		$full = '/~nathan/coorg-ng'.$to;
+		header('Location: '.$full);
+	}
 }
-
-class CoOrgSmarty extends Smarty {}
 
 ?>

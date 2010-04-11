@@ -1,8 +1,5 @@
 <?php
 
-include_once 'PHPUnit/Framework.php';
-include_once 'coorg/config.class.php';
-
 class ConfigTest extends PHPUnit_Framework_TestCase
 {
 

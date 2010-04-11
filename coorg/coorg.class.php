@@ -2,6 +2,11 @@
 
 require_once 'coorg/controller.class.php';
 require_once 'coorg/config.class.php';
+require_once 'coorg/db.class.php';
+require_once 'coorg/model.class.php';
+require_once 'coorg/header.interface.php';
+require_once 'coorg/coorgsmarty.interface.php';
+require_once 'coorg/state.interface.php';
 
 class CoOrg {
 
@@ -25,10 +30,12 @@ class CoOrg {
 
 	public static function run()
 	{
-		require_once 'coorg/democks.class.php';
 		$config = new Config('config/config.php');
 		CoOrg::init($config, 'app', 'plugins');
+		DB::open($config->get('dbdsn'), $config->get('dbuser'),
+		         $config->get('dbpass'));
 		
+		self::$_site = 'http://gamma/';
 		if (array_key_exists('HTTP_REFERER', $_SERVER))
 		{
 			self::$_referer = $_SERVER['HTTP_REFERER'];
@@ -44,15 +51,13 @@ class CoOrg {
 			$request = $_GET['r'];
 			if (count($_GET) > 1) {
 				$params = $_GET;
+			} else if (count($_POST) > 0) {
+				$params = $_POST;
+				$post = true;
 			}
-		} else if (array_key_exists('r', $_POST)) {
-			$request = $_POST['r'];
-			$params = $_POST;
-			$post = true;
 		} else {
 			$request = '';
 		}
-		
 		self::process($request, $params, $post);
 	}
 
@@ -88,6 +93,7 @@ class CoOrg {
 			{
 				$controllerClass->systemError($request, self::$_referer, $e);
 			}
+			$controllerClass->done();
 		}
 		catch (RequestNotFoundException $e)
 		{

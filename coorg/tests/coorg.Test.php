@@ -1,8 +1,5 @@
 <?php
 
-include_once 'PHPUnit/Framework.php';
-include_once 'coorg/coorg.class.php';
-
 class CoOrgTest extends PHPUnit_Framework_TestCase {
 
 	public function setUp() {

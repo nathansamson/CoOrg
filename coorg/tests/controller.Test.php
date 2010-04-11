@@ -1,9 +1,5 @@
 <?php
 
-include_once 'PHPUnit/Framework.php';
-include_once 'coorg/coorg.class.php';
-include_once 'coorg/tests/coorg.test.class.php';
-
 class ControllerTest extends PHPUnit_Framework_TestCase {
 	public function setUp() {
 		CoOrg::setSite('http://www.test.info/');

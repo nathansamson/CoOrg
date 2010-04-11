@@ -1,7 +1,12 @@
 <?php
 
-require_once 'coorg/db.class.php';
-require_once 'coorg/config.class.php';
+require_once 'PHPUnit/Framework.php';
+
+require_once 'coorg/coorg.class.php';
+require_once 'coorg/testing/coorg.test.class.php';
+require_once 'coorg/testing/coorgsmarty.test.class.php';
+require_once 'coorg/testing/header.test.class.php';
+require_once 'coorg/testing/model.test.class.php';
 
 DB::open('sqlite::memory:');
 

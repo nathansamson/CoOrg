@@ -1,7 +1,5 @@
 <?php
 
-include_once 'coorg/model.class.php';
-
 class PropertiesTest extends PHPUnit_Framework_TestCase
 {
 	public function testString()

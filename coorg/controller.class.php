@@ -57,6 +57,32 @@ class Controller {
 		Header::setErrorCode('500 Internal Server Error');
 		$this->render('systemerror', true);
 	}
+	
+	public function createURL($request)
+	{
+		$params = func_get_args();
+		return '/~nathan/coorg-ng/'.implode('/', $params);
+	}
+	
+	final public function done()
+	{
+		$this->smarty()->saveState();
+	}
+	
+	protected function notice($msg)
+	{
+		$this->smarty()->notice($msg);
+	}
+	
+	protected function error($msg)
+	{
+		$this->smarty()->error($msg);
+	}
+	
+	protected function redirect($to)
+	{
+		Header::redirect($to);
+	}
 
 	protected function render($tpl, $app = false)
 	{
@@ -81,6 +107,10 @@ class Controller {
 		{
 			$this->_smarty = new CoOrgSmarty;
 			$this->_smarty->addTemplateDir($this->_appPath);
+			$this->_smarty->addPluginsDir('lib/smarty/plugins/coorg');
+			
+			//TODO: Use anonymous functions/closures (only available in PHP 5.3)
+			$this->_smarty->_coorg_createURL = array($this, 'createURL');
 		}
 		return $this->_smarty;
 	}

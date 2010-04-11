@@ -2,7 +2,9 @@
 
 error_reporting(E_ALL);
 
-include 'coorg/coorg.class.php';
+require_once 'coorg/coorg.class.php';
+require_once 'coorg/deployment/coorgsmarty.class.php';
+require_once 'coorg/deployment/header.class.php';
 CoOrg::run();
 
 ?>
