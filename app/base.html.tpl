@@ -12,6 +12,15 @@
 			<div class="error">{$error}</div>
 		{/foreach}
 	
+		<div>
+			{if UserSession::get()}
+				Welcome, {UserSession::get()->username}!.
+				<a href="{url request="user/logout"}">Logout</a>
+			{else}
+				<a href="{url request="user/login"}">Inloggen</a>
+			{/if}
+		</div>
+	
 		{block name='content'}This space is intentionally left blank!{/block}
 	</body>
 </html>

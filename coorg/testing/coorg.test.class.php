@@ -1,9 +1,10 @@
 <?php
 
-class CoOrgControllerTest extends PHPUnit_Framework_TestCase
+class CoOrgControllerTest extends CoOrgModelTest
 {
 	public function setUp()
 	{
+		parent::setUp();
 		CoOrg::setSite('http://www.test.info/');
 		CoOrg::spoofReferer('http://www.test.info/some/part/of/the/site');
 		$config = new Config('config/tests.config.php');

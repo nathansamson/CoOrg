@@ -21,6 +21,7 @@ class UserSession extends Model
 	{
 		$this->validate('insert');
 		Session::set('userID', $this->username);
+		self::$_currentSession = false;
 	}
 	
 	public function delete()
