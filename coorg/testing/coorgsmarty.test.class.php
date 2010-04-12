@@ -35,6 +35,12 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 		parent::assign($key, $value);
 	}
 	
+	public function clearAssign($key)
+	{
+		unset(self::$vars[$key]);
+		parent::clearAssign($key);
+	}
+	
 	public function display($tpl)
 	{
 		self::$renderedOutput = parent::fetch($tpl);

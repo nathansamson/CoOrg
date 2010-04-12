@@ -62,6 +62,12 @@ class AlphaController extends Controller {
 	{
 		$this->render('bogus');
 	}
+	
+	public function withaside()
+	{
+		$this->myActionVar = 'some Value';
+		$this->render('show');
+	}
 }
 
 ?>

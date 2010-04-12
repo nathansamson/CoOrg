@@ -1,0 +1,244 @@
+body
+{
+	font-family: sans-serif;
+}
+
+body > header
+{
+	display: block;
+	width: 900px;
+	margin-left: auto;
+	margin-right: auto;
+	
+	text-align: right;
+	
+	margin-bottom: 10px;
+}
+
+body > header h1 a
+{
+	color: #F9A328;
+	text-decoration: none;
+}
+
+body > header h1
+{
+	font-size: 2.5em;
+	margin: 0;
+	padding: 0;
+}
+
+body > header h2
+{
+	font-size: 1em;
+	margin: 0;
+	padding: 0;
+}
+
+/* === MENU === */
+
+body > header nav
+{
+	padding: 5px;
+	background-color: #FCBA5C;
+	background-image: -moz-linear-gradient(#FCBA5C, #F9A328);
+	display: block;
+	margin-top: 10px;
+}
+
+nav a
+{
+	color: black;
+	text-decoration: none;
+}
+
+nav ol
+{
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+}
+
+nav ol li
+{
+	padding: 0px 10px;
+	border-right: dotted 1px #666666;
+}
+
+nav ol li:last-child
+{
+	border-right: none;
+}
+
+nav ol.site
+{
+	float: left;
+}
+
+nav ol.site li
+{
+	display: inline;
+}
+
+#main
+{
+	width: 900px;
+	
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#content
+{
+	margin-left: 170px;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	margin: 0;
+	padding: 0;
+}
+
+h1, h2, h1 a, h2 a
+{
+	color: #F9A328;
+	text-decoration: none;
+}
+
+.notice, .error
+{
+	padding: 10px;
+	border: dotted 1px #F9A328;
+	font-size: 80%;
+	width: 80%;
+	margin-left: 10%;
+}
+
+.notice
+{
+	background-color: #FCBA5C;
+}
+
+.error
+{
+	background-color: #FC6B5D;
+}
+
+#content p
+{
+	text-align: justify;
+}
+
+#main a
+{
+	color: black;
+}
+
+#main a:hover
+{
+	color: #F9A328;
+}
+
+article header h1
+{
+	font-size: 1.4em;
+}
+
+article header p
+{
+	margin: 0;
+	padding: 0;
+}
+
+article header
+{
+	display: block;
+	margin-bottom: 10px;
+}
+
+
+article
+{
+	display: block;
+	border-bottom: dashed 1px #666666;
+	padding: 10px 0px;
+}
+
+article
+{
+	text-align: justify;
+}
+
+article:last-child
+{
+	border-bottom: none;
+}
+
+aside {
+	width: 150px;
+	float: left;
+	overflow: hidden;
+}
+
+section {
+	display: block;
+}
+
+aside h1 {
+	font-size: 1.2em;
+}
+
+aside h2 {
+	font-size: 1.1em;
+}
+
+aside h3, aside h4, aside h5, aside h6 {
+	font-size: 1.0em;
+}
+
+/* === FORMS === */
+label {
+	display: block;
+}
+
+label.required {
+	font-weight: bold;
+}
+
+input, textarea {
+	border: solid 1px #666666;
+	font-size: 1em;
+	margin-bottom: 10px;
+}
+
+textarea {
+	width: 600px;
+	height: 200px;
+}
+
+input:focus, textarea:focus {
+	border: solid 1px #FCBA5C;
+}
+
+input[type="submit"] {
+	border: dotted 1px #F9A328;
+	background-image: -moz-linear-gradient(#FCBA5C, #F9A328);
+}
+
+input[type="submit"]:active {
+	background-image: -moz-linear-gradient(#F9A328, #FCBA5C);
+}
+
+/* === ASIDE Forms === */
+aside label {
+	font-size: 0.8em;
+	padding: 0;
+	margin: 0;
+	line-height: 0.8em;
+}
+
+aside input {
+	font-size: 0.6em;
+	margin-bottom: 6px;
+	max-width: 140px;
+}

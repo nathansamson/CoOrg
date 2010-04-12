@@ -1,4 +1,4 @@
-{block name='title'}{/block}
+{block name='title'}Lates blogs{/block}
 
 {block name='content'}
 <h1>{$blog->title}</h1>

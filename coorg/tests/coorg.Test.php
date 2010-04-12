@@ -6,6 +6,7 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		CoOrg::setSite('http://www.test.info/');
 		CoOrg::spoofReferer('http://www.test.info/some/part/of/the/site');
 		$config = new Config('config/tests.config.php');
+		$config->set('aside/main', array('home/alpha'));
 		CoOrg::init($config, 'coorg/tests/mocks/app', 'coorg/tests/mocks/plugins');
 	}
 	
@@ -136,6 +137,25 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		
 		// See if loading models not in the model directory works
 		$this->assertEquals('silly', AlphaNotInDir::returnSilly());
+	}
+	
+	public function testAside()
+	{
+		CoOrg::process('alpha/withaside/p1/p2');
+		
+		$this->assertEquals('alpha/withaside', HomeAlphaAside::$request);
+		$this->assertEquals('p2', HomeAlphaAside::$p2);
+		$this->assertFalse(array_key_exists('asideVar',  CoOrgSmarty::$vars));
+		
+		$this->assertFalse(class_exists('HomeAlpha2Aside')); // This is not configured
+	}
+	
+	public function testAsideOverwriteParam()
+	{
+		CoOrg::process('alpha/withaside/triggerSomethingBad/p2');
+		
+		$this->assertEquals('Can not overwrite template variable!', CoOrgSmarty::$vars['exception']->getMessage());
+		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);
 	}
 }
 

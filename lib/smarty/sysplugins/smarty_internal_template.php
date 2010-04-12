@@ -522,7 +522,15 @@ class Smarty_Internal_Template extends Smarty_Internal_Data {
         // read from cache or render
         if ($this->rendered_content === null && !$this->isCached()) {
             // render template (not loaded and not in cache)
-            $this->renderTemplate();
+            try
+            {
+            	$this->renderTemplate();
+            }
+            catch (Exception $e)
+            {
+            	ob_get_clean();
+            	throw $e;
+            }
         } 
         $this->updateParentVariables();
         $this->isCached = null;

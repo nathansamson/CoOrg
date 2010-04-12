@@ -18,7 +18,7 @@ class PropertyDate extends Property implements IProperty
 			}
 			else
 			{
-				return strptime($this->_value);
+				return strtotime($this->_value);
 			}
 		}
 	}

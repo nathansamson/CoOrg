@@ -1,6 +1,7 @@
 <?php
 
 require_once 'coorg/controller.class.php';
+require_once 'coorg/asidecontroller.class.php';
 require_once 'coorg/config.class.php';
 require_once 'coorg/db.class.php';
 require_once 'coorg/model.class.php';
@@ -12,10 +13,14 @@ class CoOrg {
 
 	private static $_controllers = array();
 	private static $_models = array();
+	private static $_asides = array();
 	private static $_site = null;
 	private static $_referer = null;
 	private static $_appdir;
 	private static $_config;
+	
+	private static $_request;
+	private static $_requestParameters;
 
 	public static function init(Config $config, $appdir, $pluginsDir)
 	{
@@ -74,7 +79,7 @@ class CoOrg {
 		
 		try
 		{
-			list($controllerClass, $action, $params) = 
+			list($controllerClass, $action, $params, $request) = 
 	                      self::findController($controllerName, $requestParams,
 	                                           $params, $post);
 			if (!$post && $controllerClass->isPost($action))
@@ -87,6 +92,8 @@ class CoOrg {
 				throw new WrongRequestMethodException();
 			}
 		
+			self::$_request = $request;
+			self::$_requestParameters = $params;
 			try
 			{
 				call_user_func_array(array($controllerClass, $action), $params);
@@ -129,6 +136,32 @@ class CoOrg {
 		return self::$_config->get('path').implode('/', $params);
 	}
 	
+	public static function staticFile($file)
+	{
+		return self::$_config->get('path').'static/'.$file;
+	}
+	
+	public static function aside($name, $smarty)
+	{
+		$items = self::$_config->get('aside/'.$name);
+		if ($items == null) return '';
+		$s = '';
+		foreach ($items as $item)
+		{
+			$p = explode('/', $item, 2);
+			
+			include_once(self::$_asides[$p[0]][$p[1]]);
+			
+			$className = ucfirst($p[0]).ucfirst($p[1]).'Aside';
+			$i = new $className($smarty, dirname(self::$_asides[$p[0]][$p[1]]).'/../views/');
+			$r = self::$_requestParameters;
+			array_unshift($r, self::$_request);
+			$s .= call_user_func_array(array($i, 'run'), $r);
+		}
+		
+		return $s;
+	}
+	
 	/* == These functions are only used for testing purposes == */
 	
 	public static function setSite($url)
@@ -154,9 +187,10 @@ class CoOrg {
 
 	private static function findController($controllerName, $requestParams,
 	                                       $params, $post,
-	                                       $controllerID = null)
+	                                       $controllerID = null, $request = null)
 	{
 		if ($controllerID == null) $controllerID = strtolower($controllerName);
+		if ($request == null) $request = $controllerID;
 
 		if (array_key_exists($controllerID, self::$_controllers)) {
 			include_once self::$_controllers[$controllerID]['fullpath'];
@@ -213,7 +247,7 @@ class CoOrg {
 					}
 					$params = $requestParams;
 				}
-				return array($controllerClass, $actionName, $params);
+				return array($controllerClass, $actionName, $params, $request.'/'.$actionName);
 			}
 			else
 			{
@@ -221,8 +255,10 @@ class CoOrg {
 				{
 					$subController = $controllerName.ucfirst($actionName);
 					$subControllerID = $controllerID.'.'.$actionName;
+					$subRequest = $request . '/'.$actionName;
 					return self::findController($subController, $requestParams,
-					                            $params, $post, $subControllerID);
+					                            $params, $post, $subControllerID,
+					                            $subRequest);
 				}
 				else
 				{
@@ -246,6 +282,7 @@ class CoOrg {
 			if ($restrict != null && !in_array($subdir, $restrict)) continue;
 			if (is_dir($dir))
 			{
+				self::$_asides[$subdir] = array();
 				// Scan files in dir
 				foreach (scandir($dir) as $sfile)
 				{
@@ -280,6 +317,20 @@ class CoOrg {
 							{
 								$firstPart = substr($smodel, 0, $pos);
 								self::$_models[$firstPart] = $model;
+							}
+						}
+					}
+					else if (is_dir($file) && $sfile == 'aside')
+					{
+						foreach (scandir($file) as $saside)
+						{
+							if ($saside[0] == '.') continue;
+							$aside = $file . '/' . $saside;
+							$pos = strrpos($saside, '.aside.php');
+							if ($pos !== false)
+							{
+								$firstPart = substr($saside, 0, $pos);
+								self::$_asides[$subdir][$firstPart] = $aside;
 							}
 						}
 					}

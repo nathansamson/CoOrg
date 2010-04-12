@@ -49,21 +49,31 @@ function smarty_function_input($params, $smarty)
 	
 	if ($type != 'hidden' && $type != 'submit')
 	{
-		$s = '<label for="'.$name.'">'.$label.'</label><input type="'.$type.'" value="'.$value.'" name="'.$name.'" '.
+		$label = '<label for="'.$name.'"'.($required ? 'class="required"' : '' ). '>'.$label.'</label>';
+	
+		
+		if ($type != 'textarea')
+		{
+			$input = '<input type="'.$type.'" value="'.$value.'" name="'.$name.'" '. 'id="'.$name.'"'.
 	               ($required ? 'required="required"' : '').
 	        '/>';
+	    }
+	    else
+	    {
+	    	$input = '<textarea name="'.$name.'" '. 'id="'.$name.'"'.($required ? 'required="required"' : '').'>'.$value.'</textarea>';
+	    }
 	    if (is_string($errors))
 	    {
-	    	$s .= '<span class="form-error">'.$errors.'</span>';
+	    	$input .= '<span class="form-error">'.$errors.'</span>';
 	    }
 	    else if ($errors != null)
 	    {
 	    	foreach ($errors as $error)
 	    	{
-	    		$s .= '<span class="form-error">'.$errors.'</span>';
+	    		$input .= '<span class="form-error">'.$errors.'</span>';
 	    	}
 	    }
-		return $s . '<br />';
+		return $label . $input . '<br />';
 	}
 	else
 	{
