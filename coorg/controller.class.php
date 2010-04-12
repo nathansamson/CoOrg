@@ -38,7 +38,7 @@ class Controller {
 		return false;
 	}
 	
-	public function notFound($request, $referer, $exception)
+	public function notFound($request = null, $referer = null, $exception = null)
 	{
 		$this->exception = $exception;
 		$this->referer = $referer;
@@ -81,6 +81,8 @@ class Controller {
 	
 	protected function redirect($to)
 	{
+		$args = func_get_args();
+		$to = implode('/', $args);
 		Header::redirect($to);
 	}
 

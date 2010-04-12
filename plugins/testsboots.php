@@ -10,10 +10,10 @@ require_once 'coorg/testing/header.test.class.php';
 require_once 'coorg/testing/state.test.class.php';
 
 $config = new Config('config/tests.config.php');
-$config->set('enabled_plugins', array('user'));
+$config->set('enabled_plugins', array('user', 'blog'));
 
 DB::open('sqlite::memory:');
-CoOrg::init($config, null, 'plugins'); // Load the models
+CoOrg::init($config, 'coorg/testing/plugins-app', 'plugins'); // Load the models
 
 
 function prepare($plugins)
