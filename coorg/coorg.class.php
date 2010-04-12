@@ -15,12 +15,14 @@ class CoOrg {
 	private static $_site = null;
 	private static $_referer = null;
 	private static $_appdir;
+	private static $_config;
 
 	public static function init(Config $config, $appdir, $pluginsDir)
 	{
 		self::loadDir($pluginsDir, $config->get('enabled_plugins'));
 		self::loadDir($appdir, null);
 		self::$_appdir = $appdir;
+		self::$_config = $config;
 		spl_autoload_register(array('CoOrg', 'loadModel'));
 	}
 	
@@ -120,6 +122,11 @@ class CoOrg {
 		{
 			include_once self::$_models[$name];
 		}
+	}
+	
+	public static function createURL($params)
+	{
+		return self::$_config->get('path').implode('/', $params);
 	}
 	
 	/* == These functions are only used for testing purposes == */

@@ -61,7 +61,7 @@ class Controller {
 	public function createURL($request)
 	{
 		$params = func_get_args();
-		return '/~nathan/coorg-ng/'.implode('/', $params);
+		return CoOrg::createURL($params);
 	}
 	
 	final public function done()

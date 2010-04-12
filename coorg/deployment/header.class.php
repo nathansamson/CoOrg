@@ -14,7 +14,8 @@ class Header implements IHeader
 	
 	public static function redirect($to)
 	{
-		$full = '/~nathan/coorg-ng'.$to;
+		$args = func_get_args();
+		$full = CoOrg::createURL($args);
 		header('Location: '.$full);
 	}
 }

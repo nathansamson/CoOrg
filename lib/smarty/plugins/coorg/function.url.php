@@ -2,7 +2,7 @@
 
 function smarty_function_url($params, $smarty)
 {
-	return '/~nathan/coorg-ng/'.$params['request'];
+	return CoOrg::createURL($params);
 }
 
 ?>
