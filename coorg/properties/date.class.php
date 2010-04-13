@@ -1,9 +1,7 @@
 <?php
 
-//FIXME implement better + test
-class PropertyDate extends Property implements IProperty
+abstract class PropertyDateTimeish extends Property
 {
-
 	public function get()
 	{
 		if (trim($this->_value) == '')
@@ -16,7 +14,7 @@ class PropertyDate extends Property implements IProperty
 			{
 				if ($this->_value > 0)
 				{
-					return strtotime(date('Y-m-d', $this->_value));
+					return strtotime($this->format( $this->_value));
 				}
 				else
 				{
@@ -29,7 +27,8 @@ class PropertyDate extends Property implements IProperty
 			}
 		}
 	}
-
+	
+	
 	public function validate ($t)
 	{
 		if ($this->isRequired($t) && (trim($this->_value) == '' || $this->_value == 0))
@@ -56,13 +55,31 @@ class PropertyDate extends Property implements IProperty
 	{
 		if (is_string($value) && trim($value) != '')
 		{
-			return date('Y-m-d', strtotime($value));
+			return $this->format(strtotime($value));
 		}
 		else if (is_int($value) && $value > 0)
 		{
-			return date('Y-m-d', $value);
+			return $this->format($value);
 		}
 		return null;
+	}
+	
+	abstract protected function format($value);
+}
+
+class PropertyDate extends PropertyDateTimeish implements IProperty
+{
+	protected function format($value)
+	{
+		return date('Y-m-d', $value);
+	}
+}
+
+class PropertyDateTime extends PropertyDateTimeish implements IProperty
+{
+	protected function format($value)
+	{
+		return date('Y-m-d H:i:s', $value);
 	}
 }
 

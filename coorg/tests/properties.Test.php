@@ -502,6 +502,95 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse($d->validate(''));
 		$this->assertEquals('Date is not a valid date', $d->errors());
 	}
+	
+	
+	public function testDateTime()
+	{
+		$d = new PropertyDateTime('Date');
+		
+		$d->set('2010-04-13 18:35');
+		$this->assertEquals(1271176500, $d->get());
+		$this->assertEquals('2010-04-13 18:35:00', $d->db());
+		$this->assertNull($d->old());
+		$d->setUnchanged();
+		$this->assertEquals('2010-04-13 18:35:00', $d->old());
+		$this->assertTrue($d->validate(''));
+		
+		$d->set(1271109610);
+		$this->assertTrue($d->changed());
+		$this->assertEquals(1271109610, $d->get());
+		$this->assertTrue($d->validate(''));
+		
+		$d->set('2010/03/13 18:35:24');
+		$this->assertTrue($d->changed());
+		$this->assertEquals(1268501724, $d->get());
+		$this->assertEquals('2010-03-13 18:35:24', $d->db());
+		$this->assertTrue($d->validate(''));
+		
+		$d = new PropertyDateTime('Date');
+		$d->set('1-1-1 1:1:1');
+		$this->assertTrue($d->validate(''));
+		
+		$d->set('1960-11-03 12:22:21');
+		$this->assertEquals('1960-11-03 12:22:21', $d->db());
+		$this->assertTrue($d->validate(''));
+	}
+	
+	public function testEmptyTime()
+	{
+		$d = new PropertyDateTime('Date');
+		$this->assertNull($d->get());
+		$this->assertNull($d->db());
+		$d->set(' ');
+		$this->assertNull($d->get());
+		$this->assertNull($d->db());
+		$d->set(0);
+		$this->assertNull($d->get());
+		$this->assertNull($d->db());
+	}
+	
+	public function testEmptyRequiredDateTime()
+	{
+		$d = new PropertyDateTime('Date');
+		$d->required();
+		
+		$this->assertFalse($d->validate(''));
+		$this->assertEquals('Date is required', $d->errors());
+		$d->error(null);
+		
+		$d->set(' ');
+		$this->assertFalse($d->validate(''));
+		$this->assertEquals('Date is required', $d->errors());
+		$d->error(null);
+		
+		$d->set(0);
+		$this->assertFalse($d->validate(''));
+		$this->assertEquals('Date is required', $d->errors());
+	}
+	
+	public function testEmptySometimesRequiredDateTime()
+	{
+		$d = new PropertyDateTime('Date');
+		$d->required();
+		$d->only('apple');
+		
+		$d->set(0);
+		$this->assertTrue($d->validate(''));
+		
+		$this->assertFalse($d->validate('apple'));
+		$this->assertEquals('Date is required', $d->errors());
+		
+		$d->set(1234567890);
+		$this->assertTrue($d->validate('apple'));
+	}
+	
+	public function testInvalidDateTime()
+	{
+		$d = new PropertyDateTime('Date');
+		$d->set('2010-04ddfselk 12:35:21');
+		$this->assertFalse($d->validate(''));
+		$this->assertEquals('Date is not a valid date', $d->errors());
+	}
 }
 
 ?>
