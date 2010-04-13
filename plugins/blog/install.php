@@ -5,6 +5,8 @@ function blog_install_db()
 	$s = DB::prepare('CREATE TABLE Blog (
 	   ID VARCHAR(256),
 	   datePosted DATE,
+	   timePosted DATETIME,
+	   timeEdited DATETIME,
 	   title VARCHAR(256),
 	   authorID VARCHAR(64),
 	   text VARCHAR(65000),

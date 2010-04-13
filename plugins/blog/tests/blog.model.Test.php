@@ -15,6 +15,7 @@ class BlogTest extends CoOrgModelTest
 		$day = date('d');
 	
 		$blog = new Blog('My Title', 'Nathan', 'My Blog contents.');
+		$time = time();
 		$blog->save();
 		
 		$blog = Blog::getBlog($year, $month, $day, $blog->ID);
@@ -23,6 +24,8 @@ class BlogTest extends CoOrgModelTest
 		$this->assertEquals('My Title', $blog->title);
 		$this->assertEquals('Nathan', $blog->authorID);
 		$this->assertEquals('My Blog contents.', $blog->text);
+		$this->assertTrue(abs($time - $blog->timePosted) <= 2);
+		$this->assertNull($blog->timeEdited);
 	}
 	
 	public function testTitleMissing()
@@ -72,10 +75,11 @@ class BlogTest extends CoOrgModelTest
 	
 	public function testLatest()
 	{
-		$blogs = Blog::latest(2);
-		$this->assertEquals(2, count($blogs));
+		$blogs = Blog::latest(3);
+		$this->assertEquals(3, count($blogs));
 		$this->assertEquals('XYZ', $blogs[0]->title);
 		$this->assertEquals('Some Blog', $blogs[1]->title);
+		$this->assertEquals('Some Other Blog', $blogs[2]->title);
 	}
 	
 	public function testUpdate()
@@ -84,11 +88,14 @@ class BlogTest extends CoOrgModelTest
 		$blog->title = 'My Blog Post';
 		$blog->text = 'Some New Text';
 		
+		$time = time();
 		$blog->save();
 		
 		$blog = Blog::getBlog('2010', '4', '9', 'blog-post');
 		$this->assertEquals('nathan', $blog->authorID);
 		$this->assertEquals('2010-04-09', date('Y-m-d', $blog->datePosted));
+		$this->assertEquals('2010-04-09 14:20:20', date('Y-m-d H:i:s', $blog->timePosted));
+		$this->assertTrue(abs($time - $blog->timeEdited) <= 2);
 		$this->assertEquals('My Blog Post', $blog->title);
 		$this->assertEquals('Some New Text', $blog->text);
 	}

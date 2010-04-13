@@ -1,6 +1,6 @@
 <section>
 	<h1>Login</h1>
-{form request="user/executeLogin" instance=sideUser}
+{form request="user/executeLogin" instance=sideUser id=asideLogin}
 	{input for=username label="Username" required}
 	{input for=password label="Password" required}
 	

@@ -16,14 +16,28 @@
 	<Blog 
 	   ID="some-blog"
 	   datePosted="2010-04-10"
+	   timePosted="2010-04-10 21:20:20"
+	   timeEdited="2010-04-11 21:20:20"
 	   authorID="nathan"
 	   title="Some Blog"
 	   text="My Very long Blog"
 	/>
 	
 	<Blog 
+	   ID="some-other-blog"
+	   datePosted="2010-04-10"
+	   timePosted="2010-04-10 09:20:20"
+	   timeEdited="2010-04-10 09:20:20"
+	   authorID="nathan"
+	   title="Some Other Blog"
+	   text="My Very long Blog"
+	/>
+	
+	<Blog 
 	   ID="blog-post"
 	   datePosted="2010-04-09"
+	   timePosted="2010-04-09 14:20:20"
+	   timeEdited="2010-04-09 21:10:20"
 	   authorID="nathan"
 	   title="Blog post"
 	   text="My Very long Blog"
@@ -32,6 +46,8 @@
 	<Blog 
 	   ID="xyz"
 	   datePosted="2010-04-11"
+	   timePosted="2010-04-11 14:20:20"
+	   timeEdited="2010-04-11 14:20:20"
 	   authorID="nathan"
 	   title="XYZ"
 	   text="My Very long Blog"

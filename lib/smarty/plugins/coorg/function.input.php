@@ -58,18 +58,20 @@ function smarty_function_input($params, $smarty)
 	
 	if ($type != 'hidden' && $type != 'submit')
 	{
-		$label = '<label for="'.$name.'" '.($required ? 'class="required"' : '' ). '>'.$label.'</label>';
+		$form = $smarty->_coorg_form;
+		$id = $form->formID ? $form->formID.'_'.$name : $name;
+		$label = '<label for="'.$id.'" '.($required ? 'class="required"' : '' ). '>'.$label.'</label>';
 	
 		
 		if ($type != 'textarea')
 		{
-			$input = '<input type="'.$type.'" value="'.$value.'" name="'.$name.'" '. 'id="'.$name.'"'.
+			$input = '<input type="'.$type.'" value="'.$value.'" name="'.$name.'" '. 'id="'.$id.'"'.
 	               ($required ? 'required="required"' : '').
 	        '/>';
 	    }
 	    else
 	    {
-	    	$input = '<textarea name="'.$name.'" '. 'id="'.$name.'" '.($required ? 'required="required"' : '').'>'.$value.'</textarea>';
+	    	$input = '<textarea name="'.$name.'" '. 'id="'.$id.'" '.($required ? 'required="required"' : '').'>'.$value.'</textarea>';
 	    }
 	    if (is_string($errors))
 	    {

@@ -5,8 +5,10 @@
  * @primaryproperty ID String('Title', 256); required
  * @primaryproperty datePosted Date('Date posted'); required
  * @property title String('Title', 256); required
- * @property authorID String('Author', 64); required
+ * @property authorID String('Author', 64); required 
  * @property text String('Content'); required
+ * @property timePosted DateTime('Posted'); required
+ * @property timeEdited DateTime('Edited');
 */
 class Blog extends DBModel
 {
@@ -64,12 +66,20 @@ class Blog extends DBModel
 	{
 		$this->property('ID')->set($this->normalizeTitle($this->title));
 		$this->property('datePosted')->set(time());
+		$this->property('timePosted')->set(time());
+	}
+	
+	protected function beforeUpdate()
+	{
+		$this->property('timeEdited')->set(time());
 	}
 	
 	private static function produceBlog($row)
 	{
 		$blog = new Blog($row['title'], $row['authorID'], $row['text'], $row['datePosted']);
 		$blog->property('ID')->set($row['ID']);
+		$blog->property('timePosted')->set($row['timePosted']);
+		$blog->property('timeEdited')->set($row['timeEdited']);
 		$blog->setSaved();
 		return $blog;
 	}
