@@ -68,6 +68,52 @@ class BlogController extends Controller
 			$this->notFound();
 		}
 	}
+	
+	public function edit($year, $month, $day, $id)
+	{
+		$blog = Blog::getBlog($year, $month, $day, $id);
+		if ($blog && $blog->authorID == UserSession::get()->username)
+		{
+			$this->blog = $blog;
+			$this->render('edit');
+		}
+		else
+		{
+			$this->error('Blog item is not found');
+			$this->notFound();
+		}
+	}
+	
+	/**
+	 * @post
+	*/
+	public function update($year, $month, $day, $id, $title, $text)
+	{
+		$blog = Blog::getBlog($year, $month, $day, $id);
+		if ($blog && $blog->authorID == UserSession::get()->username)
+		{
+			$blog->title = $title;
+			$blog->text = $text;
+			try
+			{
+				$blog->save();
+				
+				$this->notice('Your blog item is updated');
+				$this->redirect('blog/show', $year, $month, $day, $blog->ID);
+			}
+			catch (ValidationException $e)
+			{
+				$this->error('Your blog item is not saved');
+				$this->blog = $blog;
+				$this->render('edit');
+			}
+		}
+		else
+		{
+			$this->error('Blog item is not found');
+			$this->notFound();
+		}
+	}
 }
 
 ?>

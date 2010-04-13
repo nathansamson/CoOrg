@@ -77,6 +77,54 @@ class BlogTest extends CoOrgModelTest
 		$this->assertEquals('XYZ', $blogs[0]->title);
 		$this->assertEquals('Some Blog', $blogs[1]->title);
 	}
+	
+	public function testUpdate()
+	{
+		$blog = Blog::getBlog('2010', '4', '9', 'blog-post');
+		$blog->title = 'My Blog Post';
+		$blog->text = 'Some New Text';
+		
+		$blog->save();
+		
+		$blog = Blog::getBlog('2010', '4', '9', 'blog-post');
+		$this->assertEquals('nathan', $blog->authorID);
+		$this->assertEquals('2010-04-09', date('Y-m-d', $blog->datePosted));
+		$this->assertEquals('My Blog Post', $blog->title);
+		$this->assertEquals('Some New Text', $blog->text);
+	}
+	
+	public function testUpdateNoTitle()
+	{
+		$blog = Blog::getBlog('2010', '4', '9', 'blog-post');
+		$blog->title = '';
+		$blog->text = 'Some New Text';
+		
+		try
+		{
+			$blog->save();
+			$this->fail('Expected exception');
+		}
+		catch (ValidationException $e)
+		{
+			$this->assertEquals('Title is required', $blog->title_error);
+		}
+	}
+	
+	public function testUpdateNoText()
+	{
+		$blog = Blog::getBlog('2010', '4', '9', 'blog-post');
+		$blog->text = '';
+		
+		try
+		{
+			$blog->save();
+			$this->fail('Expected exception');
+		}
+		catch (ValidationException $e)
+		{
+			$this->assertEquals('Content is required', $blog->text_error);
+		}
+	}
 }
 
 ?>

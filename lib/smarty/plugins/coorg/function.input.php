@@ -24,22 +24,31 @@ function smarty_function_input($params, $smarty)
 	if ($type != 'submit')
 	{
 		$required = array_key_exists('required', $params);
-		$forName = $params['for'];
-		$name = $forName;
-	
-		$instance = $smarty->_coorg_form->instance;
-		if ($type != 'password')
+		if (array_key_exists('for', $params))
 		{
-			$rawAttribute = $forName. '_raw';
-			$value = $instance->$rawAttribute;
+			$forName = $params['for'];
+			$name = array_key_exists('name', $params) ? $params['name'] : $forName;
+			
+			$instance = $smarty->_coorg_form->instance;
+			if ($type != 'password')
+			{
+				$rawAttribute = $forName. '_raw';
+				$value = $instance->$rawAttribute;
+			}
+			else
+			{
+				$value = '';
+			}
+			
+			$errorName = $forName . '_errors';
+			$errors = $instance->$errorName;
+			
 		}
 		else
 		{
-			$value = '';
+			$name = $params['name'];
+			$value = $params['value'];
 		}
-		
-		$errorName = $forName . '_errors';
-		$errors = $instance->$errorName;
 	}
 	else
 	{
@@ -49,7 +58,7 @@ function smarty_function_input($params, $smarty)
 	
 	if ($type != 'hidden' && $type != 'submit')
 	{
-		$label = '<label for="'.$name.'"'.($required ? 'class="required"' : '' ). '>'.$label.'</label>';
+		$label = '<label for="'.$name.'" '.($required ? 'class="required"' : '' ). '>'.$label.'</label>';
 	
 		
 		if ($type != 'textarea')
@@ -60,7 +69,7 @@ function smarty_function_input($params, $smarty)
 	    }
 	    else
 	    {
-	    	$input = '<textarea name="'.$name.'" '. 'id="'.$name.'"'.($required ? 'required="required"' : '').'>'.$value.'</textarea>';
+	    	$input = '<textarea name="'.$name.'" '. 'id="'.$name.'" '.($required ? 'required="required"' : '').'>'.$value.'</textarea>';
 	    }
 	    if (is_string($errors))
 	    {

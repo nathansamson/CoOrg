@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ALL);
+
 require_once 'coorg/controller.class.php';
 require_once 'coorg/asidecontroller.class.php';
 require_once 'coorg/config.class.php';
@@ -70,7 +72,6 @@ class CoOrg {
 
 	public static function process($request, $params = array(), $post = false)
 	{
-		error_reporting(E_ALL);
 		self::normalizeRequest($request);
 		if ($request == '') $request = 'home';
 		$requestParams = explode('/', $request);

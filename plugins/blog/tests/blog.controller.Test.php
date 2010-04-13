@@ -95,9 +95,78 @@ class BlogControllerTest extends CoOrgControllerTest
 		$this->assertRendered('show');
 	}
 	
-	private function login()
+	public function testEdit()
 	{
-		$session = new UserSession('nathan', 'nathan');
+		$this->login();
+		$this->request('blog/edit/2010/4/9/blog-post');
+		$this->assertVarSet('blog');
+		$this->assertRendered('edit');
+	}
+	
+	public function testEditNotFound()
+	{
+		$this->login();
+		$this->request('blog/edit/2010/4/10/blog-post');
+		$this->assertFlashError('Blog item is not found');
+		$this->assertRendered('notfound');
+	}
+	
+	public function testEditWrongLogin()
+	{
+		$this->login('nele');
+		$this->request('blog/edit/2010/4/9/blog-post');
+		$this->assertFlashError('Blog item is not found');
+		$this->assertRendered('notfound');
+	}
+	
+	public function testUpdate()
+	{
+		$this->login('nathan');
+		$this->request('blog/update', array(
+		                                'year' => '2010',
+		                                'month' => '4',
+		                                'day' => '9',
+		                                'id' => 'blog-post',
+		                                'title' => 'Some New Title',
+		                                'text' => 'Some new Content'));
+
+		$this->assertRedirected('blog/show/2010/4/9/blog-post');
+		$this->assertFlashNotice('Your blog item is updated');
+	}
+	
+	public function testUpdateNotFound()
+	{
+		$this->login('nathan');
+		$this->request('blog/update', array(
+		                                'year' => '2010',
+		                                'month' => '2',
+		                                'day' => '9',
+		                                'id' => 'blog-post',
+		                                'title' => 'Some New Title',
+		                                'text' => 'Some new Content'));
+
+		$this->assertFlashError('Blog item is not found');
+		$this->assertRendered('notfound');
+	}
+	
+	public function testUpdateWrongLogin()
+	{
+		$this->login('nele');
+		$this->request('blog/update', array(
+		                                'year' => '2010',
+		                                'month' => '4',
+		                                'day' => '9',
+		                                'id' => 'blog-post',
+		                                'title' => 'Some New Title',
+		                                'text' => 'Some new Content'));
+
+		$this->assertFlashError('Blog item is not found');
+		$this->assertRendered('notfound');
+	}
+	
+	private function login($u = 'nathan')
+	{
+		$session = new UserSession($u, $u);
 		$session->save();
 	}
 }

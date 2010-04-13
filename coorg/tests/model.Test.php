@@ -219,6 +219,19 @@ class ModelTest extends CoOrgModelTest
 		$n = MockModel::getByName('nopmlk');
 		$this->assertTrue($n->checkInternalP('abczyx'));
 	}
+	
+	public function testUpdateNothing()
+	{
+		$n = new MockModel('abczyx', '', 'cccc@bcc.com');
+		$n->shadowProperty = '...';
+		$n->save();
+		
+		$n = MockModel::getByName('abczyx');
+		$n->save();
+		
+		$n = MockModel::getByName('abczyx');
+		$this->assertTrue($n->checkInternalP('nopmlk'));
+	}
 }
 
 ?>

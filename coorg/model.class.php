@@ -225,6 +225,7 @@ class DBModel extends Model
 	{
 		$qs = 'UPDATE ' . $this->tableName() . ' SET ';
 		$sets = array();
+		$properties = array();
 		foreach ($this->dbproperties() as $k => $p)
 		{
 			if ($p->changed())
@@ -239,6 +240,10 @@ class DBModel extends Model
 					$sets[] = $k . ' = NULL';
 				}
 			}
+		}
+		if ($sets == array())
+		{
+			return; // Nothing to do.
 		}
 		$qs .= implode(', ', $sets);
 		
@@ -301,7 +306,7 @@ class DBModel extends Model
 	protected function setSaved()
 	{
 		$this->_saved = true;
-		foreach ($this->properties() as $p)
+		foreach ($this->dbproperties() as $p)
 		{
 			$p->setUnchanged();
 		}

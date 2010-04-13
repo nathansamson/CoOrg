@@ -30,7 +30,14 @@ class PropertyDate extends Property implements IProperty
 
 	public function toDB($value)
 	{
-		return date('Y-m-d', $value);
+		if (is_string($value))
+		{
+			return $value;
+		}
+		else if (is_int($value))
+		{
+			return date('Y-m-d', $value);
+		}
 	}
 }
 

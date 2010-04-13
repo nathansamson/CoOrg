@@ -5,11 +5,18 @@
 	  passwordHashKey="google"
 	  passwordHash="b51d3030e9353768e9f4a6f296b132b04b5fae9f93bdf75f9058392fe7107f0e4df86c626e24ae50a2399552149783e09ddede8de0a0b5e1a3c8825a40463559"
 	/>
+	
+	<User
+	  username="nele"
+	  email="nele..."
+	  passwordHashKey="google"
+	  passwordHash="5165720aa322b674d82de4820b822b3159d0ede8ee9c09c7277fb07d34592fa446eff14c92a932d858bc637b4ec113c5258ec4d6173d960dbb1a49359d8dfd32"
+	/>
 
 	<Blog 
 	   ID="some-blog"
 	   datePosted="2010-04-10"
-	   authorID="Nathan"
+	   authorID="nathan"
 	   title="Some Blog"
 	   text="My Very long Blog"
 	/>
@@ -17,7 +24,7 @@
 	<Blog 
 	   ID="blog-post"
 	   datePosted="2010-04-09"
-	   authorID="Nathan"
+	   authorID="nathan"
 	   title="Blog post"
 	   text="My Very long Blog"
 	/>
@@ -25,7 +32,7 @@
 	<Blog 
 	   ID="xyz"
 	   datePosted="2010-04-11"
-	   authorID="Nathan"
+	   authorID="nathan"
 	   title="XYZ"
 	   text="My Very long Blog"
 	/>
