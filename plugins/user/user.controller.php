@@ -20,12 +20,12 @@ class UserController extends Controller
 		try
 		{
 			$user->save();
-			$this->notice('We have sent an email to confirm your registration');
+			$this->notice(t('We have sent an email to confirm your registration'));
 			$this->redirect('/');
 		}
 		catch (ValidationException $e)
 		{
-			$this->error('We could not complete your registration');
+			$this->error(t('We could not complete your registration'));
 			$this->user = $user;
 			$this->render('create');
 		}
@@ -47,12 +47,12 @@ class UserController extends Controller
 		try
 		{
 			$session->save();
-			$this->notice('You are now logged in');
+			$this->notice(t('You are now logged in'));
 			$this->redirect('/');
 		}
 		catch (ValidationException $e)
 		{
-			$this->error('You are not logged in');
+			$this->error(t('You are not logged in'));
 			$this->session = $session;
 			$this->render('login');
 		}
@@ -66,7 +66,7 @@ class UserController extends Controller
 			$session->delete();
 		}
 		
-		$this->notice('You are now logged out');
+		$this->notice(t('You are now logged out'));
 		$this->redirect('/');
 	}
 }

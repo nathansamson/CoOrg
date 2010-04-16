@@ -1,6 +1,6 @@
 {block name='title'}Create new account{/block}
 {block name='content'}
-	<h1>Create a new user account</h1>
+	<h1>{'Create a new user account'|_}</h1>
 
 	{form request="user/save" instance=$user}
 		{input label="Username" for=username required}

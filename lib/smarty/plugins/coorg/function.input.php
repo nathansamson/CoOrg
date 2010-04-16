@@ -14,7 +14,7 @@ function smarty_function_input($params, $smarty)
 	}
 	if (array_key_exists('label', $params))
 	{
-		$label = $params['label'];
+		$label = t($params['label']);
 	}
 	else
 	{

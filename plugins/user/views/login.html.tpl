@@ -5,7 +5,7 @@
 	{input for=username label="Username" required}
 	{input for=password label="Password" type="password" required}
 	
-	{input type="submit" label="Login"} <a href="{url request='user/create'}">No account?</a>
+	{input type="submit" label="Login"} <a href="{url request='user/create'}">{'No account?'|_}</a>
 {/form}
 
 {/block}

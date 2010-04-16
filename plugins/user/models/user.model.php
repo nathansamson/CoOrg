@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @primaryproperty username String('Username', 24); required
- * @property email Email('Email'); required
- * @property firstName String('First Name', 64);
- * @property lastName String('Last Name', 64);
- * @shadowproperty password String('Password'); required only('insert')
- * @shadowproperty passwordConfirmation String('Password confirmation'); required only('insert')
- * @shadowproperty oldPassword String('Password'); required only('updatePassword')
+ * @primaryproperty username String(t('Username'), 24); required
+ * @property email Email(t('Email')); required
+ * @property firstName String(t('First Name'), 64);
+ * @property lastName String(t('Last Name'), 64);
+ * @shadowproperty password String(t('Password')); required only('insert')
+ * @shadowproperty passwordConfirmation String(t('Password confirmation')); required only('insert')
+ * @shadowproperty oldPassword String(t('Password')); required only('updatePassword')
  * @internalproperty passwordHash String('Password hash', 128); required
  * @internalproperty passwordHashKey String('Pasword hash key', 32); required
 */
