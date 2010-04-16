@@ -7,6 +7,8 @@ class HomeController extends Controller
 	public function index()
 	{
 		self::$indexExecuted = true;
+		$this->language = t('en');
+		$this->render('home');
 	}
 }
 

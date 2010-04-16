@@ -7,6 +7,7 @@ require_once 'coorg/asidecontroller.class.php';
 require_once 'coorg/config.class.php';
 require_once 'coorg/db.class.php';
 require_once 'coorg/model.class.php';
+require_once 'coorg/i18n.class.php';
 require_once 'coorg/header.interface.php';
 require_once 'coorg/coorgsmarty.interface.php';
 require_once 'coorg/state.interface.php';
@@ -77,6 +78,26 @@ class CoOrg {
 		$requestParams = explode('/', $request);
 		
 		$controllerName = ucfirst(array_shift($requestParams));
+		if (strlen($controllerName) == 2)
+		{
+			I18n::setLanguage(strtolower($controllerName));
+			
+			if (count($requestParams) > 0)
+			{
+				$controllerName = ucfirst(array_shift($requestParams));
+			}
+			else
+			{
+				$controllerName = 'Home';
+			}
+		}
+		else
+		{
+			if (self::$_config->has('defaultLanguage'))
+			{
+				I18n::setLanguage(self::$_config->get('defaultLanguage'));
+			}
+		}
 		
 		try
 		{
@@ -134,7 +155,21 @@ class CoOrg {
 	
 	public static function createURL($params)
 	{
-		return self::$_config->get('path').implode('/', $params);
+		$urlPrefix = '';
+		if (self::$_config->has('urlPrefix'))
+		{
+			$language = I18n::getLanguage();
+			
+			if ($language == null)
+			{
+				$language = 'en';
+			}
+			
+			$urlPrefix = self::$_config->get('urlPrefix').'/';
+			$urlPrefix = str_replace(':language', $language, $urlPrefix);
+		}
+	
+		return self::$_config->get('path').$urlPrefix.implode('/', $params);
 	}
 	
 	public static function staticFile($file)
@@ -334,6 +369,10 @@ class CoOrg {
 								self::$_asides[$subdir][$firstPart] = $aside;
 							}
 						}
+					}
+					else if (is_dir($file) && $sfile == 'lang')
+					{
+						I18n::addSearchDir($file);
 					}
 				}
 			}

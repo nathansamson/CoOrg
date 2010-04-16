@@ -8,7 +8,8 @@ class Header implements IHeader
 
 	public static function redirect($to)
 	{
-		self::$redirect = $to;
+		$args = func_get_args();
+		self::$redirect = CoOrg::createURL($args);
 	}
 	
 	public static function setErrorCode($code)

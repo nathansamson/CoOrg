@@ -8,6 +8,7 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$config = new Config('config/tests.config.php');
 		$config->set('aside/main', array('home/alpha'));
 		CoOrg::init($config, 'coorg/tests/mocks/app', 'coorg/tests/mocks/plugins');
+		I18n::setLanguage(null);
 	}
 	
 	public function tearDown() {
@@ -156,6 +157,71 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		
 		$this->assertEquals('Can not overwrite template variable!', CoOrgSmarty::$vars['exception']->getMessage());
 		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);
+	}
+	
+	public function testI18nManual()
+	{
+		I18n::setLanguage('nl');
+		
+		CoOrg::process('alpha/sub/i18ntest');
+		
+		$this->assertEquals('Google is leuk', AlphaSubController::$i18ntest1);
+		$this->assertEquals('shit van Google', AlphaSubController::$i18ntest2);
+		$this->assertEquals('Dit bericht komt van alpha', AlphaSubController::$i18nfromAlpha);
+		$this->assertEquals('Message not found with 1 paramaters', AlphaSubController::$notFoundWithParams);
+		AlphaSubController::$i18ntest1 = '';
+		AlphaSubController::$i18ntest2 = '';
+		AlphaSubController::$i18nfromAlpha = '';
+		AlphaSubController::$notFoundWithParams = '';
+	}
+	
+	public function testI18nAuto()
+	{
+		CoOrg::process('nl/alpha/sub/i18ntest');
+		
+		$this->assertEquals('Google is leuk', AlphaSubController::$i18ntest1);
+		$this->assertEquals('shit van Google', AlphaSubController::$i18ntest2);
+		$this->assertEquals('Dit bericht komt van alpha', AlphaSubController::$i18nfromAlpha);
+		$this->assertEquals('Message not found with 1 paramaters', AlphaSubController::$notFoundWithParams);
+	}
+	
+	public function testI18nAutoWithoutPathPrefix()
+	{
+		CoOrg::process('nl/alpha/sub/doredirect');
+		
+		$this->assertEquals('alpha/sub/google', Header::$redirect);
+	}
+	
+	public function testI18nAutoIndex()
+	{
+		CoOrg::process('nl/');
+		
+		$this->assertEquals(1, preg_match('/^extends:base.html.tpl\|(.*)home.html.tpl$/', CoOrgSmarty::$renderedTemplate));
+		$this->assertEquals('nl', CoOrgSmarty::$vars['language']);
+	}
+	
+	public function testI18nAutoWithPathPrefix()
+	{
+		$config = new Config('config/tests.config.php');
+		$config->set('urlPrefix', ':language');
+		$this->alternativeConfig($config);
+		CoOrg::process('nl/alpha/sub/doredirect');
+		
+		$this->assertEquals('nl/alpha/sub/google', Header::$redirect);
+	}
+	
+	public function testI18nOtherDefaultLanguage()
+	{
+		$config = new Config('config/tests.config.php');
+		$config->set('defaultLanguage', 'nl');
+		$this->alternativeConfig($config);
+		CoOrg::process('/');
+		$this->assertEquals('nl', CoOrgSmarty::$vars['language']);
+	}
+	
+	private function alternativeConfig($config)
+	{
+		CoOrg::init($config, 'coorg/tests/mocks/app', 'coorg/tests/mocks/plugins');
 	}
 }
 
