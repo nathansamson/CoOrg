@@ -291,6 +291,25 @@ class DBModel extends Model
 		$q->execute();
 	}
 	
+	public function delete()
+	{
+		$qs = 'DELETE FROM ' . $this->tableName() . ' WHERE ';
+		
+		$pwheres = array();
+		foreach ($this->primaries() as $pk => $pp)
+		{
+			$pwheres[] = $pk . '=:p'.$pk;
+		}
+		$qs .= implode(' AND ', $pwheres);
+		
+		$q = DB::prepare($qs);
+		foreach ($this->primaries() as $pk => $pp)
+		{
+			$q->bindValue(':p'.$pk, $pp->old());
+		}
+		$q->execute();
+	}
+	
 	protected function tableName()
 	{
 		if (strpos(get_class($this), 'Model') !== false)

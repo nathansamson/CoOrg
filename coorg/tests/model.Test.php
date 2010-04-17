@@ -232,6 +232,27 @@ class ModelTest extends CoOrgModelTest
 		$n = MockModel::getByName('abczyx');
 		$this->assertTrue($n->checkInternalP('nopmlk'));
 	}
+	
+	public function testDelete()
+	{
+		$n = new MockModel('abczyx', '', 'cccc@bcc.com');
+		$n->shadowProperty = '...';
+		$n->save();
+		
+		$n = new MockModel('dvorak', '', 'sdsd@bcc.com');
+		$n->shadowProperty = '...';
+		$n->save();
+		
+		$n = new MockModel('qwerty', '', 'ssf@bcc.com');
+		$n->shadowProperty = '...';
+		$n->save();
+		
+		$n->delete();
+		
+		$this->assertNotNull(MockModel::getByName('abczyx'));
+		$this->assertNotNull(MockModel::getByName('dvorak'));
+		$this->assertNull(MockModel::getByName('qwerty'));
+	}
 }
 
 ?>
