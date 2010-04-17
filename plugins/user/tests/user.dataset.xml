@@ -1,3 +1,20 @@
 <dataset>
-	<User />
+	<User 
+		username="dvorak"
+		email="dvorak"
+	/>
+	
+	<User 
+		username="azerty"
+		email="azerty"
+	/>
+	
+	<User 
+		username="qwerty"
+		email="qwerty"
+	/>
+	
+	<UserGroup />
+	
+	<UserGroupMember />
 </dataset>

@@ -26,6 +26,11 @@ class User extends DBModel
 		       $this->property('passwordHash')->get();
 	}
 	
+	public function groups()
+	{
+		return UserGroupMember::getGroupsWithUser($this->username);
+	}
+	
 	public static function getUserByName($username)
 	{
 		$q = DB::prepare('SELECT * FROM User WHERE username=:username');
