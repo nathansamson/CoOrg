@@ -5,6 +5,7 @@ require_once 'coorg/properties/string.class.php';
 require_once 'coorg/properties/email.class.php';
 require_once 'coorg/properties/integer.class.php';
 require_once 'coorg/properties/date.class.php';
+require_once 'coorg/properties/bool.class.php';
 
 class Model
 {

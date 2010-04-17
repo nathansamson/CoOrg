@@ -591,6 +591,68 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 		$this->assertFalse($d->validate(''));
 		$this->assertEquals('Date is not a valid date', $d->errors());
 	}
+	
+	public function testBool()
+	{
+		$b = new PropertyBool('name');
+		$b->set('true');
+		$this->assertTrue($b->get());
+		$this->assertEquals(1, $b->db());
+		$this->assertTrue($b->validate(''));
+		
+		$b->set('false');
+		$this->assertFalse($b->get());
+		$this->assertEquals('0', $b->db());
+		$this->assertTrue($b->validate(''));
+		
+		$b->set(true);
+		$this->assertEquals('1', $b->db());
+		$this->assertTrue($b->get());
+		
+		$b->set(1);
+		$this->assertTrue($b->get());
+		$this->assertEquals('1', $b->db());
+		
+		$b->set(False);
+		$this->assertFalse($b->get());
+		$this->assertEquals('0', $b->db());
+		
+		$b->set(0);
+		$this->assertFalse($b->get());
+		$this->assertEquals('0', $b->db());
+		
+		$b->set('');
+		$this->assertNull($b->get());
+		$this->assertNull($b->db());
+		$this->assertTrue($b->validate(''));
+	}
+	
+	public function testRequiredBool()
+	{
+		$b = new PropertyBool('name');
+		$b->required();
+		
+		$this->assertFalse($b->validate(''));
+		$this->assertEquals('name is required', $b->errors());
+		
+		$b->set('true');
+		$this->assertTrue($b->validate(''));
+	}
+	
+	public function testRequiredSometimesBool()
+	{
+		$b = new PropertyBool('name');
+		$b->required();
+		$b->only('abba');
+		
+		$this->assertFalse($b->validate('abba'));
+		$this->assertEquals('name is required', $b->errors());
+		
+		$this->assertTrue($b->validate('..'));
+		
+		$b->set('true');
+		$this->assertTrue($b->validate('abba'));
+	}
 }
 
 ?>
