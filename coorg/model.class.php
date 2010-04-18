@@ -14,7 +14,7 @@ class Model
 	private $_shadowProperties = array();
 	private $_internalProperties = array();
 	
-	public function __construct()
+	protected function __construct()
 	{
 		$reflClass = new ReflectionClass($this);
 		$docComment = $reflClass->getDocComment();

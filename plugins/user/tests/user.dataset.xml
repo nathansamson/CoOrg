@@ -16,5 +16,25 @@
 	
 	<UserGroup />
 	
-	<UserGroupMember />
+	<UserGroupMember 
+		groupID="__dvorak"
+		userID="dvorak"
+	/>
+	
+	<UserGroupMember 
+		groupID="__azerty"
+		userID="azerty"
+	/>
+	
+	<Acl 
+		groupID="__dvorak"
+		keyID="dvorakAllowed"
+		allowed="1"
+	/>
+	
+	<Acl 
+		groupID="__azerty"
+		keyID="dvorakAllowed"
+		allowed="0"
+	/>
 </dataset>

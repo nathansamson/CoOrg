@@ -32,10 +32,24 @@ function user_install_db()
 
 	$s = DB::prepare($q);
 	$s->execute();
+	
+	
+	$q = 'CREATE TABLE Acl (
+				groupID VARCHAR(26),
+				keyID VARCHAR(32),
+				allowed BOOL,
+				PRIMARY KEY (groupID, keyID)
+			)';
+
+	$s = DB::prepare($q);
+	$s->execute();
 }
 
 function user_delete_db()
 {
+	$s = DB::prepare('DROP TABLE IF EXISTS Acl');
+	$s->execute();
+
 	$s = DB::prepare('DROP TABLE IF EXISTS UserGroupMember');
 	$s->execute();
 

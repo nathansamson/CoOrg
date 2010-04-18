@@ -31,6 +31,16 @@ class User extends DBModel
 		return UserGroupMember::getGroupsWithUser($this->username);
 	}
 	
+	public function grant($key)
+	{
+		$acl = Acl::set('__'.$this->username, $key, true);
+	}
+	
+	public function revoke($key)
+	{
+		$acl = Acl::set('__'.$this->username, $key, false);
+	}
+	
 	public static function getUserByName($username)
 	{
 		$q = DB::prepare('SELECT * FROM User WHERE username=:username');
@@ -157,6 +167,16 @@ class User extends DBModel
 		$this->property('passwordHash')->set(
 		                          $this->createHashedPassword(
 		                                   $this->property('password')->get()));
+
+	}
+	
+	protected function insert()
+	{
+		parent::insert();
+		$group = new UserGroup('__'.$this->username);
+		$group->save();
+		
+		$group->add($this->username);
 	}
 	
 	protected function createHashedPassword($password)

@@ -37,6 +37,16 @@ class UserGroup extends DBModel
 		return UserGroupMember::getAllInGroup($this->name);
 	}
 	
+	public function grant($key)
+	{
+		$acl = Acl::set($this->name, $key, true);
+	}
+	
+	public function revoke($key)
+	{
+		$acl = Acl::set($this->name, $key, false);
+	}
+	
 	public static function from($row)
 	{
 		$group = new UserGroup($row['name']);
