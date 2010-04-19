@@ -17,6 +17,8 @@ class CoOrg {
 	private static $_controllers = array();
 	private static $_models = array();
 	private static $_asides = array();
+	private static $_beforeFilters = array();
+	
 	private static $_site = null;
 	private static $_referer = null;
 	private static $_appdir;
@@ -115,14 +117,17 @@ class CoOrg {
 			}
 		
 			self::$_request = $request;
-			self::$_requestParameters = $params;
-			try
+			self::$_requestParameters = $params;	
+			if ($controllerClass->beforeFilters($action, self::$_beforeFilters, $params))
 			{
-				call_user_func_array(array($controllerClass, $action), $params);
-			}
-			catch (Exception $e)
-			{
-				$controllerClass->systemError($request, self::$_referer, $e);
+				try
+				{
+					call_user_func_array(array($controllerClass, $action), $params);
+				}
+				catch (Exception $e)
+				{
+					$controllerClass->systemError($request, self::$_referer, $e);
+				}
 			}
 			$controllerClass->done();
 		}
@@ -340,6 +345,13 @@ class CoOrg {
 						{
 							$firstPart = substr($sfile, 0, $pos);
 							self::$_models[$firstPart] = $file;
+						}
+						
+						$pos = strrpos($sfile, '.before.php');
+						if ($pos !== false)
+						{
+							$firstPart = substr($sfile, 0, $pos);
+							self::$_beforeFilters[ucfirst($firstPart)] = $file;
 						}
 					}
 					else if (is_dir($file) && $sfile == 'models')

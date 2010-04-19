@@ -64,6 +64,107 @@ class Controller {
 		return CoOrg::createURL($params);
 	}
 	
+	final public function beforeFilters($action, $filters, $parameters)
+	{
+		$reflectionClass = new ReflectionClass($this);
+		$reflectionMethod = $reflectionClass->getMethod($action);
+		$pNamesToValue = array();
+		foreach ($reflectionMethod->getParameters() as $i=>$param)
+		{
+			if ($i < count($parameters))
+			{
+				$pNamesToValue[$param->getName()] = $parameters[$i];
+			}
+			else
+			{
+				$pNamesToValue[$param->getName()] = $param->getDefaultValue();
+			}
+		}
+		
+		$comment = $reflectionMethod->getDocComment();
+		$loaded = array();
+		$lines = explode("\n", $comment);
+	
+		foreach ($lines as $line)
+		{
+			$line = trim($line);
+			if (strlen($line) == 0) continue;
+			if ($line[0] == '*')
+			{
+				$line = trim(substr($line, 1));
+				$parts = explode(' ', $line);
+				$filterName = array_shift($parts);
+				if ($filterName[0] == '@')
+				{
+					$filter = substr($filterName, 1);
+					if ($filter == 'post')
+					{
+						continue;
+					}
+					else if ($filter == 'before')
+					{
+						$params = array();
+						for ($i = 1; $i < count($parts); $i++)
+						{
+							$p = $parts[$i];
+							if ($p[0] == '$')
+							{
+								$params[] = $pNamesToValue[substr($p, 1)];
+							}
+							else
+							{
+								$params[] = $p;
+							}
+						}
+						if (!call_user_func_array(array($this, $parts[0]), $params))
+						{
+							return false;
+						}
+					}
+					
+					if (array_key_exists($filter, $loaded))
+					{
+						$fClass = $loaded[$filter];
+					}
+					else if (array_key_exists($filter, $filters))
+					{
+						include_once $filters[$filter];
+						$fClassName = $filter.'BeforeController';
+						$fClass = new $fClassName;
+						$fClass->init(dirname($filters[$filter]).'/views/', $this->_appPath);
+						$fClass->_smarty = $this->smarty();
+						$loaded[$filter] = $fClass;
+					}
+					else
+					{
+						continue;
+					}
+					$params = array();
+					foreach ($parts as $part)
+					{
+						if ($part[0] == '$')
+						{
+							$params[] = $pNamesToValue[substr($part, 1)];
+						}
+						else
+						{
+							$params[] = $part;
+						}
+					}
+					call_user_func_array(array($fClass, 'in'), $params);
+				}
+			}
+		}
+		foreach ($loaded as $l)
+		{
+			if (!$l->out())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	final public function done()
 	{
 		$this->smarty()->saveState();

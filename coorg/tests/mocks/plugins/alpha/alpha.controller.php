@@ -68,6 +68,39 @@ class AlphaController extends Controller {
 		$this->myActionVar = 'some Value';
 		$this->render('show');
 	}
+
+	/**
+	 * @before aBefore $value $name olajong
+	*/
+	public function beforeFilter($name, $value)
+	{
+		$this->status = 'ran';
+	}
+
+	/**
+	 * @Alpha $value someString $name
+	*/
+	public function advancedBefore($name, $value)
+	{
+		$this->status = 'ran';
+	}
+
+	protected function aBefore($value, $name, $string)
+	{
+		$this->value = $value;
+		$this->name = $name;
+		$this->string = $string;
+		
+		if ($value != 'myStopCode')
+		{
+			return true;
+		}
+		else
+		{
+			$this->status = 'stopped';
+			return false;
+		}
+	}
 }
 
 ?>

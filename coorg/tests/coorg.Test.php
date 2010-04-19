@@ -3,6 +3,7 @@
 class CoOrgTest extends PHPUnit_Framework_TestCase {
 
 	public function setUp() {
+		CoOrgSmarty::$vars = array();
 		CoOrg::setSite('http://www.test.info/');
 		CoOrg::spoofReferer('http://www.test.info/some/part/of/the/site');
 		$config = new Config('config/tests.config.php');
@@ -217,6 +218,44 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$this->alternativeConfig($config);
 		CoOrg::process('/');
 		$this->assertEquals('nl', CoOrgSmarty::$vars['language']);
+	}
+
+	public function testBeforeFilter()
+	{
+		CoOrg::process('alpha/beforeFilter/myName/myValue');
+
+		$this->assertEquals('myValue', CoOrgSmarty::$vars['value']);
+		$this->assertEquals('myName', CoOrgSmarty::$vars['name']);
+		$this->assertEquals('ran', CoOrgSmarty::$vars['status']);
+		$this->assertEquals('olajong', CoOrgSmarty::$vars['string']);
+	}
+
+	public function testBeforeFilterStops()
+	{
+		CoOrg::process('alpha/beforeFilter/myName/myStopCode');
+
+		$this->assertEquals('myStopCode', CoOrgSmarty::$vars['value']);
+		$this->assertEquals('myName', CoOrgSmarty::$vars['name']);
+		$this->assertEquals('stopped', CoOrgSmarty::$vars['status']);
+	}
+
+	public function testAdvancedBeforeFilter()
+	{
+		CoOrg::process('alpha/advancedBefore/myName/myValue');
+
+		$this->assertEquals('myValue', CoOrgSmarty::$vars['value']);
+		$this->assertEquals('myName', CoOrgSmarty::$vars['name']);
+		$this->assertEquals('someString', CoOrgSmarty::$vars['arbitraryValue']);
+		$this->assertEquals('ran', CoOrgSmarty::$vars['status']);
+	}
+
+	public function testAdvancedBeforeFilterStops()
+	{
+		CoOrg::process('alpha/advancedBefore/myName/myStopCode');
+
+		$this->assertEquals('myStopCode', CoOrgSmarty::$vars['value']);
+		$this->assertEquals('myName', CoOrgSmarty::$vars['name']);
+		$this->assertEquals('stopped', CoOrgSmarty::$vars['status']);
 	}
 	
 	private function alternativeConfig($config)
