@@ -1,16 +1,36 @@
 <?php
 
+class MockController extends Controller
+{
+	public function render($t, $app = false)
+	{
+		if ($t == 'fake')
+		{
+			CoOrgSmarty::fakeRender('extends:base.html.tpl|'.$t.'.html.tpl');
+		}
+		else
+		{
+			parent::render($t, $app);
+		}
+	}
+}
+
 class CoOrgControllerTest extends CoOrgModelTest
 {
 	public function setUp()
 	{
 		parent::setUp();
+		Session::destroy();
+		if ($s = UserSession::get())
+		{
+			$s->delete();
+		}
 		CoOrg::setSite('http://www.test.info/');
 		CoOrg::spoofReferer('http://www.test.info/some/part/of/the/site');
 		$config = new Config('config/tests.config.php');
 		$config->set('enabled_plugins', array('user'));
 		CoOrg::init($config, 'app', 'plugins');
-		CoOrgSmarty::clearAll();		
+		CoOrgSmarty::clearAll();
 	}
 
 	protected function request($request, $postParams = array())

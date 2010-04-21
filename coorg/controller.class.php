@@ -93,7 +93,7 @@ class Controller {
 			{
 				$line = trim(substr($line, 1));
 				$parts = explode(' ', $line);
-				$filterName = array_shift($parts);
+				$filterName = trim(array_shift($parts));
 				if ($filterName[0] == '@')
 				{
 					$filter = substr($filterName, 1);
@@ -121,7 +121,7 @@ class Controller {
 							return false;
 						}
 					}
-					
+
 					if (array_key_exists($filter, $loaded))
 					{
 						$fClass = $loaded[$filter];

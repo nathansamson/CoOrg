@@ -36,8 +36,8 @@ class BlogControllerTest extends CoOrgControllerTest
 	public function testCreateNotLoggedIn()
 	{
 		$this->request('blog/create');
-		$this->assertFlashError('You need to be logged in to create a blog');
-		$this->assertRedirected('user/login');
+		$this->assertFlashError('You should be logged in to view this page');
+		$this->assertRendered('login');
 	}
 	
 	public function testSave()
@@ -59,8 +59,8 @@ class BlogControllerTest extends CoOrgControllerTest
 		$this->request('blog/save', array('title' => 'My Blog Title',
 		                                  'text' => 'My blog contents'));
 
-		$this->assertFlashError('You need to be logged in to create a blog');
-		$this->assertRedirected('user/login');
+		$this->assertFlashError('You should be logged in to view this page');
+		$this->assertRendered('login');
 	}
 	
 	public function testSaveFailure()

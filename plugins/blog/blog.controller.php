@@ -2,6 +2,7 @@
 
 class BlogController extends Controller
 {
+	private $_blog;
 
 	public function index()
 	{
@@ -9,6 +10,10 @@ class BlogController extends Controller
 		$this->render('latest');
 	}
 
+	/**
+	 * @Acl allow blog-writer
+	 * @Acl allow admin
+	*/
 	public function create()
 	{
 		if (UserSession::get())
@@ -25,6 +30,8 @@ class BlogController extends Controller
 	
 	/**
 	 * @post
+	 * @Acl allow blog-writer
+	 * @Acl allow admin
 	*/
 	public function save($title, $text)
 	{
@@ -54,19 +61,13 @@ class BlogController extends Controller
 		}
 	}
 	
+	/**
+	 * @before get $year $month $day $id
+	*/
 	public function show($year, $month, $day, $id)
 	{
-		$blog = Blog::getBlog($year, $month, $day, $id);
-		if ($blog)
-		{
-			$this->blog = $blog;
-			$this->render('show');
-		}
-		else
-		{
-			$this->error('Blog item is not found');
-			$this->notFound();
-		}
+		$this->blog = $this->_blog;
+		$this->render('show');
 	}
 	
 	public function edit($year, $month, $day, $id)
@@ -113,6 +114,18 @@ class BlogController extends Controller
 			$this->error('Blog item is not found');
 			$this->notFound();
 		}
+	}
+	
+	protected function get($year, $month, $day, $id)
+	{
+		$this->_blog = Blog::getBlog($year, $month, $day, $id);
+		if (!$this->_blog)
+		{
+			$this->error('Blog item is not found');
+			$this->notFound();
+			return false;
+		}
+		return true;
 	}
 }
 

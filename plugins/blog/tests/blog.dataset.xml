@@ -13,6 +13,21 @@
 	  passwordHash="5165720aa322b674d82de4820b822b3159d0ede8ee9c09c7277fb07d34592fa446eff14c92a932d858bc637b4ec113c5258ec4d6173d960dbb1a49359d8dfd32"
 	/>
 
+	<UserGroup	
+		name="__nathan"
+	/>
+
+	<UserGroupMember
+		groupID="__nathan"
+		userID="nathan"
+	/>
+
+	<Acl
+		groupID="__nathan"
+		keyID="blog-writer"
+		allowed="1"
+	/>
+
 	<Blog 
 	   ID="some-blog"
 	   datePosted="2010-04-10"

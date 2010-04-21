@@ -233,9 +233,20 @@ class CoOrg {
 		if ($controllerID == null) $controllerID = strtolower($controllerName);
 		if ($request == null) $request = $controllerID;
 
-		if (array_key_exists($controllerID, self::$_controllers)) {
-			include_once self::$_controllers[$controllerID]['fullpath'];
-			$controllerClassName = $controllerName.'Controller';
+		if (array_key_exists($controllerID, self::$_controllers) ||
+		    (class_exists($controllerName.'Controller') && substr($controllerName,0, 4) == 'Mock')) {
+
+			$mock = false;
+		    if (class_exists($controllerName.'Controller') && substr($controllerName,0, 4) == 'Mock')
+		    {
+		    	$mock = true;
+		    	$controllerClassName = $controllerID.'Controller';
+		    }
+		    else
+		    {
+				include_once self::$_controllers[$controllerID]['fullpath'];
+				$controllerClassName = $controllerName.'Controller';
+			}
 
 			$controllerInfo = new ReflectionClass($controllerClassName);
 			
@@ -252,8 +263,15 @@ class CoOrg {
 			    $methodInfo->isPublic())
 			{
 				$controllerClass = new $controllerClassName;
-				$path = dirname(self::$_controllers[$controllerID]['fullpath']);
-				$controllerClass->init($path.'/views/', self::$_appdir);
+				if (!$mock)
+				{
+					$path = dirname(self::$_controllers[$controllerID]['fullpath']);
+					$controllerClass->init($path.'/views/', self::$_appdir);
+				}
+				else
+				{
+					$controllerClass->init('', self::$_appdir);
+				}
 				
 				if ($params)
 				{

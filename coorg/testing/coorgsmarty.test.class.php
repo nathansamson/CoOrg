@@ -50,6 +50,11 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 	public function saveState()
 	{
 	}
+
+	public function fakeRender($tpl)
+	{
+		self::$renderedTemplate = $tpl;
+	}
 }
 
 

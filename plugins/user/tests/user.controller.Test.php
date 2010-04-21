@@ -77,9 +77,11 @@ class UserControllerTest extends CoOrgControllerTest
 	
 	public function testLogout()
 	{
-		$this->assertNotNull(UserSession::get());
+		$this->assertNull(UserSession::get());
 		$session = new UserSession('Initial User', 'pass');
 		$session->save();
+
+		$this->assertNotNull(UserSession::get());
 	
 		$this->request('user/logout');
 		$this->assertFlashNotice('You are now logged out');
