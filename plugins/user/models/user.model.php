@@ -88,7 +88,7 @@ class User extends DBModel
 			}
 			if ($error)
 			{
-				throw new ValidationException();
+				throw new ValidationException($this);
 			}
 		}
 		else if ($for == 'update')
@@ -113,7 +113,7 @@ class User extends DBModel
 			}
 			if ($error)
 			{
-				throw new ValidationException();
+				throw new ValidationException($this);
 			}
 		}
 		else if ($for == 'updatePassword')
@@ -121,13 +121,13 @@ class User extends DBModel
 			if (!$this->checkPassword($this->property('oldPassword')->get()))
 			{
 				$this->oldPassword_error = 'Password is wrong';
-				throw new ValidationException();
+				throw new ValidationException($this);
 			}
 			if ($this->property('password')->get() !=
 			    $this->property('passwordConfirmation')->get())
 			{
 				$this->passwordConfirmation_error = 'Passwords do not match';
-				throw new ValidationException();
+				throw new ValidationException($this);
 			}
 		}
 	}

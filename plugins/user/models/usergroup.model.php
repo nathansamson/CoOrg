@@ -76,7 +76,7 @@ class UserGroup extends DBModel
 		if ($for == 'insert' && self::getGroupByName($this->name) != null)
 		{
 			$this->name_error = 'Group name is already used';
-			throw new ValidationException();
+			throw new ValidationException($this);
 		}
 	}
 }

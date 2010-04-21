@@ -99,6 +99,11 @@ class CoOrg {
 			{
 				I18n::setLanguage(self::$_config->get('defaultLanguage'));
 			}
+			else
+			{
+				// Mainly for tests...
+				I18n::setLanguage('');
+			}
 		}
 		
 		try
@@ -201,6 +206,12 @@ class CoOrg {
 		}
 		
 		return $s;
+	}
+
+	public static function getLanguage()
+	{
+		$l = I18n::getLanguage();
+		return ($l == '' ? 'en' : $l);
 	}
 	
 	/* == These functions are only used for testing purposes == */

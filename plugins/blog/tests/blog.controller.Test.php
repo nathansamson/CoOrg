@@ -163,6 +163,84 @@ class BlogControllerTest extends CoOrgControllerTest
 		$this->assertFlashError('Blog item is not found');
 		$this->assertRendered('notfound');
 	}
+
+	public function testTranslate()
+	{
+		$this->login('nathan');
+		$this->request('blog/translate/2010/04/10/some-other-blog/en');
+		
+		$this->assertVarSet('originalBlog');
+		$this->assertVarSet('translatedBlog');
+		$this->assertRendered('translate');
+	}
+
+	public function testTranslateNotFound()
+	{
+		$this->login('nathan');
+		$this->request('blog/translate/2010/04/12/some-other-blog/en');
+
+		$this->assertFlashError('Blog item is not found');
+		$this->assertRendered('notfound');
+	}
+
+	public function testTranslateWrongAuth()
+	{
+		$this->login('nele');
+		$this->request('nl/blog/translate/2010/04/10/some-other-blog/en');
+
+		$this->assertFlashError('You don\'t have the rights to view this page');
+		$this->assertRedirected('/');
+	}
+
+	public function testTranslateSave()
+	{
+		$this->login('nathan');
+		$this->request('nl/blog/translateSave', array('year'=>2010,
+		                                       'month' => '04',
+		                                        'day' => '10',
+		                                        'id' => 'some-other-blog',
+		                                        'fromLanguage' => 'en',
+		                                        'title' => 'Vertaald',
+		                                        'text' => 'Vertaalde tekst'));
+
+		
+		$this->assertFlashNotice('Your translation of the blog is saved');
+		$this->assertRedirected('blog/show/2010/04/10/vertaald');
+
+		$this->assertNotNull(Blog::getBlog(2010, 4, 10, 'vertaald', 'nl'));
+	}
+
+	public function testTranslateSaveError()
+	{
+		$this->login('nathan');
+		$this->request('nl/blog/translateSave', array('year'=>2010,
+		                                       'month' => '04',
+		                                        'day' => '10',
+		                                        'id' => 'some-other-blog',
+		                                        'fromLanguage' => 'en',
+		                                        'title' => 'Vertaald',
+		                                        'text' => ''));
+
+		$this->assertFlashError('Blog translation is not saved');
+		$this->assertVarSet('originalBlog');
+		$this->assertVarSet('translatedBlog');
+		$this->assertRendered('translate');
+	}
+
+	public function testTranslateSaveWrongAuth()
+	{
+		$this->login('nele');
+		$this->request('nl/blog/translateSave', array('year'=>2010,
+		                                       'month' => '04',
+		                                        'day' => '10',
+		                                        'id' => 'some-other-blog',
+		                                        'fromLanguage' => 'en',
+		                                        'title' => 'Vertaald',
+		                                        'text' => 'Vertaalde tekst'));
+
+		$this->assertFlashError('You don\'t have the rights to view this page');
+		$this->assertRedirected('/');
+	}
 	
 	private function login($u = 'nathan')
 	{

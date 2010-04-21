@@ -63,12 +63,12 @@ class UserSession extends Model
 		if ($user == null)
 		{
 			$this->username_error = 'Incorrect username';
-			throw new ValidationException();
+			throw new ValidationException($this);
 		}
 		if (!$user->checkPassword($this->property('password')->get()))
 		{
 			$this->password_error = 'Incorrect password';
-			throw new ValidationException();
+			throw new ValidationException($this);
 		}
 	}
 }

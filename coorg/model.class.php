@@ -181,7 +181,7 @@ class Model
 				$error = true;
 			}
 		}
-		if ($error) throw new ValidationException();
+		if ($error) throw new ValidationException($this);
 	}
 	
 	protected function dbproperties()
@@ -343,6 +343,13 @@ class DBModel extends Model
 
 class ValidationException extends Exception
 {
+	public $instance = null;
+
+	public function __construct($instance)
+	{
+		parent::__construct('Validating an object failed');
+		$this->instance = $instance;
+	}
 }
 
 ?>

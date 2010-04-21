@@ -14,23 +14,24 @@ class BlogTest extends CoOrgModelTest
 		$month = date('m');
 		$day = date('d');
 	
-		$blog = new Blog('My Title', 'Nathan', 'My Blog contents.');
+		$blog = new Blog('My Title', 'Nathan', 'My Blog contents.', 'en');
 		$time = time();
 		$blog->save();
 		
-		$blog = Blog::getBlog($year, $month, $day, $blog->ID);
+		$blog = Blog::getBlog($year, $month, $day, $blog->ID, 'en');
 
 		$this->assertNotNull($blog);
 		$this->assertEquals('My Title', $blog->title);
 		$this->assertEquals('Nathan', $blog->authorID);
 		$this->assertEquals('My Blog contents.', $blog->text);
+		$this->assertEquals('en', $blog->language);
 		$this->assertTrue(abs($time - $blog->timePosted) <= 2);
 		$this->assertNull($blog->timeEdited);
 	}
 	
 	public function testTitleMissing()
 	{
-		$blog = new Blog('', 'Nathan', 'My Blog contents.');
+		$blog = new Blog('', 'Nathan', 'My Blog contents.', 'en');
 		
 		try
 		{
@@ -45,7 +46,7 @@ class BlogTest extends CoOrgModelTest
 	
 	public function testAuthorMissing()
 	{
-		$blog = new Blog('Title', '', 'My Blog contents.');
+		$blog = new Blog('Title', '', 'My Blog contents.', 'en');
 		
 		try
 		{
@@ -60,7 +61,7 @@ class BlogTest extends CoOrgModelTest
 	
 	public function testTextMissing()
 	{
-		$blog = new Blog('Title', 'Nathan', '');
+		$blog = new Blog('Title', 'Nathan', '', 'en');
 		
 		try
 		{
@@ -75,7 +76,7 @@ class BlogTest extends CoOrgModelTest
 	
 	public function testLatest()
 	{
-		$blogs = Blog::latest(3);
+		$blogs = Blog::latest(3, 'en');
 		$this->assertEquals(3, count($blogs));
 		$this->assertEquals('XYZ', $blogs[0]->title);
 		$this->assertEquals('Some Blog', $blogs[1]->title);
@@ -84,14 +85,14 @@ class BlogTest extends CoOrgModelTest
 	
 	public function testUpdate()
 	{
-		$blog = Blog::getBlog('2010', '4', '9', 'blog-post');
+		$blog = Blog::getBlog('2010', '4', '9', 'blog-post', 'en');
 		$blog->title = 'My Blog Post';
 		$blog->text = 'Some New Text';
 		
 		$time = time();
 		$blog->save();
 		
-		$blog = Blog::getBlog('2010', '4', '9', 'blog-post');
+		$blog = Blog::getBlog('2010', '4', '9', 'blog-post', 'en');
 		$this->assertEquals('nathan', $blog->authorID);
 		$this->assertEquals('2010-04-09', date('Y-m-d', $blog->datePosted));
 		$this->assertEquals('2010-04-09 14:20:20', date('Y-m-d H:i:s', $blog->timePosted));
@@ -102,7 +103,7 @@ class BlogTest extends CoOrgModelTest
 	
 	public function testUpdateNoTitle()
 	{
-		$blog = Blog::getBlog('2010', '4', '9', 'blog-post');
+		$blog = Blog::getBlog('2010', '4', '9', 'blog-post', 'en');
 		$blog->title = '';
 		$blog->text = 'Some New Text';
 		
@@ -119,7 +120,7 @@ class BlogTest extends CoOrgModelTest
 	
 	public function testUpdateNoText()
 	{
-		$blog = Blog::getBlog('2010', '4', '9', 'blog-post');
+		$blog = Blog::getBlog('2010', '4', '9', 'blog-post', 'en');
 		$blog->text = '';
 		
 		try
@@ -130,6 +131,43 @@ class BlogTest extends CoOrgModelTest
 		catch (ValidationException $e)
 		{
 			$this->assertEquals('Content is required', $blog->text_error);
+		}
+	}
+
+	public function testTranslate()
+	{
+		$blog = Blog::getBlog('2010', '4', '10', 'some-other-blog', 'en');
+		$this->assertFalse($blog->translatedIn('nl'));
+		$this->assertEquals(array(), $blog->translations());
+		
+		$t = $blog->translate('nathan', 'Vertaalde blog', 'Vertaalde inhoud', 'nl');
+		$this->assertTrue($blog->translatedIn('nl'));
+		$translations = $blog->translations();
+		$this->assertEquals(1, count($translations));
+
+		$tR = Blog::getBlog('2010', '4', '10', $t->ID, 'nl');
+		$this->assertNotNull($tR);
+		$this->assertEquals($tR, $translations['nl']);
+		$this->assertEquals('Vertaalde blog', $tR->title);
+		$this->assertEquals('Vertaalde inhoud', $tR->text);
+		$this->assertTrue(abs($tR->timePosted - time()) <= 2);
+		$this->assertEquals('nathan', $tR->authorID);
+		$this->assertEquals('some-other-blog', $tR->parentID);
+		$this->assertEquals('en', $tR->parentLanguage);
+	}
+
+	public function testTranslateTwice()
+	{	
+		$blog = Blog::getBlog('2010', '4', '10', 'some-blog', 'en');
+
+		try
+		{
+			$blog->translate('nathan', 'Vertaalde blog', 'Vertaalde inhoud', 'nl');
+			$this->fail('Expected exception');
+		}
+		catch (ValidationException $e)
+		{
+			$this->assertEquals('This blog is already translated in this language', $e->instance->text_error);
 		}
 	}
 }
