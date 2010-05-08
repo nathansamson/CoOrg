@@ -9,7 +9,7 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$config = new Config('config/tests.config.php');
 		$config->set('aside/main', array('home/alpha'));
 		CoOrg::init($config, 'coorg/tests/mocks/app', 'coorg/tests/mocks/plugins');
-		I18n::setLanguage(null);
+		I18n::setLanguage('');
 	}
 	
 	public function tearDown() {

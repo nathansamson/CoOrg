@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @primaryproperty name String(t('Name'), 26); required
+ * @property primary; name String(t('Name'), 26); required
  * @property system Bool('System group'); required
 */
 class UserGroup extends DBModel

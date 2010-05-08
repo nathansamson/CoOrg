@@ -99,11 +99,6 @@ class CoOrg {
 			{
 				I18n::setLanguage(self::$_config->get('defaultLanguage'));
 			}
-			else
-			{
-				// Mainly for tests...
-				I18n::setLanguage('');
-			}
 		}
 		
 		try

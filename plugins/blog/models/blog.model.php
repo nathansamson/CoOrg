@@ -2,9 +2,9 @@
 
 
 /**
- * @primaryproperty ID String('Title', 256); required
- * @primaryproperty datePosted Date('Date posted'); required
- * @primaryproperty language String('Language', 6); required
+ * @property primary; ID String('Title', 256); required
+ * @property primary; datePosted Date('Date posted'); required
+ * @property primary; language String('Language', 6); required
  * @property title String('Title', 256); required
  * @property authorID String('Author', 64); required 
  * @property text String('Content'); required
@@ -36,7 +36,7 @@ class Blog extends DBModel
 
 	public function translatedIn($l)
 	{
-		return self::translatedInWithParams($this->ID, $this->property('datePosted')->db(), $l);
+		return self::translatedInWithParams($this->ID, $this->datePosted_db, $l);
 	}
 
 	public function translations()
@@ -45,7 +45,7 @@ class Blog extends DBModel
 		                     WHERE datePosted = :postDate
 		                       AND
 		                           parentID=:ID');
-		$q->execute(array('postDate' => $this->property('datePosted')->db(),
+		$q->execute(array('postDate' => $this->datePosted_db,
 		                  'ID' => $this->ID));
 
 		$trs = array();
@@ -102,15 +102,15 @@ class Blog extends DBModel
 	
 	protected function beforeInsert()
 	{
-		$this->property('ID')->set($this->normalizeTitle($this->title));
-		if ($this->property('datePosted')->db() == null)
-			$this->property('datePosted')->set(time());
-		$this->property('timePosted')->set(time());
+		$this->ID = $this->normalizeTitle($this->title);
+		if ($this->datePosted_db == null)
+			$this->datePosted = time();
+		$this->timePosted = time();
 	}
 	
 	protected function beforeUpdate()
 	{
-		$this->property('timeEdited')->set(time());
+		$this->timeEdited = time();
 	}
 
 	protected function validate($for)
@@ -119,7 +119,7 @@ class Blog extends DBModel
 
 		if ($for == 'insert' && $this->parentID != '')
 		{
-			if (self::translatedInWithParams($this->parentID, $this->property('datePosted')->db(), $this->language))
+			if (self::translatedInWithParams($this->parentID, $this->datePosted_db, $this->language))
 			{
 				$this->text_error = 'This blog is already translated in this language';
 				throw new ValidationException($this);
@@ -130,11 +130,11 @@ class Blog extends DBModel
 	private static function produceBlog($row)
 	{
 		$blog = new Blog($row['title'], $row['authorID'], $row['text'], $row['language'], $row['datePosted']);
-		$blog->property('ID')->set($row['ID']);
-		$blog->property('timePosted')->set($row['timePosted']);
-		$blog->property('timeEdited')->set($row['timeEdited']);
-		$blog->property('parentID')->set($row['parentID']);
-		$blog->property('parentLanguage')->set($row['parentLanguage']);
+		$blog->ID = $row['ID'];
+		$blog->timePosted = $row['timePosted'];
+		$blog->timeEdited = $row['timeEdited'];
+		$blog->parentID = $row['parentID'];
+		$blog->parentLanguage = $row['parentLanguage'];
 		$blog->setSaved();
 		return $blog;
 	}

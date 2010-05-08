@@ -2,7 +2,7 @@
 
 /**
  * @property username String('Username', 64); required
- * @shadowproperty password String('Password'); required
+ * @property password String('Password'); required
 */
 class UserSession extends Model
 {
@@ -65,7 +65,7 @@ class UserSession extends Model
 			$this->username_error = 'Incorrect username';
 			throw new ValidationException($this);
 		}
-		if (!$user->checkPassword($this->property('password')->get()))
+		if (!$user->checkPassword($this->password))
 		{
 			$this->password_error = 'Incorrect password';
 			throw new ValidationException($this);

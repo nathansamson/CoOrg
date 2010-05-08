@@ -1,12 +1,12 @@
 <?php
 
 /**
- * @primaryproperty name String('Name', 64); required
+ * @property primary; name String('Name', 64); required
  * @property description String('Description');
  * @property email Email('Email'); required
  * @property conditional Integer('Conditional value'); required only('special') 
- * @shadowproperty shadowProperty String('Shadow'); required only('insert')
- * @internalproperty rot13name String('Name', 64); required
+ * @property writeonly; shadowProperty String('Shadow'); required only('insert')
+ * @property protected; rot13name String('Name', 64); required
 */
 class MockModel extends DBModel
 {
@@ -25,7 +25,7 @@ class MockModel extends DBModel
 	
 	public function checkInternalP($p)
 	{
-		return $p == $this->property('rot13name', $p)->get();
+		return $p == $this->rot13name;
 	}
 	
 	public static function getByName($name)
@@ -36,7 +36,7 @@ class MockModel extends DBModel
 		if ($row = $q->fetch(PDO::FETCH_ASSOC))
 		{
 			$user = new MockModel($row['name'], $row['description'], $row['email']);
-			$user->property('rot13name')->set($row['rot13name']);
+			$user->rot13name = $row['rot13name'];
 			$user->setSaved();
 			return $user;
 		}
@@ -49,12 +49,12 @@ class MockModel extends DBModel
 	
 	protected function beforeInsert()
 	{
-		$this->property('rot13name')->set(str_rot13($this->name));
+		$this->rot13name = str_rot13($this->name);
 	}
 	
 	protected function beforeUpdate()
 	{
-		$this->property('rot13name')->set(str_rot13($this->name));
+		$this->rot13name = str_rot13($this->name);
 	}
 }
 
@@ -211,6 +211,7 @@ class ModelTest extends CoOrgModelTest
 		$n->save();
 		
 		$n = MockModel::getByName('abczyx');
+		$this->assertNotNull($n);
 		$this->assertTrue($n->checkInternalP('nopmlk'));
 		
 		$n->name = 'nopmlk';
@@ -227,6 +228,7 @@ class ModelTest extends CoOrgModelTest
 		$n->save();
 		
 		$n = MockModel::getByName('abczyx');
+		$this->assertNotNull($n);
 		$n->save();
 		
 		$n = MockModel::getByName('abczyx');

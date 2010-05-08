@@ -1,15 +1,15 @@
 <?php
 
 /**
- * @primaryproperty username String(t('Username'), 24); required
+ * @property primary; username String(t('Username'), 24); required
  * @property email Email(t('Email')); required
  * @property firstName String(t('First Name'), 64);
  * @property lastName String(t('Last Name'), 64);
- * @shadowproperty password String(t('Password')); required only('insert')
- * @shadowproperty passwordConfirmation String(t('Password confirmation')); required only('insert')
- * @shadowproperty oldPassword String(t('Password')); required only('updatePassword')
- * @internalproperty passwordHash String('Password hash', 128); required
- * @internalproperty passwordHashKey String('Pasword hash key', 32); required
+ * @property writeonly; password String(t('Password')); required only('insert')
+ * @property writeonly; passwordConfirmation String(t('Password confirmation')); required only('insert')
+ * @property writeonly; oldPassword String(t('Password')); required only('updatePassword')
+ * @property protected; passwordHash String('Password hash', 128); required
+ * @property protected; passwordHashKey String('Pasword hash key', 64); required
 */
 class User extends DBModel
 {
@@ -23,7 +23,7 @@ class User extends DBModel
 	public function checkPassword($password)
 	{
 		return $this->createHashedPassword($password) ==
-		       $this->property('passwordHash')->get();
+		       $this->passwordHash;
 	}
 	
 	public function groups()
@@ -49,10 +49,10 @@ class User extends DBModel
 		if ($row = $q->fetch(PDO::FETCH_ASSOC))
 		{
 			$user = new User($row['username'], $row['email']);
-			$user->property('firstName')->set($row['firstName']);
-			$user->property('lastName')->set($row['lastName']);
-			$user->property('passwordHash')->set($row['passwordHash']);
-			$user->property('passwordHashKey')->set($row['passwordHashKey']);
+			$user->firstName = $row['firstName'];
+			$user->lastName = $row['lastName'];
+			$user->passwordHash = $row['passwordHash'];
+			$user->passwordHashKey = $row['passwordHashKey'];
 			$user->setSaved();
 			return $user;
 		}
@@ -80,8 +80,7 @@ class User extends DBModel
 				$this->email_error = '%n is already taken';
 				$error = true;
 			}
-			if ($this->property('password')->get() != 
-			    $this->property('passwordConfirmation')->get())
+			if ($this->password != $this->passwordConfirmation)
 			{
 				$this->passwordConfirmation_error = 'Passwords are not equal';
 				$error = true;
@@ -94,20 +93,20 @@ class User extends DBModel
 		else if ($for == 'update')
 		{
 			$error = false;
-			if ($this->property('username')->changed() && 
+			if ($this->username_changed && 
 			    $this->usernameExists($this->username))
 			{
 				$this->username_error = '%n is already taken';
 				$error = true;
 			}
 			
-			if ($this->property('email')->changed() && 
+			if ($this->email_changed && 
 			    $this->emailExists($this->email))
 			{
 				$this->email_error = '%n is already taken';
 				$error = true;
 			}
-			if ($this->property('password')->get() != null)
+			if ($this->password != null)
 			{
 				$this->validate('updatePassword');
 			}
@@ -118,13 +117,12 @@ class User extends DBModel
 		}
 		else if ($for == 'updatePassword')
 		{
-			if (!$this->checkPassword($this->property('oldPassword')->get()))
+			if (!$this->checkPassword($this->oldPassword))
 			{
 				$this->oldPassword_error = 'Password is wrong';
 				throw new ValidationException($this);
 			}
-			if ($this->property('password')->get() !=
-			    $this->property('passwordConfirmation')->get())
+			if ($this->password != $this->passwordConfirmation)
 			{
 				$this->passwordConfirmation_error = 'Passwords do not match';
 				throw new ValidationException($this);
@@ -150,23 +148,20 @@ class User extends DBModel
 	
 	protected function update()
 	{
-		if ($this->property('password')->get() != null)
+		if ($this->password != null)
 		{
-			$this->property('passwordHash')->set(
-			   $this->createHashedPassword($this->property('password')->get()));
+			$this->passwordHash =
+			   $this->createHashedPassword($this->password);
 		}
 		parent::update();
 	}
 	
 	protected function beforeInsert()
 	{
-		$this->property('passwordHashKey')->set(
-		                       md5(uniqid('azerty1234', true)) . 
-		                       md5(uniqid('qwerty1989', true)));
+		$this->passwordHashKey = md5(uniqid('azerty1234', true)) . 
+		                         md5(uniqid('qwerty1989', true));
 
-		$this->property('passwordHash')->set(
-		                          $this->createHashedPassword(
-		                                   $this->property('password')->get()));
+		$this->passwordHash = $this->createHashedPassword($this->password);
 
 	}
 	
@@ -181,7 +176,7 @@ class User extends DBModel
 	
 	protected function createHashedPassword($password)
 	{
-		return hash('sha512', $this->property('passwordHashKey')->get().$password);
+		return hash('sha512', $this->passwordHashKey.$password);
 	}
 }
 

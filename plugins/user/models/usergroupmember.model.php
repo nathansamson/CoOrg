@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @primaryproperty groupID String('group', 26); required
- * @primaryproperty userID String('user', 24); required
+ * @property primary; groupID String('group', 26); required
+ * @property primary; userID String('user', 24); required
 */
 class UserGroupMember extends DBModel
 {

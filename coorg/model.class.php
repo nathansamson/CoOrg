@@ -9,89 +9,23 @@ require_once 'coorg/properties/bool.class.php';
 
 class Model
 {
+	private static $_modelInfo = array();
+
 	private $_properties = array();
-	private $_primaries = array();
-	private $_shadowProperties = array();
-	private $_internalProperties = array();
 	
 	protected function __construct()
 	{
-		$reflClass = new ReflectionClass($this);
-		$docComment = $reflClass->getDocComment();
-		
-		$lines = explode("\n", $docComment);
-		foreach ($lines as $line)
+		$class = get_class($this);
+		if (!array_key_exists($class, self::$_modelInfo))
 		{
-			$line = trim($line);
-			if ($line == '') continue;
-			if ($line[0] == '*')
-			{
-				$line = trim(substr($line, 1));
-			}
-			if (preg_match('/^@(internal|shadow|primary)?property/', $line))
-			{
-				$shadow = false;
-				$primary = false;
-				$internal = false;
-				if (strpos($line, '@property') === 0)
-				{
-					$pDesc = trim(substr($line, strlen('@property')));
-				}
-				else if (strpos($line, '@shadowproperty') === 0)
-				{
-					$shadow = true;
-					$pDesc = trim(substr($line, strlen('@shadowproperty')));
-				}
-				else if (strpos($line, '@internalproperty') === 0)
-				{
-					$internal = true;
-					$pDesc = trim(substr($line, strlen('@internalproperty')));
-				}
-				else if (strpos($line, '@primaryproperty') === 0)
-				{
-					$primary = true;
-					$pDesc = trim(substr($line, strlen('@primaryproperty')));
-				}
-				else
-				{
-					var_dump($line);
-					die();
-				}
-				$desc = explode(';', $pDesc, 2);
-				$descFirst = explode(' ', $desc[0], 2);
-				
-				$extras = explode(' ', $desc[1]);
-				$name = $descFirst[0];
-				$construct = $descFirst[1];
-				
-				$p = eval('return new Property' . $construct . ';');
-				foreach ($extras as $e)
-				{
-					$e = trim($e);
-					if ($e == '') continue;
-					if ($e[strlen($e)-1] != ')')
-					{
-						$e .= '()';
-					}
-					eval('$p->'.$e.';');
-				}
-				if ($shadow)
-				{
-					$this->_shadowProperties[$name] = $p;
-				}
-				else if ($internal)
-				{
-					$this->_internalProperties[$name] = $p;
-				}
-				else
-				{
-					$this->_properties[$name] = $p;
-				}
-				if ($primary)
-				{
-					$this->_primaries[$name] = $p;
-				}
-			}
+			self::$_modelInfo[$class] = array('properties' => self::parseProperties($class));
+		}
+
+		foreach (self::$_modelInfo[$class]['properties'] as $name=>$propertyInfo)
+		{
+			$info = $propertyInfo;
+			$info['property'] = clone $propertyInfo['property'];
+			$this->_properties[$name] = $info;
 		}
 	}
 	
@@ -115,11 +49,20 @@ class Model
 		
 		if (array_key_exists($name, $this->_properties))
 		{
-			return $this->_properties[$name]->$fnc();
-		}
-		else if (array_key_exists($name, $this->_shadowProperties) && $fnc != 'get')
-		{
-			return $this->_shadowProperties[$name]->$fnc();
+			$propertyInfo = $this->_properties[$name];
+
+			if ($propertyInfo['protected'] || 
+			    ($propertyInfo['writeonly'] && $fnc == 'get'))
+			{
+				// Check if calling function inherits from Model.
+				$bt = debug_backtrace();
+				if (! $bt[1]['object'] instanceof $propertyInfo['class'])
+				{
+					throw new Exception('You are not allowed to do this.');
+				}
+			}
+			
+			return $propertyInfo['property']->$fnc();
 		}
 		else
 		{
@@ -143,11 +86,8 @@ class Model
 		
 		if (array_key_exists($name, $this->_properties))
 		{
-			$this->_properties[$name]->$fnc($value);
-		}
-		else if (array_key_exists($name, $this->_shadowProperties))
-		{
-			$this->_shadowProperties[$name]->$fnc($value);
+			// Fix Access
+			$this->_properties[$name]['property']->$fnc($value);
 		}
 		else
 		{
@@ -155,28 +95,12 @@ class Model
 		}
 	}
 	
-	protected function property($name)
-	{
-		$allProperties = array_merge($this->_properties,
-		                             $this->_shadowProperties,
-		                             $this->_internalProperties);
-		
-		if (array_key_exists($name, $allProperties))
-		{
-			return $allProperties[$name];
-		}
-		else
-		{
-			throw new Exception('Property "'.$name.'" not found');
-		}
-	}
-	
 	protected function validate($type)
 	{
 		$error = false;
-		foreach (array_merge($this->_properties, $this->_shadowProperties) as $p)
+		foreach ($this->_properties as $k=>$p)
 		{
-			if (!$p->validate($type))
+			if (!$p['property']->validate($type))
 			{
 				$error = true;
 			}
@@ -186,17 +110,95 @@ class Model
 	
 	protected function dbproperties()
 	{
-		return array_merge($this->_properties, $this->_internalProperties);
+		return array_filter($this->_properties, array('Model', 'filterDB'));
 	}
 	
 	protected function primaries()
 	{
-		return $this->_primaries;
+		return array_filter($this->_properties, array('Model', 'filterPrimary'));
 	}
 	
 	protected function properties()
 	{
 		return $this->_properties;
+	}
+
+	static private function parseProperties($class)
+	{
+		$propertyInfo = array();
+		$reflClass = new ReflectionClass($class);
+		$docComment = $reflClass->getDocComment();
+	
+		$lines = explode("\n", $docComment);
+		foreach ($lines as $line)
+		{
+			$line = trim($line);
+			if ($line == '') continue;
+			if ($line[0] == '*')
+			{
+				$line = trim(substr($line, 1));
+			}
+			$pCommand = substr($line, 0, strlen('@property'));
+			$pDesc = substr($line, strlen('@property'));
+			if ($pCommand == '@property')
+			{
+				$primary = false;
+				$writeonly = false;
+				$protected = false;
+				
+				$desc = explode(';', $pDesc, 3);
+				$descFirst = explode(' ', trim($desc[count($desc)-2]), 2);
+				if (count($desc) == 3)
+				{
+					$options = explode(' ', $desc[0]);
+				}
+				else
+				{
+					$options = array();
+				}
+			
+				$extras = explode(' ', $desc[count($desc)-1]);
+				$name = $descFirst[count($descFirst)-2];
+				$construct = $descFirst[count($descFirst) - 1];
+				for ($i = 0; $i < count($options); $i++)
+				{
+					$option = $options[$i];
+					if ($option == 'primary' || $option == 'writeonly' || $option == 'protected')
+					{
+						$$option = true;
+					}
+				}
+
+				$p = eval('return new Property' . $construct . ';');
+				foreach ($extras as $e)
+				{
+					$e = trim($e);
+					if ($e == '') continue;
+					if ($e[strlen($e)-1] != ')')
+					{
+						$e .= '()';
+					}
+					eval('$p->'.$e.';');
+				}
+
+				$propertyInfo[$name] = array('property' => $p,
+				                             'primary' => $primary,
+				                             'writeonly' => $writeonly,
+				                             'protected' => $protected,
+				                             'class' => $class);
+			}
+		}
+		return $propertyInfo;
+	}
+
+	static public function filterDB($f)
+	{
+		return !$f['writeonly'];
+	}
+
+	static public function filterPrimary($f)
+	{
+		return $f['primary'];
 	}
 }
 
@@ -229,9 +231,9 @@ class DBModel extends Model
 		$properties = array();
 		foreach ($this->dbproperties() as $k => $p)
 		{
-			if ($p->changed())
+			if ($p['property']->changed())
 			{
-				if ($p->db() != null)
+				if ($p['property']->db() != null)
 				{
 					$properties[] = $k;
 					$sets[] = $k .'=:' . $k; 
@@ -260,11 +262,12 @@ class DBModel extends Model
 		$q = DB::prepare($qs);
 		foreach ($properties as $k)
 		{
-			$q->bindValue(':'.$k, $this->property($k)->db());
+			$db = $k.'_db';
+			$q->bindValue(':'.$k, $this->$db);
 		}
 		foreach ($this->primaries() as $pk => $pp)
 		{
-			$q->bindValue(':p'.$pk, $pp->old());
+			$q->bindValue(':p'.$pk, $pp['property']->old());
 		}
 		$q->execute();
 	}
@@ -272,9 +275,11 @@ class DBModel extends Model
 	protected function insert()
 	{
 		$properties = array();
+		
 		foreach ($this->dbproperties() as $k => $p)
 		{
-			if ($p->db() != null)
+			$db = $k.'_db';
+			if ($this->$db != null)
 			{
 				$properties[] = $k;
 			}
@@ -285,9 +290,10 @@ class DBModel extends Model
 		$qs .= ' VALUES(:'.implode(',:', $properties). ')';
 		
 		$q = DB::prepare($qs);
-		foreach ($properties as $p)
+		foreach ($properties as $k=>$p)
 		{
-			$q->bindValue(':'.$p, $this->property($p)->db());
+			$db = $p.'_db';
+			$q->bindValue(':'.$p, $this->$db);
 		}
 		$q->execute();
 	}
@@ -306,7 +312,7 @@ class DBModel extends Model
 		$q = DB::prepare($qs);
 		foreach ($this->primaries() as $pk => $pp)
 		{
-			$q->bindValue(':p'.$pk, $pp->old());
+			$q->bindValue(':p'.$pk, $pp['property']->old());
 		}
 		$q->execute();
 	}
@@ -328,7 +334,7 @@ class DBModel extends Model
 		$this->_saved = true;
 		foreach ($this->dbproperties() as $p)
 		{
-			$p->setUnchanged();
+			$p['property']->setUnchanged();
 		}
 	}
 	

@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @primaryproperty groupID String('Group', 26); required
- * @primaryproperty keyID String('Key', 32); required
+ * @property primary; groupID String('Group', 26); required
+ * @property primary; keyID String('Key', 32); required
  * @property allowed Bool('allowed'); required
 */
 class Acl extends DBModel

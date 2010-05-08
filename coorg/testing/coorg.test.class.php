@@ -20,6 +20,7 @@ class CoOrgControllerTest extends CoOrgModelTest
 	public function setUp()
 	{
 		parent::setUp();
+		I18n::setLanguage('');
 		Session::destroy();
 		if ($s = UserSession::get())
 		{
