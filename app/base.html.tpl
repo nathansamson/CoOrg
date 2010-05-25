@@ -10,8 +10,8 @@
 	</head>
 	<body>
 		<header>
-			<h1><a href="{url request='/'}">CoOrg Example Site</a></h1>
-			<h2>With A SubTitle</h2>
+			<h1><a href="{url request='/'}">{Coorg::config()->get('site/title')}</a></h1>
+			<h2>{Coorg::config()->get('site/subtitle')}</h2>
 			
 			<nav>
 				<ol class="site">

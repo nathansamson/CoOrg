@@ -209,6 +209,11 @@ class CoOrg {
 		return ($l == '' ? 'en' : $l);
 	}
 	
+	public static function config()
+	{
+		return self::$_config;
+	}
+	
 	/* == These functions are only used for testing purposes == */
 	
 	public static function setSite($url)
