@@ -9,6 +9,12 @@ class BlogController extends Controller
 		$this->blogs = Blog::latest(10, CoOrg::getLanguage());
 		$this->render('latest');
 	}
+	
+	public function latest()
+	{
+		$this->blogs = Blog::latest(10, CoOrg::getLanguage());
+		$this->render('latest', false, null);
+	}
 
 	/**
 	 * @Acl allow blog-writer

@@ -241,6 +241,11 @@ class CoOrg {
 	                                       $params, $post,
 	                                       $controllerID = null, $request = null)
 	{
+		if (strpos($controllerName, '.') !== false)
+		{
+			$type = substr($controllerName, strpos($controllerName, '.') + 1);
+			$controllerName = substr($controllerName, 0, strpos($controllerName, '.'));
+		}
 		if ($controllerID == null) $controllerID = strtolower($controllerName);
 		if ($request == null) $request = $controllerID;
 
@@ -277,7 +282,14 @@ class CoOrg {
 				if (!$mock)
 				{
 					$path = dirname(self::$_controllers[$controllerID]['fullpath']);
-					$controllerClass->init($path.'/views/', self::$_appdir);
+					if (isset($type))
+					{
+						$controllerClass->init($path.'/views/', self::$_appdir, $type);
+					}
+					else
+					{
+						$controllerClass->init($path.'/views/', self::$_appdir);
+					}
 				}
 				else
 				{

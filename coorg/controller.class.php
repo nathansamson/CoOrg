@@ -6,11 +6,14 @@ class Controller {
 	private $_renderType = 'html';
 	private $_tplPath;
 	private $_appPath;
+	private $_contentTypes;
 	
-	public function init($path, $appPath = 'app/')
+	public function init($path, $appPath = 'app/', $renderType = 'html')
 	{
 		$this->_tplPath = $path;
 		$this->_appPath = $appPath;
+		$this->_renderType = $renderType;
+		$this->_contentTypes = array('atom' => 'application/xml+atom');
 	}
 	
 	public function isPost($name)
@@ -187,13 +190,25 @@ class Controller {
 		Header::redirect($to);
 	}
 
-	protected function render($tpl, $app = false)
+	protected function render($tpl, $app = false, $baseFile = 'base')
 	{
+		if (array_key_exists($this->_renderType, $this->_contentTypes))
+		{
+			Header::setContentType($this->_contentTypes[$this->_renderType]);
+		}
 		$file = $tpl .'.'. $this->_renderType . '.tpl';
 		$fullPath = $app ? $file : $this->_tplPath . '/' .$file; 
 		if ($app || file_exists($fullPath))
 		{
-			$this->smarty()->display('extends:base.html.tpl|'.$fullPath);
+			if ($baseFile != null)
+			{
+				$baseFile = $baseFile.'.'.$this->_renderType.'.tpl';
+				$this->smarty()->display('extends:base.html.tpl|'.$fullPath);
+			}
+			else
+			{
+				$this->smarty()->display($fullPath);
+			}
 			return;
 		}
 		throw new TemplateNotFoundException($file);

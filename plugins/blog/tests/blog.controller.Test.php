@@ -242,6 +242,15 @@ class BlogControllerTest extends CoOrgControllerTest
 		$this->assertRedirected('/');
 	}
 	
+	public function testLatestFeed()
+	{
+		$this->request('blog.atom/latest');
+		
+		$this->assertContentType('application/xml+atom');
+		$this->assertVarSet('blogs');
+		$this->assertRendered('latest', 'atom', null);
+	}
+	
 	private function login($u = 'nathan')
 	{
 		$session = new UserSession($u, $u);
