@@ -1,0 +1,56 @@
+<dataset>
+	<Menu
+		name="main"
+		description="The main menu"
+	/>
+	<MenuEntry
+		menu="main"
+		language="en"
+		sequence="0"
+		title="Something"
+		url=":some/thing/p/"
+		provider="some"
+		action="iets"
+	/>
+	
+	<MenuEntry
+		menu="main"
+		language="en"
+		sequence="1"
+		title="otherthing"
+		url=":some/otherthing/p/"
+		provider="some"
+		action="iets"
+	/>
+	
+	<MenuEntry
+		menu="main"
+		language="en"
+		sequence="2"
+		title="lastthing"
+		url=":some/lastthing/p/"
+		provider="some"
+		action="iets"
+	/>
+	
+	
+	<MenuEntry
+		menu="main"
+		language="nl"
+		sequence="0"
+		title="Iets"
+		url=":iets/anders/p/"
+		provider="some"
+		action="iets"
+	/>
+	
+	<MenuEntry
+		menu="main"
+		language="nl"
+		sequence="1"
+		title="Iets anders"
+		url=":some/ietsanders/p/"
+		provider="some"
+		action="iets"
+	/>
+</dataset>

@@ -7,7 +7,7 @@ class DB
 	public static function open($dsn, $username = null, $password = null)
 	{
 		self::$_pdo = new PDO($dsn, $username, $password);
-		self::$_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+		self::$_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
 
 	public static function acceptTransactions()
@@ -17,7 +17,15 @@ class DB
 	
 	public static function prepare($sql)
 	{
-		return self::$_pdo->prepare($sql);
+		try
+		{
+			return self::$_pdo->prepare($sql);
+		}
+		catch (PDOException $p)
+		{
+			var_dump($p);
+			die($sql);
+		}
 	}
 	
 	public static function beginTransaction()
