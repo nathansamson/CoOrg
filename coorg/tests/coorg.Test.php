@@ -258,6 +258,24 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('stopped', CoOrgSmarty::$vars['status']);
 	}
 	
+	public function testLoadPluginInfo()
+	{
+		$this->assertFalse(class_exists('AlphaInfo'));
+		$this->assertFalse(class_exists('BetaInfo'));
+		$this->assertFalse(class_exists('HomoInfo'));
+	
+		CoOrg::loadPluginInfo('info');
+		
+		$this->assertTrue(class_exists('AlphaInfo'));
+		$this->assertFalse(class_exists('BetaInfo')); // Beta is not loaded
+		$this->assertTrue(class_exists('HomeInfo'));
+		
+		CoOrg::loadPluginInfo('info'); // This should not fail.
+		
+		
+		CoOrg::loadPluginInfo('medoesnotexists');
+	}
+	
 	private function alternativeConfig($config)
 	{
 		CoOrg::init($config, 'coorg/tests/mocks/app', 'coorg/tests/mocks/plugins');

@@ -18,6 +18,7 @@ class CoOrg {
 	private static $_models = array();
 	private static $_asides = array();
 	private static $_beforeFilters = array();
+	private static $_extras = array();
 	
 	private static $_site = null;
 	private static $_referer = null;
@@ -214,6 +215,17 @@ class CoOrg {
 		return self::$_config;
 	}
 	
+	public static function loadPluginInfo($id)
+	{
+		if (array_key_exists($id, self::$_extras))
+		{
+			foreach (self::$_extras[$id] as $file)
+			{
+				include_once $file;
+			}
+		}
+	}
+	
 	/* == These functions are only used for testing purposes == */
 	
 	public static function setSite($url)
@@ -372,9 +384,11 @@ class CoOrg {
 					$file = $dir . '/' . $sfile;
 					if (is_file($file))
 					{
+						$builtin = false;
 						$pos = strrpos($sfile, '.controller.php');
 						if ($pos !== false)
 						{
+							$builtin = true;
 							$firstPart = substr($sfile, 0, $pos);
 							self::$_controllers[$firstPart] = array(
 							        'file' => $sfile,
@@ -384,6 +398,7 @@ class CoOrg {
 						$pos = strrpos($sfile, '.model.php');
 						if ($pos !== false)
 						{
+							$builtin = true;
 							$firstPart = substr($sfile, 0, $pos);
 							self::$_models[$firstPart] = $file;
 						}
@@ -391,8 +406,22 @@ class CoOrg {
 						$pos = strrpos($sfile, '.before.php');
 						if ($pos !== false)
 						{
+							$builtin = true;
 							$firstPart = substr($sfile, 0, $pos);
 							self::$_beforeFilters[ucfirst($firstPart)] = $file;
+						}
+						
+						if (! $builtin)
+						{
+							$ID = substr($sfile, 0, -4);
+							if (array_key_exists($ID, self::$_extras))
+							{
+								self::$_extras[$ID][] = $file;
+							}
+							else
+							{
+								self::$_extras[$ID] = array($file);
+							}
 						}
 					}
 					else if (is_dir($file) && $sfile == 'models')
