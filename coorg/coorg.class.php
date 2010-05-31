@@ -23,6 +23,7 @@ class CoOrg {
 	private static $_site = null;
 	private static $_referer = null;
 	private static $_appdir;
+	private static $_pluginDir;
 	private static $_config;
 	
 	private static $_request;
@@ -32,6 +33,7 @@ class CoOrg {
 	{
 		self::loadDir($pluginsDir, $config->get('enabled_plugins'));
 		self::loadDir($appdir, null);
+		self::$_pluginDir = $pluginsDir;
 		self::$_appdir = $appdir;
 		self::$_config = $config;
 		spl_autoload_register(array('CoOrg', 'loadModel'));
@@ -178,9 +180,25 @@ class CoOrg {
 		return self::$_config->get('path').$urlPrefix.implode('/', $params);
 	}
 	
-	public static function staticFile($file)
+	public static function staticFile($file, $app = '__')
 	{
-		return self::$_config->get('path').'static/'.$file;
+		if ($app == '__')
+		{
+			return self::$_config->get('path').'static/'.$file;
+		}
+		else
+		{
+			$pluginPath = self::$_config->get('path') . '/';
+			if (in_array($app, self::$_config->get('enabled_plugins')))
+			{
+				$pluginPath .= self::$_pluginDir.'/'.$app;
+			}
+			else
+			{
+				$pluginPath .= self::$_appdir.'/'.$app;
+			}
+			return $pluginPath. '/static/'.$file;
+		}
 	}
 	
 	public static function aside($name, $smarty)

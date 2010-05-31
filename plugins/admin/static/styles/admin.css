@@ -1,0 +1,25 @@
+.modules {
+	list-style-type: none;
+	padding: 0;
+	margin-left: -5px; /* Override margins of left and rigth li's  */
+	margin-right: -5px;
+}
+
+.modules li {
+	float: left;
+	width: 160px;
+	height: 180px;
+	border: 1px solid #999999;
+	overflow: hidden;
+	text-align: center;
+	margin: 5px;
+	padding: 5px;
+}
+
+.modules li:hover {
+	background-color: #123456;
+}
+
+a img {
+	border: none;
+}

@@ -29,7 +29,7 @@ class CoOrgControllerTest extends CoOrgModelTest
 		CoOrg::setSite('http://www.test.info/');
 		CoOrg::spoofReferer('http://www.test.info/some/part/of/the/site');
 		$config = new Config('config/tests.config.php');
-		$config->set('enabled_plugins', array('user'));
+		$config->set('enabled_plugins', array('admin', 'user'));
 		CoOrg::init($config, 'app', 'plugins');
 		CoOrgSmarty::clearAll();
 	}

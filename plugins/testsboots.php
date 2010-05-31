@@ -10,7 +10,7 @@ require_once 'coorg/testing/header.test.class.php';
 require_once 'coorg/testing/state.test.class.php';
 
 $config = new Config('config/tests.config.php');
-$config->set('enabled_plugins', array('menu', 'user', 'blog'));
+$config->set('enabled_plugins', array('admin', 'menu', 'user', 'blog'));
 
 DB::open('sqlite::memory:');
 $q = DB::prepare('PRAGMA foreign_keys = ON');
