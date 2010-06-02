@@ -38,7 +38,7 @@ class Acl extends DBModel
 		$q->execute(array('key' => $key, 'user' => $user));
 		
 		$allowed = null;
-		foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $row)
+		foreach ($q->fetchAll() as $row)
 		{	
 			if ($row['allowed'] == 1)
 			{
@@ -63,7 +63,7 @@ class Acl extends DBModel
 		                     groupID=:group AND keyID=:key');
 		$q->execute(array('group' => $group, 'key'=>$key));
 		
-		if ($row = $q->fetch(PDO::FETCH_ASSOC))
+		if ($row = $q->fetch())
 		{
 			$a = new Acl($row['groupID'], $row['keyID'], $row['allowed']);
 			$a->setSaved();

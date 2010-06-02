@@ -60,7 +60,7 @@ class UserGroup extends DBModel
 		$q = DB::prepare('SELECT * FROM UserGroup WHERE name=:name');
 		$q->execute(array(':name' => $name));
 		
-		$row = $q->fetch(PDO::FETCH_ASSOC);
+		$row = $q->fetch();
 		if ($row != false)
 		{
 			return self::from($row);

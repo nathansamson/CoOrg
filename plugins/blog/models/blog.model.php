@@ -49,7 +49,7 @@ class Blog extends DBModel
 		                  'ID' => $this->ID));
 
 		$trs = array();
-		foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $row)
+		foreach ($q->fetchAll() as $row)
 		{
 			$trs[$row['language']] = self::produceBlog($row);
 		}
@@ -68,7 +68,7 @@ class Blog extends DBModel
 		                  'ID' => $ID,
 		                  'language' => $language));
 
-		$row = $q->fetch(PDO::FETCH_ASSOC);
+		$row = $q->fetch();
 		if ($row != false)
 		{
 			return self::produceBlog($row);
@@ -92,7 +92,7 @@ class Blog extends DBModel
 		$q->execute(array('language' => $language));
 		
 		$blogs = array();
-		foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $row)
+		foreach ($q->fetchAll() as $row)
 		{
 			$blogs[] = self::produceBlog($row);
 		}
@@ -154,7 +154,7 @@ class Blog extends DBModel
 		                  ':ID' => $ID,
 		                  ':language' => $language));
 
-		$row = $q->fetch(PDO::FETCH_ASSOC);
+		$row = $q->fetch();
 
 		return ($row != false);
 	}

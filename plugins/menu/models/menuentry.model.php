@@ -25,7 +25,7 @@ class MenuEntry extends DBModel
 		$q = DB::prepare('SELECT MAX(sequence) AS seq FROM MenuEntry WHERE
 		                    menu=:menu AND language=:l');
 		$q->execute(array(':menu' => $this->menu, ':l' => $this->language));
-		$result = $q->fetch(PDO::FETCH_ASSOC);
+		$result = $q->fetch();
 		if ($result)
 		{
 			$this->sequence = (int)$result['seq'] + 1;
@@ -119,7 +119,7 @@ class MenuEntry extends DBModel
 		$q = DB::prepare('SELECT * FROM MenuEntry WHERE ID=:ID');
 		$q->execute(array(':ID' => $ID));
 		
-		if ($row = $q->fetch(PDO::FETCH_ASSOC))
+		if ($row = $q->fetch())
 		{
 			return self::constructByRow($row);
 		}
@@ -137,7 +137,7 @@ class MenuEntry extends DBModel
 		$q->execute(array(':menu' => $menu, ':l' => $language));
 		
 		$entries = array();
-		foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $row)
+		foreach ($q->fetchAll() as $row)
 		{
 			$entries[] = self::constructByRow($row);
 		}

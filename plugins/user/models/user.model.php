@@ -46,7 +46,7 @@ class User extends DBModel
 		$q = DB::prepare('SELECT * FROM User WHERE username=:username');
 		$q->execute(array(':username' => $username));
 		
-		if ($row = $q->fetch(PDO::FETCH_ASSOC))
+		if ($row = $q->fetch())
 		{
 			$user = new User($row['username'], $row['email']);
 			$user->firstName = $row['firstName'];

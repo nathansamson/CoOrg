@@ -33,7 +33,7 @@ class MockModel extends DBModel
 		$q = DB::prepare('SELECT * FROM Mock WHERE name=:name');
 		$q->execute(array(':name' => $name));
 		
-		if ($row = $q->fetch(PDO::FETCH_ASSOC))
+		if ($row = $q->fetch())
 		{
 			$user = new MockModel($row['name'], $row['description'], $row['email']);
 			$user->rot13name = $row['rot13name'];

@@ -44,7 +44,7 @@ class Menu extends DBModel
 		$q = DB::prepare('SELECT * FROM Menu WHERE name=:name');
 		$q->execute(array(':name' => $name));
 		
-		$row = $q->fetch(PDO::FETCH_ASSOC);
+		$row = $q->fetch();
 		if ($row)
 		{
 			return self::constructFromDB($row);
@@ -72,7 +72,7 @@ class Menu extends DBModel
 		$q->execute();
 		
 		$menus = array();
-		foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $row)
+		foreach ($q->fetchAll() as $row)
 		{
 			$menus[] = self::constructFromDB($row);
 		}

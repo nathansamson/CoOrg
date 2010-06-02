@@ -20,7 +20,7 @@ class UserGroupMember extends DBModel
 		
 		$q->execute(array('group' => $group, 'user' => $user));
 		
-		$r = $q->fetch(PDO::FETCH_ASSOC);
+		$r = $q->fetch();
 		if ($r != array())
 		{
 			$m = new UserGroupMember($r['userID'], $r['groupID']);
@@ -43,7 +43,7 @@ class UserGroupMember extends DBModel
 		$q->execute(array('user' => $user));
 		
 		$groups = array();
-		foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $r)
+		foreach ($q->fetchAll() as $r)
 		{
 			$groups[] = UserGroup::from($r);
 		}
@@ -58,7 +58,7 @@ class UserGroupMember extends DBModel
 		$q->execute(array('group' => $group));
 		
 		$members = array();
-		foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $row)
+		foreach ($q->fetchAll() as $row)
 		{
 			$m = new UserGroupMember($row['userID'], $row['groupID']);
 			$m->setSaved();
