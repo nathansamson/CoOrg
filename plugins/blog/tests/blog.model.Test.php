@@ -93,6 +93,7 @@ class BlogTest extends CoOrgModelTest
 	public function testUpdate()
 	{
 		$blog = Blog::getBlog('2010', '4', '9', 'blog-post', 'en');
+		$this->assertNotNull($blog);
 		$blog->title = 'My Blog Post';
 		$blog->text = 'Some New Text';
 		
@@ -111,6 +112,7 @@ class BlogTest extends CoOrgModelTest
 	public function testUpdateNoTitle()
 	{
 		$blog = Blog::getBlog('2010', '4', '9', 'blog-post', 'en');
+		$this->assertNotNull($blog);
 		$blog->title = '';
 		$blog->text = 'Some New Text';
 		
@@ -128,6 +130,7 @@ class BlogTest extends CoOrgModelTest
 	public function testUpdateNoText()
 	{
 		$blog = Blog::getBlog('2010', '4', '9', 'blog-post', 'en');
+		$this->assertNotNull($blog);
 		$blog->text = '';
 		
 		try
@@ -144,6 +147,7 @@ class BlogTest extends CoOrgModelTest
 	public function testTranslate()
 	{
 		$blog = Blog::getBlog('2010', '4', '10', 'some-other-blog', 'en');
+		$this->assertNotNull($blog);
 		$this->assertFalse($blog->translatedIn('nl'));
 		$this->assertEquals(array(), $blog->translations());
 		
@@ -166,6 +170,7 @@ class BlogTest extends CoOrgModelTest
 	public function testTranslateTwice()
 	{	
 		$blog = Blog::getBlog('2010', '4', '10', 'some-blog', 'en');
+		$this->assertNotNull($blog);
 
 		try
 		{

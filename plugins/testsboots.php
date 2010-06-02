@@ -9,12 +9,16 @@ require_once 'coorg/testing/coorgsmarty.test.class.php';
 require_once 'coorg/testing/header.test.class.php';
 require_once 'coorg/testing/state.test.class.php';
 
-$config = new Config('config/tests.config.php');
-$config->set('enabled_plugins', array('admin', 'menu', 'user', 'blog'));
+$configFile = 'config/tests.config.php';
+if (array_key_exists('COORG_CONFIGFILE', $_SERVER))
+{
+	$configFile = $_SERVER['COORG_CONFIGFILE'];
+}
+define('COORG_TEST_CONFIG', $configFile);
 
-DB::open('sqlite::memory:');
-$q = DB::prepare('PRAGMA foreign_keys = ON');
-$q->execute();
+$config = new Config($configFile);
+$config->set('enabled_plugins', array('admin', 'menu', 'user', 'blog'));
+DB::open($config->get('dbdsn'), $config->get('dbuser'), $config->get('dbpass'));
 
 CoOrg::init($config, 'coorg/testing/plugins-app', 'plugins'); // Load the models
 

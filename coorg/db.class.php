@@ -6,13 +6,30 @@ class DB
 
 	public static function open($dsn, $username = null, $password = null)
 	{
-		self::$_pdo = new PDO($dsn, $username, $password);
+		$driverName = strtolower(substr($dsn, 0, strpos($dsn, ':')));
+		include_once 'coorg/pdo/generic.class.php';
+		if ($driverName == 'mysql')
+		{
+			include_once 'coorg/pdo/mysql.class.php';
+			$pdoClass = 'MySQLPDO';
+		}
+		else if ($driverName == 'sqlite')
+		{
+			include_once 'coorg/pdo/sqlite.class.php';
+			$pdoClass = 'SQLitePDO';
+		}
+		else
+		{
+			$pdoClass = 'GenericPDO';
+		}
+		
+		self::$_pdo = new $pdoClass($dsn, $username, $password);
 		self::$_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
 
 	public static function acceptTransactions()
 	{
-		return false;
+		return true;
 	}
 	
 	public static function prepare($sql)

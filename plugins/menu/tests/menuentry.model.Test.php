@@ -113,6 +113,7 @@ class MenuEntryModelTest extends CoOrgModelTest
 	public function testMoveSequence()
 	{
 		$menu = Menu::get('main');
+		$this->assertNotNull($menu);
 		$nlEntries = $menu->entries('nl');
 		$entries = $menu->entries('en');
 		
@@ -150,6 +151,7 @@ class MenuEntryModelTest extends CoOrgModelTest
 	public function testUpdate()
 	{
 		$menu = Menu::get('main');
+		$this->assertNotNull($menu);
 		$e = $menu->entries('en');
 		$e[0]->url = ':/other/url';
 		$e[0]->save();
@@ -161,6 +163,7 @@ class MenuEntryModelTest extends CoOrgModelTest
 	public function testDelete()
 	{
 		$menu = Menu::get('main');
+		$this->assertNotNull($menu);
 		$e = $menu->entries('en');
 		$e[1]->delete();
 		

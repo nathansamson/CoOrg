@@ -10,7 +10,7 @@ function blog_install_db()
 	   timeEdited DATETIME,
 	   title VARCHAR(256),
 	   authorID VARCHAR(64),
-	   text VARCHAR(65000),
+	   text TEXT,
 	   parentID VARCHAR(256),
 	   parentLanguage VARCHAR(6),
 	   PRIMARY KEY (ID, language, datePosted))

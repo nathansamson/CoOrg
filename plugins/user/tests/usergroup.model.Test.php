@@ -86,6 +86,7 @@ class UserGroupTest extends CoOrgModelTest
 		$group->add('dvorak');
 	
 		$user = User::getUserByName('dvorak');
+		$this->assertNotNull($user);
 		$groups = $user->groups();
 		$this->assertEquals(2, count($groups));
 		$this->assertEquals('AnotherName', $groups[0]->name);

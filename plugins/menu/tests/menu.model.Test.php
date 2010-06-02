@@ -89,6 +89,7 @@ class MenuTest extends CoOrgModelTest
 	public function testUpdateMenuEntriesAfterNameChange()
 	{
 		$menu = Menu::get('main');
+		$this->assertNotNull($menu);
 		$menu->name = 'Some Name';
 		$menu->save();
 		
@@ -99,6 +100,7 @@ class MenuTest extends CoOrgModelTest
 	public function testRemoveEntriesAfterDelete()
 	{
 		$menu = Menu::get('main');
+		$this->assertNotNull($menu);
 		$menu->delete();
 		
 		$menu = new Menu;
