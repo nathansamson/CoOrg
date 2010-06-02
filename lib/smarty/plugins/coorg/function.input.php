@@ -1,5 +1,30 @@
 <?php
 
+function smarty_helper_function_build_option($key, $option, $value)
+{
+	if (is_array($option))
+	{
+		$s = '<optgroup label="'.$option['label'].'">';
+		foreach ($option['options'] as $k => $o)
+		{
+			$s .= smarty_helper_function_build_option($k, $o, $value);
+		}
+		$s .= '</optgroup>';
+	}
+	else
+	{
+		if ($key != $value)
+		{
+			$s = '<option value="'.$key.'">'.$option.'</option>';
+		}
+		else
+		{
+			$s = '<option value="'.$key.'" selected="selected">'.$option.'</option>';
+		}
+	}
+	return $s;
+}
+
 function smarty_function_input($params, $smarty)
 {
 
@@ -19,6 +44,11 @@ function smarty_function_input($params, $smarty)
 	else
 	{
 		$type = 'hidden';
+	}
+	$disabled = false;
+	if (array_key_exists('disabled', $params))
+	{
+		$disabled = true;
 	}
 	
 	if ($type != 'submit')
@@ -63,16 +93,41 @@ function smarty_function_input($params, $smarty)
 		$label = '<label for="'.$id.'" '.($required ? 'class="required"' : '' ). '>'.$label.'</label>';
 	
 		
-		if ($type != 'textarea')
+		if ($type != 'textarea' && $type != 'select')
 		{
 			$input = '<input type="'.$type.'" value="'.$value.'" name="'.$name.'" '. 'id="'.$id.'"'.
-	               ($required ? 'required="required"' : '').
+	               ($required ? ' required="required"' : '').
+	               ($disabled ? ' disabled="disabled"' : '').
 	        '/>';
+	    }
+	    else if ($type == 'textarea')
+	    {
+	    	$cols = 0;
+	    	$rows = 0;
+	    	if (array_key_exists('size', $params))
+	    	{
+	    		if($params['size'] == 'small')
+	    		{
+	    			$cols = 40;
+	    			$rows = 2;
+	    		}
+	    	}
+	    	$input = '<textarea name="'.$name.'" '. 'id="'.$id.'" '.
+	    	                         ($required ? 'required="required"' : '').
+	    	                         ($cols ? ' cols='.$cols : '').
+	    	                         ($rows ? ' rows='.$rows : '').
+	    	               '>'.$value.'</textarea>';
 	    }
 	    else
 	    {
-	    	$input = '<textarea name="'.$name.'" '. 'id="'.$id.'" '.($required ? 'required="required"' : '').'>'.$value.'</textarea>';
+	    	$input = '<select name="'.$name.'" id="'.$id.'"' .($required ? 'required="required"' : '').'>';
+	    	foreach ($params['options'] as $key => $opt)
+	    	{
+	    		$input .= smarty_helper_function_build_option($key, $opt, $value); 
+	    	}
+	    	$input .= '</select>';
 	    }
+	    
 	    if (is_string($errors))
 	    {
 	    	$input .= '<span class="form-error">'.$errors.'</span>';

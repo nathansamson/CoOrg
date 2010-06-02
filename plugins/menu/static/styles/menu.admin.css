@@ -1,0 +1,20 @@
+.unneeded {
+	display: none;
+}
+
+ol.adminmenu {
+	list-style-type: none;
+	margin: 15px 0px;
+	padding: 0;
+}
+
+ol.adminmenu li {
+	margin: 5px 0;
+	border: dotted 1px black;
+	padding: 10px;
+	width: 400px;
+}
+
+ol.adminmenu li .actions {
+	float: right;
+}

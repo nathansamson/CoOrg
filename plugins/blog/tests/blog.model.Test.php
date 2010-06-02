@@ -76,11 +76,18 @@ class BlogTest extends CoOrgModelTest
 	
 	public function testLatest()
 	{
-		$blogs = Blog::latest(3, 'en');
+		$blogs = Blog::latest('en', 3);
 		$this->assertEquals(3, count($blogs));
 		$this->assertEquals('XYZ', $blogs[0]->title);
 		$this->assertEquals('Some Blog', $blogs[1]->title);
 		$this->assertEquals('Some Other Blog', $blogs[2]->title);
+		
+		$blogs = Blog::latest('en');
+		$this->assertEquals(4, count($blogs));
+		$this->assertEquals('XYZ', $blogs[0]->title);
+		$this->assertEquals('Some Blog', $blogs[1]->title);
+		$this->assertEquals('Some Other Blog', $blogs[2]->title);
+		$this->assertEquals('Blog post', $blogs[3]->title);
 	}
 	
 	public function testUpdate()

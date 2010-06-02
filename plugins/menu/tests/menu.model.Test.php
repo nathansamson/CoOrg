@@ -1,5 +1,38 @@
 <?php
 
+class MockMenuEntryProvider implements IMenuEntryProvider
+{
+	public static function name()
+	{
+		return 'Mock';
+	}
+	
+	public static function url($action, $language, $data)
+	{
+		return ':/mock/'.$action.'/'.$data;
+	}
+	
+	public static function listActions()
+	{
+		return array('me' => 'Me',
+		             'and' => 'And',
+		             'my' => 'My',
+		             'guitar' => 'Guitar');
+	}
+	
+	public static function listData($action, $language)
+	{
+		return array(
+			'one' => 'One',
+			'two' => 'Two',
+			'three' => 'Three',
+			'four' => 'Four',
+			'language' => $language
+		);
+	}
+}
+Menu::registerEntryProvider('MockMenuEntryProvider');
+
 class MenuTest extends CoOrgModelTest
 {
 	public function __construct()
@@ -109,6 +142,15 @@ class MenuTest extends CoOrgModelTest
 		catch (ValidationException $e)
 		{
 		}
+	}
+	
+	public function testListOfPossibleURLProviders()
+	{
+		$providers = Menu::getProviders();
+		
+		$this->assertEquals('Mock', $providers[0]::name());
+		$this->assertEquals('Blog', $providers[1]::name());
+		$this->assertEquals('URL', $providers[2]::name());
 	}
 }
 

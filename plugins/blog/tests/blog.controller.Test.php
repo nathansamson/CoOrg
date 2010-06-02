@@ -21,6 +21,7 @@ class BlogControllerTest extends CoOrgControllerTest
 	{
 		$this->request('blog');
 		
+		$this->fail('Should fail');
 		$this->assertVarSet('blogs');
 		$this->assertRendered('latest');
 	}
@@ -246,6 +247,7 @@ class BlogControllerTest extends CoOrgControllerTest
 	{
 		$this->request('blog.atom/latest');
 		
+		$this->fail('Should fail');
 		$this->assertContentType('application/xml+atom');
 		$this->assertVarSet('blogs');
 		$this->assertRendered('latest', 'atom', null);

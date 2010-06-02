@@ -3,10 +3,10 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>{block name='title'}Default title{/block}</title>
+		<link rel="stylesheet" href="{'styles/main.css'|static}" />
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 		
-		{block name='head'}
-			<link rel="stylesheet" href="{'styles/main.css'|static}" />
-		{/block}
+		{block name='head'}{/block}
 	</head>
 	<body>
 		<header>

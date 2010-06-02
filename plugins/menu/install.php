@@ -9,6 +9,7 @@ function menu_install_db()
 	 $s->execute();
 	 
 	 $s = DB::prepare('CREATE TABLE MenuEntry (
+	 	ID INTEGER PRIMARY KEY AUTOINCREMENT,
 	 	menu VARCHAR(32),
 	 	language VARCHAR(6),
 		sequence INTEGER,

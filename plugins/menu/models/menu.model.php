@@ -6,6 +6,8 @@
 */
 class Menu extends DBModel
 {
+	private static $_providers = array();
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -51,6 +53,65 @@ class Menu extends DBModel
 		{
 			return null;
 		}
+	}
+	
+	public static function registerEntryProvider($class)
+	{
+		self::$_providers[] = $class;
+	}
+	
+	public static function getProviders()
+	{
+		Coorg::loadPluginInfo('menu');
+		return self::$_providers;
+	}
+	
+	public static function all()
+	{
+		$q = DB::prepare('SELECT * FROM Menu ORDER BY name');
+		$q->execute();
+		
+		$menus = array();
+		foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $row)
+		{
+			$menus[] = self::constructFromDB($row);
+		}
+		return $menus;
+	}
+	
+	public static function providerActionCombos($language)
+	{
+		$urls = array();
+		foreach (Menu::getProviders() as $p)
+		{
+			$pi = new $p;
+			if ($pi instanceof IDataMenuEntryProvider)
+			{
+				$urls[$p] = $pi->name();
+			}
+			else
+			{
+				$actions = array();
+				foreach ($pi->listActions() as $key => $label)
+				{
+					$data = $pi->listData($key, $language);
+					if ($data === null)
+					{
+						$actions[$p.'/'.$key] = $label;
+					}
+					else
+					{
+						foreach ($data as $keyData => $d)
+						{
+							$actions[$p.'/'.$key.'/'.$keyData] = $d;
+						}
+					}
+	 			}
+				$urls[] = array('label' => $pi->name(),
+					            'options' => $actions);
+			}
+		}
+		return $urls;
 	}
 	
 	private static function constructFromDB($row)

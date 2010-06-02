@@ -122,6 +122,19 @@ class Model
 	{
 		return $this->_properties;
 	}
+	
+	protected function autoincrements()
+	{
+		$ais = array();
+		foreach ($this->_properties as $k=>$p)
+		{
+			if ($p['auto-increment'])
+			{
+				$ais[$k] = $p;
+			}
+		}
+		return $ais;
+	}
 
 	static private function parseProperties($class)
 	{
@@ -145,6 +158,7 @@ class Model
 				$primary = false;
 				$writeonly = false;
 				$protected = false;
+				$autoincrement = false;
 				
 				$desc = explode(';', $pDesc, 3);
 				$descFirst = explode(' ', trim($desc[count($desc)-2]), 2);
@@ -163,7 +177,8 @@ class Model
 				for ($i = 0; $i < count($options); $i++)
 				{
 					$option = $options[$i];
-					if ($option == 'primary' || $option == 'writeonly' || $option == 'protected')
+					if ($option == 'primary' || $option == 'writeonly' ||
+					    $option == 'protected' || $option == 'autoincrement')
 					{
 						$$option = true;
 					}
@@ -185,6 +200,7 @@ class Model
 				                             'primary' => $primary,
 				                             'writeonly' => $writeonly,
 				                             'protected' => $protected,
+				                             'auto-increment' => $autoincrement,
 				                             'class' => $class);
 			}
 		}
@@ -296,6 +312,10 @@ class DBModel extends Model
 			$q->bindValue(':'.$p, $this->$db);
 		}
 		$q->execute();
+		foreach ($this->autoincrements() as $k => $p)
+		{
+			$this->$k = DB::lastInsertID($this->tableName());
+		}
 	}
 	
 	public function delete()

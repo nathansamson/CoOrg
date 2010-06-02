@@ -216,6 +216,14 @@ textarea {
 	height: 200px;
 }
 
+textarea[cols] { /* Respect the cols factor */
+	width: auto;
+}
+
+textarea[rows] { /* Respect the rows factor */
+	height: auto;
+}
+
 input:focus, textarea:focus {
 	border: solid 1px #FCBA5C;
 }
@@ -241,4 +249,25 @@ aside input {
 	font-size: 0.6em;
 	margin-bottom: 6px;
 	max-width: 140px;
+}
+
+/* Button urls, urls */
+
+.normal-post-url {
+	display: inline;
+}
+
+.normal-post-url button {
+	background-color: transparent;
+	padding: 0;
+	border: none;
+}
+
+.normal-post-url button:hover {
+	cursor: pointer;
+	color: #F9A328;
+}
+
+.normal-post-url button img {
+	vertical-align: middle;
 }

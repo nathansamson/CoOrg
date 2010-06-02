@@ -1,14 +1,16 @@
 <?php
 
 /**
- * @property primary; menu String('Menu', 32); required
- * @property primary; sequence Integer('Sequence'); required
- * @property primary; language String('Language', 6); required
+ * @property primary autoincrement; ID Integer('ID');
+ * @property menu String('Menu', 32); required
+ * @property sequence Integer('Sequence'); required
+ * @property language String('Language', 6); required
  * @property url String('URL', 1024); required
  * @property title String('Title', 64); required
  * @property provider String('Provider', 64); required
  * @property action String('Action', 64); required
  * @property data String('Data', 128);
+ * @property writeonly; entryID String('EntryID');
 */
 class MenuEntry extends DBModel
 {
@@ -38,14 +40,6 @@ class MenuEntry extends DBModel
 	{
 		if ($this->sequence_changed)
 		{
-			$q = DB::prepare('UPDATE MenuEntry SET sequence=-1
-				                        WHERE sequence = :oldsequence
-				                          AND menu=:menu
-				                          AND language=:l');
-			$q->execute(array(':oldsequence' => $this->sequence_old,
-				              ':menu' => $this->menu,
-				              ':l' => $this->language));
-		
 			if ($this->sequence_old > $this->sequence_db)
 			{
 				// Moved forward
@@ -68,16 +62,6 @@ class MenuEntry extends DBModel
 				              ':newsequence' => $this->sequence_db,
 				              ':menu' => $this->menu,
 				              ':l' => $this->language));
-				              
-			$q = DB::prepare('UPDATE MenuEntry SET sequence=:newsequence
-				                        WHERE sequence = :oldsequence
-				                          AND menu=:menu
-				                          AND language=:l');
-			$q->execute(array(':oldsequence' => -1,
-			                  ':newsequence' => $this->sequence_db,
-				              ':menu' => $this->menu,
-				              ':l' => $this->language));
-			$this->sequence_setUnchanged = null;
 		}
 	}
 	
@@ -91,6 +75,58 @@ class MenuEntry extends DBModel
 		$q->execute(array(':sequence' => $this->sequence,
 				          ':menu' => $this->menu,
 				          ':l' => $this->language));
+	}
+	
+	public function __set($name, $value)
+	{
+		if ($name == 'entryID')
+		{
+			$p = explode('/', $value, 3);
+			
+			CoOrg::loadPluginInfo('menu');
+			if (!class_exists($p[0]))
+			{
+				$this->entryID_error = t('Provider not found');
+				return;
+			}
+			
+			$this->provider = $p[0];
+			if (count($p) > 1)
+			{
+				$this->action = $p[1];
+				
+				if (count($p) > 2)
+				{
+					$this->data = $p[2];
+				}
+				else
+				{
+					$this->data = null;
+				}
+				$this->url = $p[0]::url($this->action, $this->language, $this->data);
+			}
+			else
+			{
+				$this->action = 'do';
+				$this->url = $p[0]::url($this->data, $this->language);
+			}
+		}
+		parent::__set($name, $value);
+	}
+	
+	public static function get($ID)
+	{
+		$q = DB::prepare('SELECT * FROM MenuEntry WHERE ID=:ID');
+		$q->execute(array(':ID' => $ID));
+		
+		if ($row = $q->fetch(PDO::FETCH_ASSOC))
+		{
+			return self::constructByRow($row);
+		}
+		else
+		{
+			return null;
+		}
 	}
 
 	public static function entries($menu, $language)
@@ -111,6 +147,7 @@ class MenuEntry extends DBModel
 	private static function constructByRow($row)
 	{
 		$entry = new MenuEntry();
+		$entry->ID = $row['ID'];
 		$entry->menu = $row['menu'];
 		$entry->url = $row['url'];
 		$entry->title = $row['title'];

@@ -161,16 +161,14 @@ class CoOrg {
 		}
 	}
 	
-	public static function createURL($params)
+	public static function createURL($params, $language = null)
 	{
 		$urlPrefix = '';
 		if (self::$_config->has('urlPrefix'))
 		{
-			$language = I18n::getLanguage();
-			
-			if ($language == null)
+			if (!$language)
 			{
-				$language = 'en';
+				$language = self::getLanguage();
 			}
 			
 			$urlPrefix = self::$_config->get('urlPrefix').'/';
@@ -220,6 +218,23 @@ class CoOrg {
 		}
 		
 		return $s;
+	}
+	
+	public static function setDefaultLanguage($l)
+	{
+		self::$_config->set('defaultLanguage', $l);
+	}
+	
+	public static function getDefaultLanguage()
+	{
+		if (self::$_config->has('defaultLanguage'))
+		{
+			return self::$_config->get('defaultLanguage');
+		}
+		else
+		{
+			return 'en';
+		}
 	}
 
 	public static function getLanguage()

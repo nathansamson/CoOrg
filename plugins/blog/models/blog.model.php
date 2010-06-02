@@ -79,12 +79,16 @@ class Blog extends DBModel
 		}
 	}
 	
-	public static function latest($n, $language)
+	public static function latest($language, $n = 0)
 	{
-		$q = DB::prepare('SELECT * FROM Blog
+		$qs = 'SELECT * FROM Blog
 		                  WHERE language=:language
-		                  ORDER BY timePosted DESC
-		                  LIMIT '.(int)$n);
+		                  ORDER BY timePosted DESC';
+		if ($n > 0)
+		{
+			$qs .= ' LIMIT '.(int)$n;
+		}
+		$q = DB::prepare($qs);
 		$q->execute(array('language' => $language));
 		
 		$blogs = array();

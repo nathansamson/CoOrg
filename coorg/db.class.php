@@ -43,6 +43,11 @@ class DB
 		self::$_pdo->rollback();
 	}
 	
+	public static function lastInsertID($name)
+	{
+		return self::$_pdo->lastInsertId($name);
+	}
+	
 	// Only use this function if you really need to...
 	public static function pdo()
 	{
