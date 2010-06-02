@@ -2,7 +2,8 @@
 
 class BlogShareAside extends AsideController
 {
-	public function run($request, $year = null, $month = null, 
+	public function run($widgetParams, 
+	                    $request, $year = null, $month = null, 
 	                              $day = null, $id = null)
 	{
 		if ($request == 'blog/show')

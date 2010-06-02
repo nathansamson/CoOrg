@@ -13,7 +13,7 @@ abstract class AsideController
 		$this->_viewsPath = $viewsPath;
 	}
 	
-	abstract function run($request);
+	abstract function run($widgetParams, $request);
 	
 	protected function render($tpl)
 	{

@@ -21,6 +21,30 @@ class URLMenuEntryProvider implements IDataMenuEntryProvider
 	}
 }
 
+class HomeMenuEntryProvider implements IMenuEntryProvider
+{
+	public static function name()
+	{
+		return 'Home';
+	}
+
+	public static function listActions()
+	{
+		return array('home' => t('Home'));
+	}
+	
+	public static function listData($action, $language)
+	{
+		return null;
+	}
+
+	public static function url($action, $data, $language)
+	{
+		return CoOrg::createURL(array(), $language);
+	}
+}
+
 Menu::registerEntryProvider('URLMenuEntryProvider');
+Menu::registerEntryProvider('HomeMenuEntryProvider');
 
 ?>

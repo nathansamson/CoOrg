@@ -79,6 +79,7 @@ class CoOrg {
 	public static function process($request, $params = array(), $post = false)
 	{
 		self::normalizeRequest($request);
+		$url = $request;
 		if ($request == '') $request = 'home';
 		$requestParams = explode('/', $request);
 		
@@ -109,6 +110,8 @@ class CoOrg {
 			list($controllerClass, $action, $params, $request) = 
 	                      self::findController($controllerName, $requestParams,
 	                                           $params, $post);
+			$controllerClass->coorgRequest = $url;
+			$controllerClass->coorgUrl = self::config()->get('path').$url;
 			if (!$post && $controllerClass->isPost($action))
 			{
 				throw new WrongRequestMethodException();
@@ -175,7 +178,9 @@ class CoOrg {
 			$urlPrefix = str_replace(':language', $language, $urlPrefix);
 		}
 	
-		return self::$_config->get('path').$urlPrefix.implode('/', $params);
+		$url = self::$_config->get('path').$urlPrefix.implode('/', $params);
+		self::normalizeRequest($url);
+		return $url;
 	}
 	
 	public static function staticFile($file, $app = '__')
@@ -204,9 +209,19 @@ class CoOrg {
 		$items = self::$_config->get('aside/'.$name);
 		if ($items == null) return '';
 		$s = '';
-		foreach ($items as $item)
+		foreach ($items as $key=>$item)
 		{
-			$p = explode('/', $item, 2);
+			if (is_array($item))
+			{
+				$widget = $key;
+				$widgetParams = $item;
+			}
+			else
+			{
+				$widget = $item;
+				$widgetParams = array();
+			}
+			$p = explode('/', $widget, 2);
 			
 			include_once(self::$_asides[$p[0]][$p[1]]);
 			
@@ -214,6 +229,7 @@ class CoOrg {
 			$i = new $className($smarty, dirname(self::$_asides[$p[0]][$p[1]]).'/../views/');
 			$r = self::$_requestParameters;
 			array_unshift($r, self::$_request);
+			array_unshift($r, $widgetParams);
 			$s .= call_user_func_array(array($i, 'run'), $r);
 		}
 		

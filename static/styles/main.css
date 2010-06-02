@@ -70,14 +70,23 @@ nav ol li:last-child
 	border-right: none;
 }
 
-nav ol.site
+nav .navigation-left
 {
 	float: left;
 }
 
-nav ol.site li
+nav .navigation-right
+{
+	float: right;
+}
+
+nav ol li
 {
 	display: inline;
+}
+
+li.current a {
+	color: white;
 }
 
 #main

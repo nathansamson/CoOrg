@@ -13,20 +13,19 @@
 			<h1><a href="{url request='/'}">{Coorg::config()->get('site/title')}</a></h1>
 			<h2>{Coorg::config()->get('site/subtitle')}</h2>
 			
-			<nav>
-				<ol class="site">
-					<li><a href="{url request='/'}">Home</a></li>
-					<li><a href="{url request='blog'}">Blog</a></li>
-				</ol>
+			<nav class="main-navigation">
+				<span class="navigation-left">
+					{aside name='navigation-left'}
+				</span>
 
 				
 				<ol class="user">
-				{if UserSession::get()}
-					Welcome, {UserSession::get()->username}!.
-					<a href="{url request="user/logout"}">Logout</a>
-				{else}
-					<a href="{url request="user/login"}">Login</a>
-				{/if}
+					{if UserSession::get()}
+						Welcome, {UserSession::get()->username}!.
+						<a href="{url request="user/logout"}">Logout</a>
+					{else}
+						<a href="{url request="user/login"}">Login</a>
+					{/if}
 				</ol>
 			</nav>
 		</header>
