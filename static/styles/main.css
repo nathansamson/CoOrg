@@ -44,6 +44,7 @@ body > header nav
 	background-image: -moz-linear-gradient(#FCBA5C, #F9A328);
 	display: block;
 	margin-top: 10px;
+	height: 1.2em;
 }
 
 nav a

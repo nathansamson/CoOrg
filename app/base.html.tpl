@@ -18,15 +18,9 @@
 					{aside name='navigation-left'}
 				</span>
 
-				
-				<ol class="user">
-					{if UserSession::get()}
-						Welcome, {UserSession::get()->username}!.
-						<a href="{url request="user/logout"}">Logout</a>
-					{else}
-						<a href="{url request="user/login"}">Login</a>
-					{/if}
-				</ol>
+				<span class="navigation-right">
+					{aside name='navigation-right'}
+				</span>
 			</nav>
 		</header>
 	
