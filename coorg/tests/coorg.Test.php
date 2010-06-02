@@ -147,9 +147,21 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		
 		$this->assertEquals('alpha/withaside', HomeAlphaAside::$request);
 		$this->assertEquals('p2', HomeAlphaAside::$p2);
+		$this->assertEquals(array(), HomeAlphaAside::$widgetParams);
 		$this->assertFalse(array_key_exists('asideVar',  CoOrgSmarty::$vars));
 		
 		$this->assertFalse(class_exists('HomeAlpha2Aside')); // This is not configured
+	}
+	
+	public function testAsideWithParams()
+	{
+		CoOrg::config()->set('aside/main', array('home/alpha' => array('beta' => 'gamma')));
+		CoOrg::process('alpha/withaside/p1/p2');
+		
+		$this->assertEquals('alpha/withaside', HomeAlphaAside::$request);
+		$this->assertEquals('p2', HomeAlphaAside::$p2);
+		$this->assertEquals(array('beta' => 'gamma'), HomeAlphaAside::$widgetParams);
+		$this->assertFalse(array_key_exists('asideVar',  CoOrgSmarty::$vars));
 	}
 	
 	public function testAsideOverwriteParam()
