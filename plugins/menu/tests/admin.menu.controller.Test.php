@@ -22,7 +22,7 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 		$this->login('azerty');
 		$this->request('admin/menu');
 		
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 		$this->assertFlashError('You don\'t have the rights to view this page');
 	}
 	
@@ -42,7 +42,7 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 		$this->request('admin/menu/save', array('name' => 'MeTitle',
 		                                        'description' => 'Desc'));
 		
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 		$this->assertFlashError('You don\'t have the rights to view this page');
 	}
 	
@@ -95,7 +95,7 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 		$this->login('azerty');
 		$this->request('admin/menu/edit/main');
 		
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 		$this->assertFlashError('You don\'t have the rights to view this page');
 	}
 	
@@ -134,7 +134,7 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 		$this->login('azerty');
 		$this->request('admin/menu/update', array('name'=>'main',
 		                            'description'=> 'My Fancy new description'));
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 		$this->assertFlashError('You don\'t have the rights to view this page');
 	}
 	

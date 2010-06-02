@@ -32,7 +32,7 @@ class UserControllerTest extends CoOrgControllerTest
 		                                  'password' => 'myPassword',
 		                                  'passwordConfirmation' => 'myPassword'));
 
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 		$this->assertFlashNotice('We have sent an email to confirm your registration');
 	}
 	
@@ -61,7 +61,7 @@ class UserControllerTest extends CoOrgControllerTest
 		                                          'password' => 'pass'));
 
 		$this->assertFlashNotice('You are now logged in');
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 		$this->assertNotNull(UserSession::get());
 	}
 	
@@ -85,7 +85,7 @@ class UserControllerTest extends CoOrgControllerTest
 	
 		$this->request('user/logout');
 		$this->assertFlashNotice('You are now logged out');
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 		
 		$this->assertNull(UserSession::get());
 	}

@@ -37,7 +37,7 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 		                  'entryID' => 'URLMenuEntryProvider',
 		                  'data' => 'http://belgium.be'));
 		
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 		$this->assertFlashError('You don\'t have the rights to view this page');
 	}
 	
@@ -103,7 +103,7 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 		$e = $m->entries('nl');
 		
 		$this->request('admin/menu/entry/delete', array('entry' => $e[0]->ID));
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 		$this->assertFlashError('You don\'t have the rights to view this page');
 	}
 	
@@ -132,7 +132,7 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 		$e = $m->entries('nl');
 		
 		$this->request('admin/menu/entry/move', array('entry' => $e[0]->ID, 'newsequence' => 0));
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 		$this->assertFlashError('You don\'t have the rights to view this page');
 	}
 	

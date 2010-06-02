@@ -291,8 +291,7 @@ class CoOrg {
 	
 	private static function normalizeRequest(&$request)
 	{
-		if (strlen($request) == 0) return;
-		while ($request[strlen($request)-1] == '/')
+		while (strlen($request) > 0 && $request[strlen($request)-1] == '/')
 		{
 			$request = substr($request, 0, strlen($request) - 1);
 		}

@@ -103,7 +103,7 @@ class AclBeforeTest extends CoOrgControllerTest
 		CoOrg::process('MockAclBeforeTest/rule');
 
 		$this->assertFlashError('You don\'t have the rights to view this page');
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 	}
 
 	public function testRuleNotAllowedLoggedOut()
@@ -128,7 +128,7 @@ class AclBeforeTest extends CoOrgControllerTest
 		CoOrg::process('MockAclBeforeTest/mix');
 
 		$this->assertFlashError('You don\'t have the rights to view this page');
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 	}
 
 	public function testMixOfAllowedAndDeniesOtherMix()

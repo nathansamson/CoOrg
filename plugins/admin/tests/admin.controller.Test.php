@@ -26,7 +26,7 @@ class AdminControllerTest extends CoOrgControllerTest
 		
 		$this->request('admin');
 		
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 		$this->assertFlashError('You don\'t have the rights to view this page');
 	}
 	

@@ -190,7 +190,7 @@ class BlogControllerTest extends CoOrgControllerTest
 		$this->request('nl/blog/translate/2010/04/10/some-other-blog/en');
 
 		$this->assertFlashError('You don\'t have the rights to view this page');
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 	}
 
 	public function testTranslateSave()
@@ -240,7 +240,7 @@ class BlogControllerTest extends CoOrgControllerTest
 		                                        'text' => 'Vertaalde tekst'));
 
 		$this->assertFlashError('You don\'t have the rights to view this page');
-		$this->assertRedirected('/');
+		$this->assertRedirected('');
 	}
 	
 	public function testLatestFeed()
