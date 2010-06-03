@@ -6,7 +6,7 @@
 */
 class UserGroup extends DBModel
 {
-	public function __construct($name)
+	public function __construct($name = null)
 	{
 		parent::__construct();
 		$this->name = $name;
@@ -47,14 +47,6 @@ class UserGroup extends DBModel
 		$acl = Acl::set($this->name, $key, false);
 	}
 	
-	public static function from($row)
-	{
-		$group = new UserGroup($row['name']);
-		$group->system = $row['system'];
-		$group->setSaved();
-		return $group;
-	}
-	
 	public static function getGroupByName($name)
 	{
 		$q = DB::prepare('SELECT * FROM UserGroup WHERE name=:name');
@@ -63,7 +55,7 @@ class UserGroup extends DBModel
 		$row = $q->fetch();
 		if ($row != false)
 		{
-			return self::from($row);
+			return self::fetch($row, 'UserGroup');
 		}
 		else
 		{

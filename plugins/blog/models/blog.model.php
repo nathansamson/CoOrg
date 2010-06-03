@@ -15,7 +15,8 @@
 */
 class Blog extends DBModel
 {
-	public function __construct($title, $author, $text, $language, $datePosted = null)
+	public function __construct($title = null, $author = null, $text = null,
+	                            $language = null, $datePosted = null)
 	{
 		parent::__construct();
 		$this->title = $title;
@@ -51,7 +52,7 @@ class Blog extends DBModel
 		$trs = array();
 		foreach ($q->fetchAll() as $row)
 		{
-			$trs[$row['language']] = self::produceBlog($row);
+			$trs[$row['language']] = self::fetch($row, 'Blog');
 		}
 		return $trs;
 	}
@@ -71,7 +72,7 @@ class Blog extends DBModel
 		$row = $q->fetch();
 		if ($row != false)
 		{
-			return self::produceBlog($row);
+			return self::fetch($row, 'Blog');
 		}
 		else
 		{
@@ -94,7 +95,7 @@ class Blog extends DBModel
 		$blogs = array();
 		foreach ($q->fetchAll() as $row)
 		{
-			$blogs[] = self::produceBlog($row);
+			$blogs[] = self::fetch($row, 'Blog');
 		}
 		return $blogs;
 	}
@@ -129,18 +130,6 @@ class Blog extends DBModel
 				throw new ValidationException($this);
 			}
 		}
-	}
-	
-	private static function produceBlog($row)
-	{
-		$blog = new Blog($row['title'], $row['authorID'], $row['text'], $row['language'], $row['datePosted']);
-		$blog->ID = $row['ID'];
-		$blog->timePosted = $row['timePosted'];
-		$blog->timeEdited = $row['timeEdited'];
-		$blog->parentID = $row['parentID'];
-		$blog->parentLanguage = $row['parentLanguage'];
-		$blog->setSaved();
-		return $blog;
 	}
 
 	private static function translatedInWithParams($ID, $date, $language)

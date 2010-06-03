@@ -6,7 +6,7 @@
 */
 class UserGroupMember extends DBModel
 {
-	public function __construct($userID, $groupID)
+	public function __construct($userID = null, $groupID = null)
 	{
 		parent::__construct();
 		$this->userID = $userID;
@@ -23,9 +23,7 @@ class UserGroupMember extends DBModel
 		$r = $q->fetch();
 		if ($r != array())
 		{
-			$m = new UserGroupMember($r['userID'], $r['groupID']);
-			$m->setSaved();
-			return $m;
+			return self::fetch($r, 'UserGroupMember');
 		}
 		else
 		{
@@ -45,7 +43,7 @@ class UserGroupMember extends DBModel
 		$groups = array();
 		foreach ($q->fetchAll() as $r)
 		{
-			$groups[] = UserGroup::from($r);
+			$groups[] = self::fetch($r, 'UserGroup');
 		}
 		return $groups;
 	}
@@ -60,9 +58,7 @@ class UserGroupMember extends DBModel
 		$members = array();
 		foreach ($q->fetchAll() as $row)
 		{
-			$m = new UserGroupMember($row['userID'], $row['groupID']);
-			$m->setSaved();
-			$members[] = $m;
+			$members[] = self::fetch($row, 'UserGroupMember');
 		}
 		return $members;
 	}

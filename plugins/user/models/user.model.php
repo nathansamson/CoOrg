@@ -13,7 +13,7 @@
 */
 class User extends DBModel
 {
-	public function __construct($username, $email)
+	public function __construct($username = null, $email = null)
 	{
 		parent::__construct();
 		$this->username = $username;
@@ -48,13 +48,7 @@ class User extends DBModel
 		
 		if ($row = $q->fetch())
 		{
-			$user = new User($row['username'], $row['email']);
-			$user->firstName = $row['firstName'];
-			$user->lastName = $row['lastName'];
-			$user->passwordHash = $row['passwordHash'];
-			$user->passwordHashKey = $row['passwordHashKey'];
-			$user->setSaved();
-			return $user;
+			return self::fetch($row, 'User');
 		}
 		else
 		{

@@ -121,7 +121,7 @@ class MenuEntry extends DBModel
 		
 		if ($row = $q->fetch())
 		{
-			return self::constructByRow($row);
+			return self::fetch($row, 'MenuEntry');
 		}
 		else
 		{
@@ -139,25 +139,9 @@ class MenuEntry extends DBModel
 		$entries = array();
 		foreach ($q->fetchAll() as $row)
 		{
-			$entries[] = self::constructByRow($row);
+			$entries[] = self::fetch($row, 'MenuEntry');
 		}
 		return $entries;
-	}
-	
-	private static function constructByRow($row)
-	{
-		$entry = new MenuEntry();
-		$entry->ID = $row['ID'];
-		$entry->menu = $row['menu'];
-		$entry->url = $row['url'];
-		$entry->title = $row['title'];
-		$entry->language = $row['language'];
-		$entry->sequence = $row['sequence'];
-		$entry->provider = $row['provider'];
-		$entry->action = $row['action'];
-		$entry->data = $row['data'];
-		$entry->setSaved();
-		return $entry;
 	}
 }
 ?>

@@ -47,7 +47,7 @@ class Menu extends DBModel
 		$row = $q->fetch();
 		if ($row)
 		{
-			return self::constructFromDB($row);
+			return self::fetch($row, 'Menu');
 		}
 		else
 		{
@@ -74,7 +74,7 @@ class Menu extends DBModel
 		$menus = array();
 		foreach ($q->fetchAll() as $row)
 		{
-			$menus[] = self::constructFromDB($row);
+			$menus[] = self::fetch($row, 'Menu');
 		}
 		return $menus;
 	}
@@ -112,15 +112,6 @@ class Menu extends DBModel
 			}
 		}
 		return $urls;
-	}
-	
-	private static function constructFromDB($row)
-	{
-		$menu = new Menu();
-		$menu->name = $row['name'];
-		$menu->description = $row['description'];
-		$menu->setSaved();
-		return $menu;
 	}
 }
 

@@ -10,7 +10,7 @@
 */
 class MockModel extends DBModel
 {
-	public function __construct($name, $description, $email)
+	public function __construct($name = null, $description = null, $email = null)
 	{
 		parent::__construct();
 		$this->name = $name;
@@ -35,10 +35,7 @@ class MockModel extends DBModel
 		
 		if ($row = $q->fetch())
 		{
-			$user = new MockModel($row['name'], $row['description'], $row['email']);
-			$user->rot13name = $row['rot13name'];
-			$user->setSaved();
-			return $user;
+			return self::fetch($row, 'MockModel');
 		}
 		else
 		{

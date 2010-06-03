@@ -9,7 +9,7 @@ require_once 'coorg/properties/bool.class.php';
 
 class Model
 {
-	private static $_modelInfo = array();
+	protected static $_modelInfo = array();
 
 	private $_properties = array();
 	
@@ -364,6 +364,20 @@ class DBModel extends Model
 	
 	protected function beforeInsert()
 	{
+	}
+	
+	public static function fetch($row, $model)
+	{
+		$instance = new $model;
+		foreach (self::$_modelInfo[$model]['properties'] as $pName => $pInfo)
+		{
+			if (!$pInfo['writeonly'])
+			{
+				$instance->$pName = $row[$pName];
+			}
+		}
+		$instance->setSaved();
+		return $instance;
 	}
 }
 
