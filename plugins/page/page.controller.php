@@ -18,9 +18,30 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function smarty_function_url($params, $smarty)
+class PageController extends Controller
 {
-	return CoOrg::createURL(array_values($params));
+	public function show($id, $language = null)
+	{
+		if ($language == null)
+		{
+			$language = CoOrg::getLanguage();
+		}
+		else
+		{
+			$this->viewingTranslation = true;
+		}
+		$page = Page::get($id, $language);
+		if ($page != null)
+		{
+			$this->page = $page;
+			$this->render('show');
+		}
+		else
+		{
+			$this->error('Page not found');
+			$this->notFound();
+		}
+	}
 }
 
 ?>

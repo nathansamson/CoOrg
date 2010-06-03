@@ -18,9 +18,22 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function smarty_function_url($params, $smarty)
+class PageAdminModule
 {
-	return CoOrg::createURL(array_values($params));
+	public function __construct()
+	{
+		$this->name = 'Content';
+		$this->url = CoOrg::createURL(array('admin', 'page'));
+		$this->image = CoOrg::staticFile('images/page.png', 'page');
+		$this->priority = 1;
+	}
+	
+	public function isAllowed($user)
+	{
+		return Acl::isAllowed($user->username, 'admin-page-edit');
+	}
 }
+
+Admin::registerModule('PageAdminModule');
 
 ?>

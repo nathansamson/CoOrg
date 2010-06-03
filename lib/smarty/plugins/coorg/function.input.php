@@ -101,7 +101,14 @@ function smarty_function_input($params, $smarty)
 	else
 	{
 		$value = $label;
-		$name = 'xxSubmit';
+		if (array_key_exists('name', $params))
+		{
+			$name = $params['name'];
+		}
+		else
+		{
+			$name = 'xxSubmit';
+		}
 	}
 	
 	if ($type != 'hidden' && $type != 'submit')
@@ -128,6 +135,11 @@ function smarty_function_input($params, $smarty)
 	    		{
 	    			$cols = 40;
 	    			$rows = 2;
+	    		}
+	    		else if ($params['size'] == 'big')
+	    		{
+	    			$cols = 60;
+	    			$rows = 25;
 	    		}
 	    	}
 	    	$input = '<textarea name="'.$name.'" '. 'id="'.$id.'" '.

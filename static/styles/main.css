@@ -281,3 +281,12 @@ aside input {
 .normal-post-url button img {
 	vertical-align: middle;
 }
+
+a img {
+	border: none;
+	vertical-align: middle;
+}
+
+.page-actions {
+	float: right;
+}

@@ -195,6 +195,13 @@ class CoOrg {
 			$urlPrefix = self::$_config->get('urlPrefix').'/';
 			$urlPrefix = str_replace(':language', $language, $urlPrefix);
 		}
+		foreach ($params as $k=>&$p)
+		{
+			if ($k > 0)
+			{
+				$p = coorgencode($p);
+			}
+		}
 	
 		$url = self::$_config->get('path').$urlPrefix.implode('/', $params);
 		self::normalizeRequest($url);
@@ -405,7 +412,11 @@ class CoOrg {
 					{
 						throw new NotEnoughParametersException();
 					}
-					$params = $requestParams;
+					$params = array();
+					foreach ($requestParams as $p)
+					{
+						$params[] = coorgdecode($p);
+					}
 				}
 				return array($controllerClass, $actionName, $params, $request.'/'.$actionName);
 			}
@@ -526,6 +537,26 @@ class CoOrg {
 			}
 		}
 	}
+}
+
+function coorgencode($input)
+{
+	$toEncode = array('$', '?', '/', '&', '.');
+	foreach ($toEncode as $char)
+	{
+		$input = str_replace($char, '$'.dechex(ord($char)), $input);
+	}
+	return $input;
+}
+
+function coorgdecode($input)
+{
+	$toDecode = array('?', '/', '&', '.', '$');
+	foreach ($toDecode as $char)
+	{
+		$input = str_replace('$'.dechex(ord($char)), $char, $input);
+	}
+	return $input;
 }
 
 class WrongRequestMethodException extends Exception

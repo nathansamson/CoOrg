@@ -43,4 +43,36 @@
 		created="2009-04-03"
 		content="Me Content"
 	/>
+	
+	<User 
+		username="admin"
+		email="admin"
+		passwordHashKey="thesalt"
+		passwordHash="624244922c14dfcec6c6911229a42509701f7bd9fd3e0abf8cdbe9f6a22cb3c02d5d64ee3443da31846089adf4d6551a4d086afbeee625317c1d262af820fa30"
+	/>
+	
+	<User 
+		username="user"
+		email="user"
+		passwordHashKey="thesalt"
+		passwordHash="edd9398e9e9827f1082419d47490ff74daf45b5b0f9f57ce427768f195e25ee6443be91c792b014af44c3521f9eb6fccc823ccd6a774862b16f1389cfc0ff0c7"
+	/>
+	
+	<UserGroup />
+	
+	<UserGroupMember 
+		groupID="__admin"
+		userID="admin"
+	/>
+	
+	<UserGroupMember 
+		groupID="__user"
+		userID="user"
+	/>
+	
+	<Acl 
+		groupID="__admin"
+		keyID="admin-page-edit"
+		allowed="1"
+	/>
 </dataset>

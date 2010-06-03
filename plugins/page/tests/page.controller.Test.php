@@ -18,9 +18,38 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function smarty_function_url($params, $smarty)
+class PageControllerTest extends CoOrgControllerTest
 {
-	return CoOrg::createURL(array_values($params));
+	public function __construct()
+	{
+		parent::__construct();
+		$this->_dataset = dirname(__FILE__).'/page.dataset.xml';
+	}
+	
+	public function testShow()
+	{
+		$this->request('page/show/some-page');
+		
+		$this->assertRendered('show');
+		$this->assertVarSet('page');
+	}
+	
+	public function testShowLanguage()
+	{
+		$this->request('nl/page/show/aabbcc');
+		
+		$this->assertRendered('show');
+		$this->assertVarSet('page');
+		$page = CoOrgSmarty::$vars['page'];
+		$this->assertEquals('nl', $page->language);
+	}
+	
+	public function testShowNotFound()
+	{
+		$this->request('nl/page/show/i-do-not-exist');
+		$this->assertRendered('notfound');
+		$this->assertFlashError('Page not found');
+	}
 }
 
 ?>
