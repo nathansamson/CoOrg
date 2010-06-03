@@ -21,8 +21,20 @@ class BlogControllerTest extends CoOrgControllerTest
 	{
 		$this->request('blog');
 		
-		$this->fail('Should fail');
 		$this->assertVarSet('blogs');
+		$blogs = CoOrgSmarty::$vars['blogs'];
+		$this->assertEquals(4, count($blogs));
+		$this->assertEquals('en', $blogs[0]->language);
+		$this->assertRendered('latest');
+	}
+	
+	public function testIndexOtherLanguage()
+	{
+		$this->request('nl/blog');
+		$this->assertVarSet('blogs');
+		$blogs = CoOrgSmarty::$vars['blogs'];
+		$this->assertEquals(1, count($blogs));
+		$this->assertEquals('nl', $blogs[0]->language);
 		$this->assertRendered('latest');
 	}
 	
@@ -247,9 +259,11 @@ class BlogControllerTest extends CoOrgControllerTest
 	{
 		$this->request('blog.atom/latest');
 		
-		$this->fail('Should fail');
 		$this->assertContentType('application/xml+atom');
 		$this->assertVarSet('blogs');
+		$blogs = CoOrgSmarty::$vars['blogs'];
+		$this->assertEquals(4, count($blogs));
+		$this->assertEquals('en', $blogs[0]->language);
 		$this->assertRendered('latest', 'atom', null);
 	}
 	

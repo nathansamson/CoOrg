@@ -6,13 +6,13 @@ class BlogController extends Controller
 
 	public function index()
 	{
-		$this->blogs = Blog::latest(10, CoOrg::getLanguage());
+		$this->blogs = Blog::latest(CoOrg::getLanguage(), 10);
 		$this->render('latest');
 	}
 	
 	public function latest()
 	{
-		$this->blogs = Blog::latest(10, CoOrg::getLanguage());
+		$this->blogs = Blog::latest(CoOrg::getLanguage(), 10);
 		$this->render('latest', false, null);
 	}
 
