@@ -37,7 +37,13 @@ class UserController extends Controller
 		
 		try
 		{
-			$user->save();
+			$key = $user->save();
+			$mail = $this->mail();
+			$mail->username = $username;
+			$mail->activationURL = CoOrg::createFullURL(array('user/activate', $username, $key));
+			$mail->site = CoOrg::config()->get('site/title');
+			$mail->to($email)->subject('Complete your registration')
+			     ->send('mails/registration');
 			$this->notice(t('We have sent an email to confirm your registration'));
 			$this->redirect('/');
 		}
@@ -87,6 +93,30 @@ class UserController extends Controller
 		
 		$this->notice(t('You are now logged out'));
 		$this->redirect('/');
+	}
+	
+	public function activate($userID, $key)
+	{
+		$user = User::getUserByName($userID);
+		if ($user && $user->isLocked())
+		{
+			if ($user->unlock($key))
+			{
+				$user->save();
+				$this->notice('Your account is now activated, you can login');
+				$this->redirect('user/login');
+			}
+			else
+			{
+				$this->error('Invalid activation key');
+				$this->redirect('/');
+			}
+		}
+		else
+		{
+			$this->error('Invalid username');
+			$this->redirect('/');
+		}
 	}
 }
 

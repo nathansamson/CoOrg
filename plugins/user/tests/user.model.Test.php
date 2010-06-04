@@ -13,14 +13,26 @@ class UserModelTest extends CoOrgModelTest
 		$user = new User('Nathan', 'nathan@mail.be');
 		$user->password = 'azerty';
 		$user->passwordConfirmation = 'azerty';
-		$user->save();
+		$key = $user->save();
 		
+		$this->assertNotNull($key);
 		$nathan = User::getUserByName('Nathan');
+		$this->assertTrue($nathan->isLocked());
 		$this->assertNotNull($nathan);
 		$this->assertTrue($nathan->checkPassword('azerty'));
 		$this->assertFalse($nathan->checkPassword('qwerty'));
 		
 		$this->assertNull(User::getUserByName('nathan'));
+		
+		$this->assertFalse($nathan->unlock('wrongkey'));
+		$this->assertTrue($nathan->isLocked());
+		
+		$this->assertTrue($nathan->unlock($key));
+		$this->assertFalse($nathan->isLocked());
+		$nathan->save();
+		
+		$nathan = User::getUserByName('Nathan');
+		$this->assertFalse($nathan->isLocked());
 	}
 	
 	public function testCreateCheckRequired()

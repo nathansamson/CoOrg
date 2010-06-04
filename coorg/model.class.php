@@ -246,16 +246,16 @@ class DBModel extends Model
 		{
 			$this->beforeUpdate();
 			$this->validate('update');
-			$this->update();
-			$this->setSaved();
+			$r = $this->update();
 		}
 		else
 		{
 			$this->beforeInsert();
 			$this->validate('insert');
-			$this->insert();
-			$this->setSaved();
+			$r = $this->insert();
 		}
+		$this->setSaved();
+		return $r;
 	}
 
 	protected function update()

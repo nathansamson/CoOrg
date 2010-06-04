@@ -29,6 +29,8 @@ require_once 'coorg/i18n.class.php';
 require_once 'coorg/header.interface.php';
 require_once 'coorg/coorgsmarty.interface.php';
 require_once 'coorg/state.interface.php';
+require_once 'coorg/mail.interface.php';
+
 
 class CoOrg {
 
@@ -68,7 +70,7 @@ class CoOrg {
 		DB::open($config->get('dbdsn'), $config->get('dbuser'),
 		         $config->get('dbpass'));
 		
-		self::$_site = 'http://gamma/';
+		self::$_site = 'http://gamma';
 		if (array_key_exists('HTTP_REFERER', $_SERVER))
 		{
 			self::$_referer = $_SERVER['HTTP_REFERER'];
@@ -183,6 +185,11 @@ class CoOrg {
 		{
 			include_once self::$_models[$name];
 		}
+	}
+	
+	public static function createFullURL($params, $language = null)
+	{
+		return self::$_site.self::createURL($params, $language);
 	}
 	
 	public static function createURL($params, $language = null)

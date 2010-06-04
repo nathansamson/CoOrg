@@ -14,6 +14,10 @@ class UserControllerTest extends CoOrgControllerTest
 		$user = new User('Initial User', 'somemail@email.com');
 		$user->password = 'pass';
 		$user->passwordConfirmation = 'pass';
+		$key = $user->save();
+		$user->password = '';
+		$user->passwordConfirmation = '';
+		$user->unlock($key);
 		$user->save();
 	}
 
@@ -34,6 +38,11 @@ class UserControllerTest extends CoOrgControllerTest
 
 		$this->assertRedirected('');
 		$this->assertFlashNotice('We have sent an email to confirm your registration');
+		$this->assertMailSent('myemail@email.com', 'Complete your registration',
+		                      'mails/registration',
+		                      array('username' => 'New User',
+		                            'activationURL' => '**?**',
+		                            'site' => 'The Site'));
 	}
 	
 	public function testSaveFailure()
@@ -113,6 +122,55 @@ class UserControllerTest extends CoOrgControllerTest
 		
 		$this->assertNull(UserSession::get());
 	}
+	
+	public function testActivate()
+	{
+		$user = new User;
+		$user->username = 'new user';
+		$user->email = 'email@email.com';
+		$user->password = 'email';
+		$user->passwordConfirmation = 'email';
+		$key = $user->save();
+
+		$this->request('user/activate/new user/'.$key);
+		$this->assertRedirected('user/login');
+		$this->assertFlashNotice('Your account is now activated, you can login');
+		
+		$user = User::getUserByName('new user');
+		$this->assertFalse($user->isLocked());
+	}
+	
+	public function testActivateWrongKey()
+	{
+		$user = new User;
+		$user->username = 'new user';
+		$user->email = 'email@email.com';
+		$user->password = 'email';
+		$user->passwordConfirmation = 'email';
+		$key = $user->save();
+
+		$this->request('user/activate/new user/wrong-key');
+		$this->assertRedirected('');
+		$this->assertFlashError('Invalid activation key');
+		
+		$user = User::getUserByName('new user');
+		$this->assertTrue($user->isLocked());
+	}
+	
+	public function testActivateWronUser()
+	{
+		$this->request('user/activate/me-does-not-exists/wrong-key');
+		$this->assertRedirected('');
+		$this->assertFlashError('Invalid username');
+	}
+	
+	public function testActivateActivatedUser()
+	{
+		$this->request('user/activate/azerty/wrong-key');
+		$this->assertRedirected('');
+		$this->assertFlashError('Invalid username');
+	}
+	
 }
 
 ?>

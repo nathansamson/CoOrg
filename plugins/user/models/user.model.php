@@ -28,6 +28,7 @@
  * @property writeonly; oldPassword String(t('Password')); required only('updatePassword')
  * @property protected; passwordHash String('Password hash', 128); required
  * @property protected; passwordHashKey String('Pasword hash key', 64); required
+ * @property protected; lockKey String('Reigstration lock key', 64); required only('insert')
 */
 class User extends DBModel
 {
@@ -36,6 +37,25 @@ class User extends DBModel
 		parent::__construct();
 		$this->username = $username;
 		$this->email = $email;
+	}
+	
+	public function isLocked()
+	{
+		return $this->lockKey != null;
+	}
+	
+	public function unlock($key)
+	{
+		if ($this->lockKey == $key)
+		{
+			$this->lockKey = null;
+			// Do not automatically save here because it will change other keys to
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	public function checkPassword($password)
@@ -174,6 +194,8 @@ class User extends DBModel
 		                         md5(uniqid('qwerty1989', true));
 
 		$this->passwordHash = $this->createHashedPassword($this->password);
+		$this->lockKey = md5(uniqid('#kadro23ela', true)) . 
+		                 md5(uniqid('as90pa#zan', true));
 
 	}
 	
@@ -184,6 +206,7 @@ class User extends DBModel
 		$group->save();
 		
 		$group->add($this->username);
+		return $this->lockKey;
 	}
 	
 	protected function createHashedPassword($password)

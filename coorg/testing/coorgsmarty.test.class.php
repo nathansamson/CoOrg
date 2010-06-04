@@ -47,9 +47,9 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 		self::$errors[] = $error;
 	}
 
-	public function assign($key, $value)
+	public function assign($key, $value, $save = true)
 	{
-		self::$vars[$key] = $value;
+		if ($save) self::$vars[$key] = $value;
 		parent::assign($key, $value);
 	}
 	
@@ -63,6 +63,11 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 	{
 		self::$renderedOutput = parent::fetch($tpl);
 		self::$renderedTemplate = $tpl;
+	}
+	
+	public function render($tpl)
+	{
+		return parent::fetch($tpl);
 	}
 	
 	public function saveState()

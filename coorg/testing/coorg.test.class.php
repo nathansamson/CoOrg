@@ -48,6 +48,7 @@ class CoOrgControllerTest extends CoOrgModelTest
 		CoOrg::spoofReferer('http://www.test.info/some/part/of/the/site');
 		$config = new Config(COORG_TEST_CONFIG);
 		$config->set('enabled_plugins', array('admin', 'user'));
+		$config->set('site/title', 'The Site');
 		CoOrg::init($config, 'app', 'plugins');
 		CoOrgSmarty::clearAll();
 	}
@@ -100,6 +101,27 @@ class CoOrgControllerTest extends CoOrgModelTest
 	protected function assertFlashError($error)
 	{
 		$this->assertTrue(in_array($error, CoOrgSmarty::$errors), "'$error' is an error message");
+	}
+	
+	protected function assertMailSent($to, $subject, $tpl, $vars)
+	{
+		$mail = @Mail::$sentMails[$to][$subject];
+		if ($mail)
+		{
+			$this->assertEquals($tpl, $mail->tpl);
+			foreach ($vars as $var => $value)
+			{
+				$this->assertTrue(array_key_exists($var, $mail->vars), $var. ' is set in mail');
+				if ($value != '**?**')
+				{
+					$this->assertEquals($value, $mail->vars[$var]);
+				}
+			}
+		}
+		else
+		{
+			$this->fail('No mail sent to: '.$to.' with subject '.$subject);
+		}
 	}
 }
 

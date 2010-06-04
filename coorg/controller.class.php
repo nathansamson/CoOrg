@@ -250,18 +250,31 @@ class Controller {
 		self::smarty()->assign($key, $value);
 	}
 	
+	protected function mail()
+	{
+		$smarty = $this->prepareASmarty();
+		$smarty->addTemplateDir($this->_tplPath);
+		return new Mail($smarty);
+	}
+	
 	private function smarty()
 	{
 		if ($this->_smarty == null)
 		{
-			$this->_smarty = new CoOrgSmarty;
-			$this->_smarty->addTemplateDir($this->_appPath);
-			$this->_smarty->addPluginsDir('lib/smarty/plugins/coorg');
-			
-			//TODO: Use anonymous functions/closures (only available in PHP 5.3)
-			$this->_smarty->_coorg_createURL = array($this, 'createURL');
+			$this->_smarty = $this->prepareASmarty();
 		}
 		return $this->_smarty;
+	}
+	
+	private function prepareASmarty()
+	{
+		$smarty = new CoOrgSmarty;
+		$smarty->addTemplateDir($this->_appPath);
+		$smarty->addPluginsDir('lib/smarty/plugins/coorg');
+		
+		//TODO: Use anonymous functions/closures (only available in PHP 5.3)
+		$smarty->_coorg_createURL = array($this, 'createURL');
+		return $smarty;
 	}
 }
 

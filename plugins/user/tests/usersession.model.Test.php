@@ -16,6 +16,10 @@ class UserSessionTest extends CoOrgModelTest
 		$user = new User('Nathan', 'nathan@email.com');
 		$user->password = 'nathan';
 		$user->passwordConfirmation = 'nathan';
+		$key = $user->save();
+		$user->password = '';
+		$user->passwordConfirmation = '';
+		$user->unlock($key);
 		$user->save();
 		
 		$session = new UserSession('a', 'b');
@@ -101,6 +105,28 @@ class UserSessionTest extends CoOrgModelTest
 		catch (ValidationException $e)
 		{
 			$this->assertEquals('Incorrect password', $session->password_error);
+		}
+	}
+	
+	public function testUserLocked()
+	{
+		$user = new User;
+		$user->username = 'someuser';
+		$user->email = 'someuser@somemail.com';
+		$user->password = 'thepass';
+		$user->passwordConfirmation = 'thepass';
+		$key = $user->save();
+		
+		$session = new UserSession('someuser', 'thepass');
+		try
+		{
+			$session->save();
+			$this->fail('Expected exception');
+		}
+		catch (ValidationException $e)
+		{
+			$this->assertEquals('User is not activated', 
+			                    $session->username_error);
 		}
 	}
 }
