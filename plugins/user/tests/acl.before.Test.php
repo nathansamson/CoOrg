@@ -74,10 +74,12 @@ class AclBeforeTest extends CoOrgControllerTest
 
 	public function testDenyAnonymous()
 	{
-		CoOrg::process('MockAclBeforeTest/denyAnonymous');
+		CoOrg::process('nl/MockAclBeforeTest/denyAnonymous/withsomestrange$2fcharacters');
 
 		$this->assertFlashError('You should be logged in to view this page');
 		$this->assertRendered('login');
+		$this->assertVarSet('redirect');
+		$this->assertVarIs('redirect', 'MockAclBeforeTest/denyAnonymous/withsomestrange$2fcharacters');
 	}
 
 	public function testDenyAnonymousLoggedIn()

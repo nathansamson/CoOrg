@@ -15,6 +15,8 @@ class AlphaController extends Controller {
 	
 	public static $postRequiredExecuted = false;
 	
+	public static $objectRetrieve = null;
+	
 	public function index($p1 = '', $p2 = '') {
 		self::$indexExecuted = true;
 		self::$indexParams = array($p1, $p2);
@@ -53,6 +55,7 @@ class AlphaController extends Controller {
 	public function show($id, $param)
 	{
 		$this->object = $id;
+		self::$objectRetrieve = $this->object;
 		$this->param = $param;
 		
 		$this->render('show');

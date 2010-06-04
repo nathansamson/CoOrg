@@ -82,6 +82,7 @@ class AclBeforeController extends Controller
 		if (!$this->_allowed && !UserSession::get())
 		{
 			$this->error('You should be logged in to view this page');
+			$this->redirect = $this->coorgRequest;
 			$this->render('login');
 			return false;
 		}

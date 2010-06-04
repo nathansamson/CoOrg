@@ -34,9 +34,10 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
 	public function testVariablesSet()
 	{
 		CoOrg::config()->set('path', '/the/path/');
-		CoOrg::process('alpha/show/someID/someParameter');
+		CoOrg::process('en/alpha/show/someID/someParameter');
+		$this->assertEquals('someID', AlphaController::$objectRetrieve);
 		$this->assertEquals(array('coorgRequest' => 'alpha/show/someID/someParameter',
-		                          'coorgUrl' => '/the/path/alpha/show/someID/someParameter',
+		                          'coorgUrl' => '/the/path/en/alpha/show/someID/someParameter',
 		                          'object' => 'someID',
 		                          'param' => 'someParameter'),
 		                    CoOrgSmarty::$vars);

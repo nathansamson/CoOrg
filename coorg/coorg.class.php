@@ -102,10 +102,13 @@ class CoOrg {
 		$requestParams = explode('/', $request);
 		
 		$controllerName = ucfirst(array_shift($requestParams));
+		$prefix = null;
+		$requestWithoutPrefix = $request;
 		if (strlen($controllerName) == 2)
 		{
+			$prefix = strtolower($controllerName).'/';
 			I18n::setLanguage(strtolower($controllerName));
-			
+			$requestWithoutPrefix = implode('/', $requestParams);
 			if (count($requestParams) > 0)
 			{
 				$controllerName = ucfirst(array_shift($requestParams));
@@ -128,8 +131,8 @@ class CoOrg {
 			list($controllerClass, $action, $params, $request) = 
 	                      self::findController($controllerName, $requestParams,
 	                                           $params, $post);
-			$controllerClass->coorgRequest = $url;
-			$controllerClass->coorgUrl = self::config()->get('path').$url;
+			$controllerClass->coorgRequest = $requestWithoutPrefix;
+			$controllerClass->coorgUrl = self::config()->get('path').$prefix.$requestWithoutPrefix;
 			if (!$post && $controllerClass->isPost($action))
 			{
 				throw new WrongRequestMethodException();

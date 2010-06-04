@@ -4,6 +4,8 @@
 	{input for=username label="Username" required}
 	{input for=password label="Password" required}
 	
+	<input type="hidden" name="redirect" value="{$coorgRequest}"/>
+	
 	{input type="submit" label="Login"}
 {/form}
 	<a href="{url request="user/create"}">{'Create an account'|_}</a>

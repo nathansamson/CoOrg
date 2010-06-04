@@ -65,6 +65,17 @@ class UserControllerTest extends CoOrgControllerTest
 		$this->assertNotNull(UserSession::get());
 	}
 	
+	public function testExecuteLoginWithRedirect()
+	{
+		$this->request('user/executeLogin', array('username' => 'Initial User',
+		                                          'password' => 'pass',
+		                                          'redirect' => 'some/sort/of/url'));
+
+		$this->assertFlashNotice('You are now logged in');
+		$this->assertRedirected('some/sort/of/url');
+		$this->assertNotNull(UserSession::get());
+	}
+	
 	public function testExecuteLoginFailure()
 	{
 		$this->request('user/executeLogin', array('username' => 'No User',
@@ -72,6 +83,19 @@ class UserControllerTest extends CoOrgControllerTest
 
 		$this->assertFlashError('You are not logged in');
 		$this->assertVarSet('session');
+		$this->assertRendered('login');
+	}
+	
+	public function testExecuteLoginFailureRedirect()
+	{
+		$this->request('user/executeLogin', array('username' => 'No User',
+		                                          'password' => 'pass',
+		                                          'redirect' => 'some/sort/of/url'));
+
+		$this->assertFlashError('You are not logged in');
+		$this->assertVarSet('session');
+		$this->assertVarSet('redirect');
+		$this->assertVarIs('redirect', 'some/sort/of/url');
 		$this->assertRendered('login');
 	}
 	

@@ -232,6 +232,19 @@ class Controller {
 		throw new TemplateNotFoundException($file);
 	}
 
+	public function __get($key)
+	{
+		$var = self::smarty()->getVariable($key);
+		if ($var)
+		{
+			return $var->value;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
 	public function __set($key, $value)
 	{
 		self::smarty()->assign($key, $value);

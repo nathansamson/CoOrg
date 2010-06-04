@@ -58,7 +58,7 @@ class UserController extends Controller
 	/**
 	 * @post
 	*/
-	public function executeLogin($username, $password)
+	public function executeLogin($username, $password, $redirect = '/')
 	{
 		$session = new UserSession($username, $password);
 		
@@ -66,11 +66,12 @@ class UserController extends Controller
 		{
 			$session->save();
 			$this->notice(t('You are now logged in'));
-			$this->redirect('/');
+			$this->redirect($redirect);
 		}
 		catch (ValidationException $e)
 		{
 			$this->error(t('You are not logged in'));
+			$this->redirect = $redirect;
 			$this->session = $session;
 			$this->render('login');
 		}
