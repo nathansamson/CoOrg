@@ -39,7 +39,7 @@ class PropertyEmail extends Property implements IProperty
 		$email = trim($this->_value);
 		if ($email == '' && $this->isRequired($for))
 		{
-			$this->error('%n is required');
+			$this->error(t('%n is required'));
 			return false;
 		}
 		else if ($email == '')
@@ -107,7 +107,7 @@ class PropertyEmail extends Property implements IProperty
 			}
 			if (!$isValid)
 			{
-				$this->error('%n is not a valid emailadress');
+				$this->error(t('%n is not a valid emailadress'));
 			}
 			return $isValid;
 		}

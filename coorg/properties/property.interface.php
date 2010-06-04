@@ -89,7 +89,7 @@ abstract class Property
 	{
 		if ($msg != null)
 		{
-			$this->_errors[] = t($msg, array('n' => $this->_name));
+			$this->_errors[] = str_replace('%n', $this->_name, $msg);
 		}
 		else
 		{

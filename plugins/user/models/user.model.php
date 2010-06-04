@@ -103,13 +103,13 @@ class User extends DBModel
 			$error = false;
 			if ($this->usernameExists($this->username))
 			{
-				$this->username_error = '%n is already taken';
+				$this->username_error = t('%n is already taken');
 				$error = true;
 			}
 			
 			if ($this->emailExists($this->email))
 			{
-				$this->email_error = '%n is already taken';
+				$this->email_error = t('%n is already taken');
 				$error = true;
 			}
 			if ($this->password != $this->passwordConfirmation)
@@ -128,14 +128,14 @@ class User extends DBModel
 			if ($this->username_changed && 
 			    $this->usernameExists($this->username))
 			{
-				$this->username_error = ('%n is already taken');
+				$this->username_error = t('%n is already taken');
 				$error = true;
 			}
 			
 			if ($this->email_changed && 
 			    $this->emailExists($this->email))
 			{
-				$this->email_error = ('%n is already taken');
+				$this->email_error = t('%n is already taken');
 				$error = true;
 			}
 			if ($this->password != null)

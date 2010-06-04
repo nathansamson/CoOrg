@@ -3,7 +3,7 @@
 {block name="content"}
 	<h1>{'Manage content'|_}</h1>
 	
-	<a href="{url request="admin/page/create"}">Nieuwe pagina maken</a>
+	<a href="{url request="admin/page/create"}">{'Create page'|_}</a>
 	<table>
 		<tr>
 			<th>{'Title'|_}</th>

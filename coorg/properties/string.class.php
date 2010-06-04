@@ -32,12 +32,12 @@ class PropertyString extends Property implements IProperty
 	{
 		if (trim($this->_value) == '' && $this->isRequired($for))
 		{
-			$this->error('%n is required');
+			$this->error(t('%n is required'));
 			return false;
 		}
 		if ($this->_maxLength > 0 && strlen(trim($this->_value)) > $this->_maxLength)
 		{
-			$this->error('%n is too long');
+			$this->error(t('%n is too long'));
 			return false;
 		}
 		return true;

@@ -40,7 +40,7 @@ class PropertyBool extends Property implements IProperty
 	{
 		if ($this->isRequired($type) && $this->_value === null)
 		{
-			$this->error('%n is required');
+			$this->error(t('%n is required'));
 			return false;
 		}
 		return true;

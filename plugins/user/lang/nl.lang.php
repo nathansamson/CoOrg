@@ -39,4 +39,5 @@ $_['Logout'] = 'Uitloggen';
 $_['We have sent an email to confirm your registration'] = 'We hebben u een e-mail gestuurd om uw emailadres te bevestigen';
 $_['Password (repeat)'] = 'Wachtwoord (herhalen)';
 $_['Create Account'] = 'Account maken';
+$_['%n is already taken'] = '%n is reeds in gebruik';
 ?>

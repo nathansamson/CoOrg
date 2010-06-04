@@ -17,4 +17,5 @@ $_['Preview page'] = 'Voorbeeld';
 $_['Edit %p'] = 'Wijzig %p';
 $_['Manage content'] = 'Beheer inhoud';
 $_['Short fragment'] = 'Kort fragment';
+$_['Create page'] = 'Nieuwe pagina';
 ?>

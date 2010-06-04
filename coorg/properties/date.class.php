@@ -51,7 +51,7 @@ abstract class PropertyDateTimeish extends Property
 	{
 		if ($this->isRequired($t) && (trim($this->_value) == '' || $this->_value == 0))
 		{
-			$this->error('%n is required');
+			$this->error(t('%n is required'));
 			return false;
 		}
 		if (is_string($this->_value))
@@ -61,7 +61,7 @@ abstract class PropertyDateTimeish extends Property
 			{
 				if (strtotime($this->_value) === false)
 				{
-					$this->error('%n is not a valid date');
+					$this->error(t('%n is not a valid date'));
 					return false;
 				}
 			}

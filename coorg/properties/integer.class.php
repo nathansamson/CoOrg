@@ -38,7 +38,7 @@ class PropertyInteger extends Property implements IProperty
 		$value = trim($this->_value);
 		if ($value == '' && $this->isRequired($for))
 		{
-			$this->error('%n is required');
+			$this->error(t('%n is required'));
 			return false;
 		}
 		else if ($value != '')
@@ -47,19 +47,19 @@ class PropertyInteger extends Property implements IProperty
 			{
 				if (!preg_match('/^[+-]?[0-9]*$/', $value))
 				{
-					$this->error('%n is not a valid number');
+					$this->error(t('%n is not a valid number'));
 					return false;
 				}
 			}
 			else if (!is_int($this->_value))
 			{
-				$this->error('%n is not a valid number');
+				$this->error(t('%n is not a valid number'));
 				return false;
 			}
 			if ($this->_maxInt !== null &&
 			    (int)$this->_value > $this->_maxInt)
 			{
-				$this->error('%n is a too large number');
+				$this->error(t('%n is a too large number'));
 				return false;
 			}
 			return true;
