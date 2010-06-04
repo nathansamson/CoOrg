@@ -1,0 +1,31 @@
+<?php
+$_['Menu created'] = 'Menu gemaakt';
+$_['Menu was not saved'] = 'Menu niet opgeslagen';
+$_['Menu is updated'] = 'Menu opgeslagen';
+$_['Menu not found'] = 'Menu niet gevonden';
+$_['Menu entry added'] = 'Menu item toegevoegd';
+$_['Entry was not saved'] = 'Menu item niet opgeslagen';
+$_['Entry is deleted'] = 'Menu item is verwijderd';
+$_['Entry is moved'] = 'Menu item verplaatst';
+$_['Menu entry not found'] = 'Menu item niet gevonden';
+$_['Menu'] = 'Menu';
+$_['URL'] = 'URL';
+$_['Home'] = 'Start';
+$_['Name'] = 'Naam';
+$_['Description'] = 'Beschrijving';
+$_['Name already exists'] = 'Naam al in gebruik';
+$_['Title'] = 'Titel';
+$_['Provider not found'] = 'Provider niet gevonden';
+$_['Edit %m'] = '%m bewerken';
+$_['Go back'] = 'Keer terug';
+$_['Entries'] = 'Items';
+$_['Add entry'] = 'Voeg item toe';
+$_['Edit menu properties'] = 'Wijzig menu instellingen';
+$_['To'] = 'Naar';
+$_['Data'] = 'Gegegenvs';
+$_['Save menu'] = 'Menu opslaan';
+$_['Small description'] = 'Korte beschrijving';
+$_['Create new menu'] = 'Nieuw menu maken';
+$_['Create menu'] = 'Menu opslaan';
+$_['Edit menu'] = 'Menu opslaan';
+?>

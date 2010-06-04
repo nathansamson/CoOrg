@@ -22,7 +22,7 @@ class MenuAdminModule
 {
 	public function __construct()
 	{
-		$this->name = 'Menu';
+		$this->name = t('Menu');
 		$this->url = CoOrg::createURL(array('admin', 'menu'));
 		$this->image = CoOrg::staticFile('images/menu.png', 'menu');
 		$this->priority = 1;

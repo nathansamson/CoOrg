@@ -1,7 +1,7 @@
-{block name='title'}Menu{/block}
+{block name='title'}{'Menu'|_}{/block}
 
 {block name='content'}
-<h1>Menu</h1>
+<h1>{'Menu'|_}</h1>
 
 <ul>
 {foreach $menus as $menu}
@@ -12,7 +12,7 @@
 {/foreach}
 </ul>
 
-<h2>Nieuw menu maken</h2>
+<h2>{'Create new menu'|_}</h2>
 {form request='admin/menu/save' instance=$newMenu}
 	{input for=name label="Name" required}
 	{input for=description type=textarea label="Small description" required size=small}

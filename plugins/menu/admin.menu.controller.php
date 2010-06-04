@@ -45,12 +45,12 @@ class AdminMenuController extends Controller
 		try
 		{
 			$menu->save();
-			$this->notice('Menu created');
+			$this->notice(t('Menu created'));
 			$this->redirect('admin', 'menu', 'edit', $name);
 		}
 		catch (ValidationException $e)
 		{
-			$this->error('Menu was not saved');
+			$this->error(t('Menu was not saved'));
 			$this->menus = Menu::all();
 			$this->newMenu = $menu;
 			$this->render('index');
@@ -90,7 +90,7 @@ class AdminMenuController extends Controller
 		try
 		{
 			$this->_menu->save();
-			$this->notice('Menu is updated');
+			$this->notice(t('Menu is updated'));
 			if ($language)
 			{
 				$this->redirect('admin', 'menu', 'edit', $name, $language);

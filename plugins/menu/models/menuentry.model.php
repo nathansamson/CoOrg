@@ -20,11 +20,11 @@
 
 /**
  * @property primary autoincrement; ID Integer('ID');
- * @property menu String('Menu', 32); required
+ * @property menu String(t('Menu'), 32); required
  * @property sequence Integer('Sequence'); required
  * @property language String('Language', 6); required
- * @property url String('URL', 1024); required
- * @property title String('Title', 64); required
+ * @property url String(t('URL'), 1024); required
+ * @property title String(t('Title'), 64); required
  * @property provider String('Provider', 64); required
  * @property action String('Action', 64); required
  * @property data String('Data', 128);

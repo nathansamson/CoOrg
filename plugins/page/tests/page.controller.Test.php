@@ -48,7 +48,7 @@ class PageControllerTest extends CoOrgControllerTest
 	{
 		$this->request('nl/page/show/i-do-not-exist');
 		$this->assertRendered('notfound');
-		$this->assertFlashError('Page not found');
+		$this->assertFlashError(t('Page not found'));
 	}
 }
 

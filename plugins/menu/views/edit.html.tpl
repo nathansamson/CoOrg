@@ -1,15 +1,15 @@
-{block name='title'}Edit {$menu->name}{/block}
+{block name='title'}{'Edit %m'|_:$menu->name}{/block}
 
 {block name='head' append}
 	<link rel="stylesheet" href="{'styles/menu.admin.css'|static:menu}" />
 {/block}
 
 {block name='content'}
-	<h1>Edit {$menu->name}</h1>
+	<h1>{'Edit %m'|_:$menu->name}</h1>
 	
-	<a href="{url request="admin/menu"}">Go back</a>
+	<a href="{url request="admin/menu"}">{'Go back'|_}</a>
 	
-	<h2>Entries</h2>
+	<h2>{'Entries'|_}</h2>
 	<ol class="adminmenu">
 		{foreach $menu->entries({$adminlanguage}) as $entry}
 			<li>
@@ -41,7 +41,7 @@
 	</ol>
 	
 	<div class="leftc">
-		<h2>Entry toevoegen</h2>
+		<h2>{'Add entry'|_}</h2>
 	
 		{form request='admin/menu/entry/save' instance=$newEntry}
 			<input type="hidden" name="menu" value="{$menu->name}" />
@@ -56,18 +56,18 @@
 			</span>
 		
 		
-			{input type="submit" label="Menu item plaatsen"}
+			{input type="submit" label="Save menu"}
 		{/form}
 	</div>
 	<div class="rightc">
-		<h2>Edit menu properties</h2>
+		<h2>{'Edit menu properties'|_}</h2>
 		
 		{form request='admin/menu/update' instance=$menu}
 
 			<input type="hidden" name="name" value="{$menu->name}" />
 			{input for=description type=textarea label="Small description" required size=small}
 		
-			{input type="submit" label="Menu wijzigen"}
+			{input type="submit" label="Edit menu"}
 		{/form}
 	</div>
 	

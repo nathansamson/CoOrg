@@ -31,7 +31,7 @@ class AdminMenuEntryController extends Controller
 		$omenu = Menu::get($menu);
 		if ($omenu == null)
 		{
-			$this->error('Menu not found');
+			$this->error(t('Menu not found'));
 			$this->redirect('admin', 'menu', $language);
 			return;
 		}
@@ -46,7 +46,7 @@ class AdminMenuEntryController extends Controller
 		try
 		{
 			$entry->save();
-			$this->notice('Menu entry added');
+			$this->notice(t('Menu entry added'));
 			if ($language == I18n::getLanguage())
 			{
 				$this->redirect('admin', 'menu', 'edit', $menu);
@@ -75,7 +75,7 @@ class AdminMenuEntryController extends Controller
 	public function delete($entry)
 	{
 		$this->_entry->delete();
-		$this->notice('Entry is deleted');
+		$this->notice(t('Entry is deleted'));
 		$this->redirect('admin', 'menu', 'edit',
 		                $this->_entry->menu,
 		                $this->_entry->language);
@@ -90,7 +90,7 @@ class AdminMenuEntryController extends Controller
 	{
 		$this->_entry->sequence = $newsequence;
 		$this->_entry->save();
-		$this->notice('Entry is moved');
+		$this->notice(t('Entry is moved'));
 		$this->redirect('admin', 'menu', 'edit',
 		                $this->_entry->menu,
 		                $this->_entry->language);
@@ -101,7 +101,7 @@ class AdminMenuEntryController extends Controller
 		$entry = MenuEntry::get($entry);
 		if ($entry == null)
 		{
-			$this->error('Menu entry not found');
+			$this->error(t('Menu entry not found'));
 			$this->redirect('admin/menu');
 			return false;
 		}

@@ -22,7 +22,7 @@ class URLMenuEntryProvider implements IDataMenuEntryProvider
 {
 	public static function name()
 	{
-		return 'URL';
+		return t('URL');
 	}
 
 	public static function url($data, $language)
@@ -43,7 +43,7 @@ class HomeMenuEntryProvider implements IMenuEntryProvider
 {
 	public static function name()
 	{
-		return 'Home';
+		return t('Home');
 	}
 
 	public static function listActions()
