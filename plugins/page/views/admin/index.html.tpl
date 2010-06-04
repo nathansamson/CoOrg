@@ -1,13 +1,13 @@
-{block name="title"}Content{/block}
+{block name="title"}{'Content'|_}{/block}
 
 {block name="content"}
-	<h1>Manage content</h1>
+	<h1>{'Manage content'|_}</h1>
 	
 	<a href="{url request="admin/page/create"}">Nieuwe pagina maken</a>
 	<table>
 		<tr>
-			<th>Title</th>
-			<th>Short fragment</th>
+			<th>{'Title'|_}</th>
+			<th>{'Short fragment'|_}</th>
 			<th>&nbsp</th>
 		</tr>
 	{foreach $pages as $page}

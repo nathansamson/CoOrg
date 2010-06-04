@@ -38,7 +38,7 @@ class PageController extends Controller
 		}
 		else
 		{
-			$this->error('Page not found');
+			$this->error(t('Page not found'));
 			$this->notFound();
 		}
 	}

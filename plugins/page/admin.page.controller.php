@@ -56,7 +56,7 @@ class AdminPageController extends Controller
 			if (!$preview)
 			{
 				$page->save();
-				$this->notice('New page created');
+				$this->notice(t('New page created'));
 				$this->redirect('page', 'show', $page->ID);
 			}
 			else
@@ -68,7 +68,7 @@ class AdminPageController extends Controller
 		catch (ValidationException $e)
 		{
 			$this->newPage = $page;
-			$this->error('Creating page failed');
+			$this->error(t('Creating page failed'));
 			$this->render('admin/create');
 		}
 	}
@@ -106,7 +106,7 @@ class AdminPageController extends Controller
 			try
 			{
 				$this->_page->save();
-				$this->notice('Page updated');
+				$this->notice(t('Page updated'));
 				if ($redirect)
 				{
 					$this->redirect($redirect);
@@ -120,7 +120,7 @@ class AdminPageController extends Controller
 			{
 				$this->page = $this->_page;
 				if ($redirect) $this->redirect = $redirect;
-				$this->error('Page is not saved');
+				$this->error(t('Page is not saved'));
 				$this->render('admin/edit');
 			}
 		}
@@ -134,7 +134,7 @@ class AdminPageController extends Controller
 	public function delete($ID)
 	{
 		$this->_page->delete();
-		$this->notice('Page is deleted');
+		$this->notice(t('Page is deleted'));
 		$this->redirect('admin/page');
 	}
 	
@@ -143,7 +143,7 @@ class AdminPageController extends Controller
 		$this->_page = Page::get($ID, CoOrg::getLanguage());
 		if (!$this->_page)
 		{
-			$this->error('Page not found');
+			$this->error(t('Page not found'));
 			$this->notfound();
 			return false;
 		}

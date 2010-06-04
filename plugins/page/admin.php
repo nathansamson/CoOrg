@@ -22,7 +22,7 @@ class PageAdminModule
 {
 	public function __construct()
 	{
-		$this->name = 'Content';
+		$this->name = t('Content');
 		$this->url = CoOrg::createURL(array('admin', 'page'));
 		$this->image = CoOrg::staticFile('images/page.png', 'page');
 		$this->priority = 1;

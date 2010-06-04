@@ -1,9 +1,9 @@
-{block name="title"}Edit {$page->title}{/block}
+{block name="title"}{'Edit %p'|_:$page->title}{/block}
 
 {block name="content"}
-	<h1>Edit {$page->title}</h1>
+	<h1>{'Edit %p'|_:$page->title}</h1>
 	{if $preview}
-		<h2>Preview</h2>
+		<h2>{'Preview'|_}</h2>
 		{$page->content}
 	{/if}
 	

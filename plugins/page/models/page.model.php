@@ -20,13 +20,13 @@
 
 /**
  * @property primary; ID String('ID', 256); required
- * @property primary; language String('Language', 6); required
+ * @property primary; language String(t('Language'), 6); required
  * @property created Date('Created'); required
  * @property updated Date('Updated'); required only('update')
- * @property author String('Author', 24); required
+ * @property author String(t('Author'), 24); required
  * @property lastEditor String('Last Editor', 24); required only('update')
- * @property title String('Title', 256); required
- * @property content String('Content'); required
+ * @property title String(t('Title'), 256); required
+ * @property content String(t('Content')); required
 */
 class Page extends DBModel
 {

@@ -1,10 +1,10 @@
-{block name="title"}Create new page{/block}
+{block name="title"}{'Create new page'|_}{/block}
 
 {block name="content"}
-	<h1>New page</h1>
+	<h1>{'New page'|_}</h1>
 	
 	{if $newPage->content}
-		<h2>Preview</h2>
+		<h2>{'Preview'|_}</h2>
 		{$newPage->content}
 	{/if}
 	
