@@ -35,10 +35,10 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testProcessNormalRequest() {
-		CoOrg::process('alpha/beta/gamma/delta/');
+		CoOrg::process('alpha/beta/gamma/delta$3fand$2fand$2e/');
 		
 		$this->assertTrue(AlphaController::$betaExecuted);
-		$this->assertEquals(array('gamma', 'delta'), AlphaController::$betaParams);
+		$this->assertEquals(array('gamma', 'delta?and/and.'), AlphaController::$betaParams);
 	}
 	
 	public function testProcessNormalRequestControllerNotFound()
@@ -304,6 +304,13 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		
 		
 		CoOrg::loadPluginInfo('medoesnotexists');
+	}
+	
+	public function testCreateURL()
+	{
+		$this->assertEquals('a/b/c/d/parameterwith$3fand$2f',
+		                    CoOrg::createURL(array('a/b/c/d',
+		                                           'parameterwith?and/')));
 	}
 	
 	private function alternativeConfig($config)
