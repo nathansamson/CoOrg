@@ -235,7 +235,7 @@ class BlogControllerTest extends CoOrgControllerTest
 		                                        'text' => 'Vertaalde tekst'));
 
 		
-		$this->assertFlashNotice('Your translation of the blog is saved');
+		$this->assertFlashNotice(t('Your translation of the blog is saved'));
 		$this->assertRedirected('blog/show/2010/04/10/vertaald');
 
 		$this->assertNotNull(Blog::getBlog(2010, 4, 10, 'vertaald', 'nl'));
@@ -252,7 +252,7 @@ class BlogControllerTest extends CoOrgControllerTest
 		                                        'title' => 'Vertaald',
 		                                        'text' => ''));
 
-		$this->assertFlashError('Blog translation is not saved');
+		$this->assertFlashError(t('Blog translation is not saved'));
 		$this->assertVarSet('originalBlog');
 		$this->assertVarSet('translatedBlog');
 		$this->assertRendered('translate');

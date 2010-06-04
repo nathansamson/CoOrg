@@ -1,12 +1,12 @@
-{block name='title'}Create blog{/block}
+{block name='title'}{'Create blog'|_}{/block}
 
 {block name='content'}
-	<h1>Create a blog item</h1>
+	<h1>{'Post a blog'|_}</h1>
 	
 	{form request='blog/save' instance=$blog}
 		{input for=title label="Title" required}
-		{input for=text type=textarea label="Blog contents" required}
+		{input for=text type=textarea label="Blog content" required}
 		
-		{input type="submit" label="Blog posten"}
+		{input type="submit" label="Publish post"}
 	{/form}
 {/block}

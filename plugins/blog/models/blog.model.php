@@ -19,12 +19,12 @@
 */
 
 /**
- * @property primary; ID String('Title', 256); required
- * @property primary; datePosted Date('Date posted'); required
- * @property primary; language String('Language', 6); required
- * @property title String('Title', 256); required
- * @property authorID String('Author', 64); required 
- * @property text String('Content'); required
+ * @property primary; ID String(t('Title'), 256); required
+ * @property primary; datePosted Date(t('Date posted')); required
+ * @property primary; language String(t('Language'), 6); required
+ * @property title String(t('Title'), 256); required
+ * @property authorID String(t('Author'), 64); required 
+ * @property text String(t('Content')); required
  * @property timePosted DateTime('Posted'); required
  * @property timeEdited DateTime('Edited');
  * @property parentID String('Title', 256);
@@ -143,7 +143,7 @@ class Blog extends DBModel
 		{
 			if (self::translatedInWithParams($this->parentID, $this->datePosted_db, $this->language))
 			{
-				$this->text_error = 'This blog is already translated in this language';
+				$this->text_error = t('This blog is already translated in this language');
 				throw new ValidationException($this);
 			}
 		}

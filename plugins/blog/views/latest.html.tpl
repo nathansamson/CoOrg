@@ -1,7 +1,7 @@
-{block name="title"}Blog{/block}
+{block name="title"}{'Blog'|_}{/block}
 
 {block name="content"}
-	<h1>Latest blogs</h1>
+	<h1>{'Blog'|_}</h1>
 	
 	{foreach $blogs as $blog}
 		<article>

@@ -43,7 +43,7 @@ class TPLExtracter extends Extracter
 		$c = file_get_contents($this->_file);
 		
 		preg_match_all('/\{\'(.*)\'\|_(:.*)*\}/', $c, $matches);
-		preg_match_all('/\{.* label="(.*)" .*\}/U', $c, $smatches);
+		preg_match_all('/\{.* label="(.*)".*\}/U', $c, $smatches);
 		
 		
 		return array_merge($matches[1], $smatches[1]);

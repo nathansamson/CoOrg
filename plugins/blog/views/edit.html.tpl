@@ -1,4 +1,4 @@
-{block name='title'}Edit blog{/block}
+{block name='title'}{'Edit blog'|_}{/block}
 
 {block name='content'}
 	{form request='blog/update' instance=$blog}
@@ -8,7 +8,7 @@
 		{input for=ID name=id}
 		
 		{input for=title label="Title" required}
-		{input for=text label="Content" type=textarea required}
+		{input for=text label="Blog content" type=textarea required}
 		
 		{input type=submit label="Save blog"}
 	{/form}

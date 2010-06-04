@@ -22,12 +22,12 @@ class BlogMenuEntryProvider implements IMenuEntryProvider
 {
 	public static function name()
 	{
-		return 'Blog';
+		return t('Blog');
 	}
 	
 	public static function listActions()
 	{
-		return array('show' => 'Show', 'latest' => 'Latest', 'create' => 'Create');
+		return array('show' => t('Show'), 'latest' => t('Latest'), 'create' => t('Create'));
 	}
 	
 	public static function listData($action, $language)

@@ -40,16 +40,8 @@ class BlogController extends Controller
 	*/
 	public function create()
 	{
-		if (UserSession::get())
-		{
-			$this->blog = new Blog('', '', '', CoOrg::getLanguage());
-			$this->render('create');
-		}
-		else
-		{
-			$this->error('You need to be logged in to create a blog');
-			$this->redirect('user/login');
-		}
+		$this->blog = new Blog('', '', '', CoOrg::getLanguage());
+		$this->render('create');
 	}
 	
 	/**
@@ -59,19 +51,13 @@ class BlogController extends Controller
 	*/
 	public function save($title, $text)
 	{
-		if (!UserSession::get())
-		{
-			$this->error('You need to be logged in to create a blog');
-			$this->redirect('user/login');
-			return;
-		}
 		$blog = new Blog($title, UserSession::get()->username, $text, CoOrg::getLanguage());
 		
 		try
 		{
 			$blog->save();
 		
-			$this->notice('Your blog item is saved');
+			$this->notice(t('Your blog item is saved'));
 			$year = date('Y', $blog->datePosted);
 			$month = date('m', $blog->datePosted);
 			$day = date('d', $blog->datePosted);
@@ -80,7 +66,7 @@ class BlogController extends Controller
 		catch (ValidationException $e)
 		{
 			$this->blog = $blog;
-			$this->error('Your blog item is not saved');
+			$this->error(t('Your blog item is not saved'));
 			$this->render('create');
 		}
 	}
@@ -104,7 +90,7 @@ class BlogController extends Controller
 		}
 		else
 		{
-			$this->error('Blog item is not found');
+			$this->error(t('Blog item is not found'));
 			$this->notFound();
 		}
 	}
@@ -123,19 +109,19 @@ class BlogController extends Controller
 			{
 				$blog->save();
 				
-				$this->notice('Your blog item is updated');
+				$this->notice(t('Your blog item is updated'));
 				$this->redirect('blog/show', $year, $month, $day, $blog->ID);
 			}
 			catch (ValidationException $e)
 			{
-				$this->error('Your blog item is not saved');
+				$this->error(t('Your blog item is not saved'));
 				$this->blog = $blog;
 				$this->render('edit');
 			}
 		}
 		else
 		{
-			$this->error('Blog item is not found');
+			$this->error(t('Blog item is not found'));
 			$this->notFound();
 		}
 	}
@@ -165,12 +151,12 @@ class BlogController extends Controller
 		try
 		{
 			$t = $original->translate(UserSession::get()->username, $title, $text, CoOrg::getLanguage());
-			$this->notice('Your translation of the blog is saved');
+			$this->notice(t('Your translation of the blog is saved'));
 			$this->redirect('blog/show', $year, $month, $day, $t->ID);
 		}
 		catch (ValidationException $e)
 		{
-			$this->error('Blog translation is not saved');
+			$this->error(t('Blog translation is not saved'));
 			$this->originalBlog = $original;
 			$this->translatedBlog = new Blog($title, '', $text, '');
 			$this->render('translate');
@@ -184,7 +170,7 @@ class BlogController extends Controller
 		$this->_blog = Blog::getBlog($year, $month, $day, $id, $language);
 		if (!$this->_blog)
 		{
-			$this->error('Blog item is not found');
+			$this->error(t('Blog item is not found'));
 			$this->notFound();
 			return false;
 		}

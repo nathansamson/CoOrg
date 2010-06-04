@@ -1,4 +1,4 @@
-{block name='title'}Translate blog{/block}
+{block name='title'}{'Translate blog'|_}{/block}
 
 {block name='content'}
 	Nothing here yet...
