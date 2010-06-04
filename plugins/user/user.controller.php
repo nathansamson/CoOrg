@@ -42,7 +42,7 @@ class UserController extends Controller
 			$mail->username = $username;
 			$mail->activationURL = CoOrg::createFullURL(array('user/activate', $username, $key));
 			$mail->site = CoOrg::config()->get('site/title');
-			$mail->to($email)->subject('Complete your registration')
+			$mail->to($email)->subject(t('Complete your registration'))
 			     ->send('mails/registration');
 			$this->notice(t('We have sent an email to confirm your registration'));
 			$this->redirect('/');
@@ -103,18 +103,18 @@ class UserController extends Controller
 			if ($user->unlock($key))
 			{
 				$user->save();
-				$this->notice('Your account is now activated, you can login');
+				$this->notice(t('Your account is now activated, you can login'));
 				$this->redirect('user/login');
 			}
 			else
 			{
-				$this->error('Invalid activation key');
+				$this->error(t('Invalid activation key'));
 				$this->redirect('/');
 			}
 		}
 		else
 		{
-			$this->error('Invalid username');
+			$this->error(t('Invalid username'));
 			$this->redirect('/');
 		}
 	}

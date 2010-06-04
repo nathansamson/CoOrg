@@ -19,9 +19,9 @@
 */
 
 /**
- * @property primary; groupID String('Group', 26); required
- * @property primary; keyID String('Key', 32); required
- * @property allowed Bool('allowed'); required
+ * @property primary; groupID String(t('Group'), 26); required
+ * @property primary; keyID String(t('Key'), 32); required
+ * @property allowed Bool(t('Allowed')); required
 */
 class Acl extends DBModel
 {

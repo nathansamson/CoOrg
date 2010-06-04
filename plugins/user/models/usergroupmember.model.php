@@ -87,7 +87,7 @@ class UserGroupMember extends DBModel
 		
 		if (self::get($this->userID, $this->groupID))
 		{
-			throw new Exception('User is already member of group');
+			throw new Exception(t('User is already member of group'));
 		}
 	}
 }

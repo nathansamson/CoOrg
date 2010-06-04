@@ -1,22 +1,42 @@
 <?php
-
 $_['Username'] = 'Gebruikersnaam';
 $_['Email'] = 'Email';
 $_['Password'] = 'Wachtwoord';
-$_['Password (repeat)'] = 'Wachtwoord (controle)';
-$_['Create Account'] = 'Gebruiker registreren';
-$_['Login'] = 'Ingloggen';
+$_['Login'] = 'Inloggen';
 $_['Create an account'] = 'Nieuwe gebruiker maken';
 $_['No account?'] = 'Nog niet geregistreerd?';
 $_['Create a new user account'] = 'Nieuwe gebruiker registreren';
-
 $_['You are now logged in'] = 'U bent nu aangemeld';
 $_['You are not logged in'] = 'We konden u niet aanmelden';
 $_['You are now logged out'] = 'U bent nu afgemeld';
-
-$_['We have sent an email to confirm your registration'] = 'We hebben u een email gestuurd om uw registratie te bevestigen';
-
 $_['We could not complete your registration'] = 'We konden uw registratie niet verwerken';
 $_['Password confirmation'] = 'Wachtwoord (controle)';
-
+$_['First Name'] = 'Voornaam';
+$_['Last Name'] = 'Achternaam';
+$_['Name'] = 'Naam';
+$_['Group'] = 'Groep';
+$_['Key'] = 'Sleutel';
+$_['Allowed'] = 'Toegestaan';
+$_['Passwords are not equal'] = 'Wachtwoorden zijn niet gelijk';
+$_['Password is wrong'] = 'Fout wachtwoorden';
+$_['Passwords do not match'] = 'Wachtwoorden kwamen niet overeen';
+$_['System group'] = 'Systeemgroep';
+$_['User is already member of group'] = 'Gebruiker is reeds lid van de groep';
+$_['Incorrect username'] = 'Foute gebruikersnaam';
+$_['User is not activated'] = 'Gebruiker is nog niet geactiveerd';
+$_['Incorrect password'] = 'Fout wachtwoord';
+$_['Complete your registration'] = 'Vervolledig uw registratie';
+$_['Your account is now activated, you can login'] = 'Uw account werd geactiveerd, u kunt nu inloggen';
+$_['Invalid activation key'] = 'Ongeldige activatie sleutel';
+$_['Invalid username'] = 'Ongeldige gebruikersnaam';
+$_['Create new account'] = 'Registereen';
+$_['Welcome %u on %s'] = 'Welkom %u, op %s';
+$_['To complete your registration you have to activate your account.'] = 'Om de registratie te voltooien moet u uw account activeren.';
+$_['To do so click on the activation link: %l'] = 'Om te activeren klik op de link: %l';
+$_['Enjoy our site, and sincere wishes from the team!'] = 'Veel plezier op de site, en veel gelukwensen van ons team!';
+$_['Welcome, %u!'] = 'Welkom, %u!';
+$_['Logout'] = 'Uitloggen';
+$_['We have sent an email to confirm your registration'] = 'We hebben u een e-mail gestuurd om uw emailadres te bevestigen';
+$_['Password (repeat)'] = 'Wachtwoord (herhalen)';
+$_['Create Account'] = 'Account maken';
 ?>

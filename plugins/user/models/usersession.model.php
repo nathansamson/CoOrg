@@ -80,17 +80,17 @@ class UserSession extends Model
 		$user = $this->user();
 		if ($user == null)
 		{
-			$this->username_error = 'Incorrect username';
+			$this->username_error = t('Incorrect username');
 			throw new ValidationException($this);
 		}
 		if ($user->isLocked())
 		{
-			$this->username_error = 'User is not activated';
+			$this->username_error = t('User is not activated');
 			throw new ValidationException($this);
 		}
 		if (!$user->checkPassword($this->password))
 		{
-			$this->password_error = 'Incorrect password';
+			$this->password_error = t('Incorrect password');
 			throw new ValidationException($this);
 		}
 	}

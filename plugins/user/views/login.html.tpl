@@ -1,4 +1,4 @@
-{block name='title'}Login{/block}
+{block name='title'}{'Login'|_}{/block}
 {block name='content'}
 
 {form request='user/executeLogin' instance=$session}

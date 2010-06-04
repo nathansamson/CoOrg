@@ -1,4 +1,4 @@
-{block name='title'}Create new account{/block}
+{block name='title'}{'Create new account'|_}{/block}
 {block name='content'}
 	<h1>{'Create a new user account'|_}</h1>
 

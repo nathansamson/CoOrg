@@ -1,6 +1,6 @@
 {if UserSession::get()}
-	Welcome, {UserSession::get()->username}!
-	<a href="{url request="user/logout"}">{'Logout'|t}</a>
+	{'Welcome, %u!'|_:UserSession::get()->username}
+	<a href="{url request="user/logout"}">{'Logout'|_}</a>
 {else}
-	<a href="{url request="user/login"}">{'Login'|t}</a>
+	<a href="{url request="user/login"}">{'Login'|_}</a>
 {/if}

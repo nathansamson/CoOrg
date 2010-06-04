@@ -114,7 +114,7 @@ class User extends DBModel
 			}
 			if ($this->password != $this->passwordConfirmation)
 			{
-				$this->passwordConfirmation_error = 'Passwords are not equal';
+				$this->passwordConfirmation_error = t('Passwords are not equal');
 				$error = true;
 			}
 			if ($error)
@@ -128,14 +128,14 @@ class User extends DBModel
 			if ($this->username_changed && 
 			    $this->usernameExists($this->username))
 			{
-				$this->username_error = '%n is already taken';
+				$this->username_error = ('%n is already taken');
 				$error = true;
 			}
 			
 			if ($this->email_changed && 
 			    $this->emailExists($this->email))
 			{
-				$this->email_error = '%n is already taken';
+				$this->email_error = ('%n is already taken');
 				$error = true;
 			}
 			if ($this->password != null)
@@ -151,12 +151,12 @@ class User extends DBModel
 		{
 			if (!$this->checkPassword($this->oldPassword))
 			{
-				$this->oldPassword_error = 'Password is wrong';
+				$this->oldPassword_error = t('Password is wrong');
 				throw new ValidationException($this);
 			}
 			if ($this->password != $this->passwordConfirmation)
 			{
-				$this->passwordConfirmation_error = 'Passwords do not match';
+				$this->passwordConfirmation_error = t('Passwords do not match');
 				throw new ValidationException($this);
 			}
 		}

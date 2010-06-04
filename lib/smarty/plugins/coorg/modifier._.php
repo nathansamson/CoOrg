@@ -22,7 +22,18 @@ function smarty_modifier__($text)
 {
 	if (func_num_args() > 1)
 	{
-		die('NYI');
+		$keys = array();
+		preg_match_all('/\%([a-zA-Z]*)/', $text, $matches);
+		$i = 0;
+		foreach ($matches[1] as $key)
+		{
+			if (!array_key_exists($key, $keys))
+			{
+				$i++;
+				$keys[$key] = func_get_arg($i);
+			}
+		}
+		return t($text, $keys);
 	}
 	else
 	{

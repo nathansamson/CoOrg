@@ -20,7 +20,7 @@
 
 /**
  * @property primary; name String(t('Name'), 26); required
- * @property system Bool('System group'); required
+ * @property system Bool(t('System group')); required
 */
 class UserGroup extends DBModel
 {
