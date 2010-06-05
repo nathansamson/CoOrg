@@ -14,7 +14,7 @@
 			<input type="hidden" name="redirect" value="{$redirect}" />
 		{/if}
 		
-		{input for=title label="Title" required}
+		{input for=title label="Title" required class=title}
 		{input for=content label="Content" type="textarea" size=big required editor=full}
 		
 		{input type=submit label="Save page"}

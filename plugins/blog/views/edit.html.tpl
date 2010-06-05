@@ -7,7 +7,7 @@
 		{input value=$blog->datePosted|date_format:'d' name=day}
 		{input for=ID name=id}
 		
-		{input for=title label="Title" required}
+		{input for=title label="Title" required class=title}
 		{input for=text label="Blog content" type=textarea required size=big editor=full}
 		
 		{input type=submit label="Save blog"}

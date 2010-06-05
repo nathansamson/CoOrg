@@ -11,7 +11,7 @@
 	{form request="admin/page/save" instance=$newPage id="newPage"}
 		<input type="hidden" name="language" value="{CoOrg::getLanguage()}" />
 		
-		{input for=title label="Title" required}
+		{input for=title label="Title" required class=title}
 		{input for=content label="Content" type="textarea" size=big required editor=full}
 		
 		{input type=submit label="Save page"}
