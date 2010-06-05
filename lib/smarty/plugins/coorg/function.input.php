@@ -116,14 +116,18 @@ function smarty_function_input($params, $smarty)
 		$form = $smarty->_coorg_form;
 		$id = $form->formID ? $form->formID.'_'.$name : $name;
 		$label = '<label for="'.$id.'" '.($required ? 'class="required"' : '' ). '>'.$label.'</label>';
-	
+		if (array_key_exists('class', $params))
+		{
+			$class = $params['class'];
+		}
 		
 		if ($type != 'textarea' && $type != 'select')
 		{
 			$input = '<input type="'.$type.'" value="'.$value.'" name="'.$name.'" '. 'id="'.$id.'"'.
 	               ($required ? ' required="required"' : '').
 	               ($disabled ? ' disabled="disabled"' : '').
-	        '/>';
+	               ($class ? ' class="'.$class.'"' : '').
+	        '/><br />';
 	    }
 	    else if ($type == 'textarea')
 	    {
@@ -175,7 +179,7 @@ function smarty_function_input($params, $smarty)
 	    		$input .= '<span class="form-error">'.$errors.'</span>';
 	    	}
 	    }
-		return $label . $input . '<br />';
+		return $label . $input;
 	}
 	else
 	{

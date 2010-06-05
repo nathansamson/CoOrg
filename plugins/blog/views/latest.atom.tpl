@@ -11,7 +11,7 @@
 	
 	{foreach $blogs as $blog}
 		<entry>
-			<title>{$blog->title}</title>
+			<title>{$blog->title|escape}</title>
 			<link href="" />
 			{if $blog->timeEdited}
 				<updated>{$blog->timeEdited|date_format:'c'}</updated>
@@ -19,7 +19,7 @@
 				<updated>{$blog->timePosted|date_format:'c'}</updated>
 			{/if}
 			<id></id>
-			<summary>{$blog->text}</summary>
+			<summary>{$blog->text|format:none|truncate:100}</summary>
 		</entry>
 	{/foreach}
 	

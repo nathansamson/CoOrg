@@ -12,7 +12,7 @@
                                       id=$blog->ID}">{$blog->title}</a></h1>
 				<p>By {$blog->authorID} @ {$blog->datePosted|date_format}</p>
 			</header>
-			{$blog->text|escape|nl2br}
+			{$blog->text|format:text|truncate:200}
 		</article>
 	{/foreach}
 {/block}

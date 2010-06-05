@@ -215,15 +215,32 @@ label.required {
 	font-weight: bold;
 }
 
-input, textarea {
+input, textarea, .editor {
 	border: solid 1px #666666;
 	font-size: 1em;
 	margin-bottom: 10px;
 }
 
+input.title {
+	font-size: 160%;
+	width: 100%;
+}
+
 textarea {
 	width: 600px;
 	height: 200px;
+}
+
+textarea.hide {
+	display: none;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+.editor {
+	height: 400px;
+	overflow: auto;
 }
 
 textarea[cols] { /* Respect the cols factor */

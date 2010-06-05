@@ -37,6 +37,7 @@ function cWYSIWYG(textarea)
 	toolbar.className = 'toolbar';
 	var edit = document.createElement('div');
 	edit.contentEditable = true;
+	edit.className = 'editor';
 	
 	container.appendChild(toolbar);
 	container.appendChild(edit);
@@ -50,17 +51,20 @@ function cWYSIWYG(textarea)
 		'ul': this.insertUnorderedList,
 	};
 	
+	var j = 0;
 	for (var i in buttons)
 	{
 		var button = document.createElement('button');
 		button.innerHTML = i;
 		$(button).bind('click', buttons[i]);
 		button.type = 'button';
+		button.setAttribute('tabindex', 32000+j);
 		toolbar.appendChild(button);
+		j++;
 	}
 	
 	textarea.parentNode.insertBefore(container, textarea);
-	textarea.style.display = 'none';
+	textarea.className = 'hide';
 	textarea.form.onsubmit = function() {
 		textarea.innerHTML = edit.innerHTML;
 	}
