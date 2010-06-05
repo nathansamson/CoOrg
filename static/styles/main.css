@@ -215,10 +215,15 @@ label.required {
 	font-weight: bold;
 }
 
-input, textarea, .editor {
+input, textarea, .editor, select {
 	border: solid 1px #666666;
 	font-size: 1em;
 	margin-bottom: 10px;
+}
+
+select {
+	font-size: 10px;
+	padding: 3px;
 }
 
 input.title {
@@ -229,6 +234,7 @@ input.title {
 textarea {
 	width: 600px;
 	height: 200px;
+	display: block;
 }
 
 textarea.hide {

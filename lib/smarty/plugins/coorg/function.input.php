@@ -165,7 +165,7 @@ function smarty_function_input($params, $smarty)
 	    	{
 	    		$input .= smarty_helper_function_build_option($key, $opt, $value); 
 	    	}
-	    	$input .= '</select>';
+	    	$input .= '</select><br />';
 	    }
 	    
 	    if (is_string($errors))
