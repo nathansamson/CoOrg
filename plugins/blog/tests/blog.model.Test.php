@@ -20,6 +20,8 @@
 
 class BlogTest extends CoOrgModelTest
 {
+	const dataset = 'blog.dataset.xml';
+
 	public function __construct()
 	{
 		parent::__construct();

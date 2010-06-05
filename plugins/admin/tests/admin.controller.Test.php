@@ -20,11 +20,7 @@
 
 class AdminControllerTest extends CoOrgControllerTest
 {
-	public function __construct()
-	{
-		parent::__construct();
-		$this->_dataset = dirname(__FILE__).'/admin.dataset.xml';
-	}
+	const dataset = 'admin.dataset.xml';
 	
 	public function testIndex()
 	{

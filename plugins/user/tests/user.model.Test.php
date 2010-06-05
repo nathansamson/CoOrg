@@ -2,11 +2,7 @@
 
 class UserModelTest extends CoOrgModelTest
 {
-	public function __construct()
-	{
-		parent::__construct();
-		$this->_dataset = dirname(__FILE__).'/user.dataset.xml';
-	}
+	const dataset = 'user.dataset.xml';
 
 	public function testCreateUser()
 	{

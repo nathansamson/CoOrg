@@ -20,11 +20,7 @@
 
 class MenuEntryModelTest extends CoOrgModelTest
 {
-	public function __construct()
-	{
-		parent::__construct();
-		$this->_dataset = dirname(__FILE__).'/menu.dataset.xml';
-	}
+	const dataset = 'menu.dataset.xml';
 
 	public function testCreate()
 	{

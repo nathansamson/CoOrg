@@ -75,11 +75,7 @@ class MockModel extends DBModel
 
 class ModelTest extends CoOrgModelTest
 {
-	public function __construct()
-	{
-		parent::__construct();
-		$this->_dataset = dirname(__FILE__).'/modeltest.dataset.xml';
-	}
+	const dataset = 'modeltest.dataset.xml';
 
 	public function testModelCreate()
 	{

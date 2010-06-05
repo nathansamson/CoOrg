@@ -23,8 +23,14 @@ require_once 'coorg/db.class.php';
 
 abstract class CoOrgModelTest extends PHPUnit_Extensions_Database_TestCase
 {
-	protected $_dataset = '';
+	private $_dataset = '';
 	private static $_classes = array();
+
+	public function __construct()
+	{
+		$refl = new ReflectionClass(get_class($this));
+		$this->_dataset = dirname($refl->getFileName()).'/'.$refl->getConstant('dataset');
+	}
 
 	protected function getConnection()
 	{

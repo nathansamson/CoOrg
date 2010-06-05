@@ -20,11 +20,7 @@
 
 class PageTest extends CoOrgModelTest
 {
-	public function __construct()
-	{
-		parent::__construct();
-		$this->_dataset = dirname(__FILE__).'/page.dataset.xml';
-	}
+	const dataset = 'page.dataset.xml';
 	
 	public function testCreate()
 	{

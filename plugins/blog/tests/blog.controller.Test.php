@@ -20,11 +20,7 @@
 
 class BlogControllerTest extends CoOrgControllerTest
 {
-	public function __construct()
-	{
-		parent::__construct();
-		$this->_dataset = dirname(__FILE__).'/blog.dataset.xml';
-	}
+	const dataset = 'blog.dataset.xml';
 
 	public function setUp()
 	{
