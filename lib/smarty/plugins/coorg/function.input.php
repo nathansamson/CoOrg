@@ -142,10 +142,16 @@ function smarty_function_input($params, $smarty)
 	    			$rows = 25;
 	    		}
 	    	}
+	    	$editor = null;
+	    	if (array_key_exists('editor', $params))
+	    	{
+	    		$editor = $params['editor'];
+	    	}
 	    	$input = '<textarea name="'.$name.'" '. 'id="'.$id.'" '.
 	    	                         ($required ? 'required="required"' : '').
 	    	                         ($cols ? ' cols='.$cols : '').
 	    	                         ($rows ? ' rows='.$rows : '').
+	    	                         ($editor ? ' class="'.$editor.'-editor"' : '').
 	    	               '>'.$value.'</textarea>';
 	    }
 	    else

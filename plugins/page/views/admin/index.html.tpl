@@ -15,8 +15,8 @@
 			<td>
 			<a href="{url request="admin/page/edit"
 			                  page=$page->ID
-			                  redirect="admin/page"}">{$page->title}</a></td>
-			<td>{$page->content}</td>
+			                  redirect="admin/page"}">{$page->title|escape}</a></td>
+			<td>{$page->content|format:none|truncate:100}</td>
 			<td>
 				<a href="{url request="admin/page/edit"
 			                  page=$page->ID

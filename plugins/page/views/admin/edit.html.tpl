@@ -1,10 +1,10 @@
-{block name="title"}{'Edit %p'|_:$page->title}{/block}
+{block name="title"}{'Edit %p'|_:$page->title|escape}{/block}
 
 {block name="content"}
-	<h1>{'Edit %p'|_:$page->title}</h1>
+	<h1>{'Edit %p'|_:$page->title|escape}</h1>
 	{if $preview}
 		<h2>{'Preview'|_}</h2>
-		{$page->content}
+		{$page->content|format:all}
 	{/if}
 	
 	{form request="admin/page/update" instance=$page id="editPage"}
@@ -15,7 +15,7 @@
 		{/if}
 		
 		{input for=title label="Title" required}
-		{input for=content label="Content" type="textarea" size=big required}
+		{input for=content label="Content" type="textarea" size=big required editor=full}
 		
 		{input type=submit label="Save page"}
 		{input type=submit label="Preview page" name="preview"}

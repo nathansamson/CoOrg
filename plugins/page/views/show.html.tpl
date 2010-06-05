@@ -1,4 +1,4 @@
-{block name="title"}{$page->title}{/block}
+{block name="title"}{$page->title|escape}{/block}
 
 {block name="content"}
 	{if Acl::isAllowed(UserSession::get()->username, 'admin-page-edit')}
@@ -8,6 +8,6 @@
 			</a>
 		</span>
 	{/if}
-	<h1>{$page->title}</h1>
-	{$page->content}
+	<h1>{$page->title|escape}</h1>
+	{$page->content|format:all}
 {/block}

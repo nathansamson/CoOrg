@@ -7,6 +7,15 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 		
 		{block name='head'}{/block}
+		
+		<script type="text/javascript" src="{'scripts/cwysiwyg.js'|static}"></script>
+		<script>
+			$(document).ready(function() {
+				$('.full-editor').each(function (i, element) {
+					cWYSIWYG(element);
+				});
+			});
+		</script>
 	</head>
 	<body>
 		<header>
