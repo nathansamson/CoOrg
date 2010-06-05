@@ -59,7 +59,6 @@ class AdminMenuEntryController extends Controller
 		catch (ValidationException $e)
 		{
 			$this->menu = $omenu;		
-			$this->adminlanguage = $language;
 			$this->providerActionCombos = Menu::providerActionCombos($language);
 			$this->newEntry = $entry;
 			$this->error(t('Entry was not saved'));

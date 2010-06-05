@@ -8,10 +8,10 @@
 	{/if}
 	
 	{form request="admin/page/update" instance=$page id="editPage"}
-		<input type="hidden" name="ID" value="{$page->ID}" />
+		{input for=ID}
 		<input type="hidden" name="language" value="{CoOrg::getLanguage()}" />
 		{if $redirect}
-			<input type="hidden" name="redirect" value="{$redirect}" />
+			{input value=$redirect name=redirect}
 		{/if}
 		
 		{input for=title label="Title" required class=title}

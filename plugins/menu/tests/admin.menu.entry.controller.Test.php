@@ -69,8 +69,9 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 		$this->assertVarSet('newEntry');
 		$this->assertVarSet('providerActionCombos');
 		$this->assertVarSet('menu');
-		$this->assertVarSet('adminlanguage');
-		$this->assertVarIs('adminlanguage', 'nl');
+		$entry = CoOrgSmarty::$vars['newEntry'];
+		$this->assertEquals('nl', $entry->language);
+		$this->assertEquals('main', $entry->menu);
 		$this->assertFlashError('Entry was not saved');
 	}
 	

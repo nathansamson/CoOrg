@@ -79,9 +79,10 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 		
 		$this->assertRendered('edit');
 		$this->assertVarSet('menu');
+		$entry = CoOrgSmarty::$vars['newEntry'];
+		$this->assertEquals('en', $entry->language);
+		$this->assertEquals('main', $entry->menu);
 		$this->assertVarSet('providerActionCombos');
-		$this->assertVarSet('adminlanguage');
-		$this->assertVarIs('adminlanguage', 'en');
 	}
 	
 	public function testEditNonDefaultLanguage()
@@ -92,16 +93,18 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 		$this->assertRendered('edit');
 		$this->assertVarSet('menu');
 		$this->assertVarSet('providerActionCombos');
-		$this->assertVarSet('adminlanguage');
-		$this->assertVarIs('adminlanguage', 'nl');
+		$entry = CoOrgSmarty::$vars['newEntry'];
+		$this->assertEquals('nl', $entry->language);
+		$this->assertEquals('main', $entry->menu);
 	}
 	
 	public function testEditOtherLanguage()
 	{
 		$this->login('dvorak');
 		$this->request('nl/admin/menu/edit/main');
-		$this->assertVarSet('adminlanguage');
-		$this->assertVarIs('adminlanguage', 'nl');
+		$entry = CoOrgSmarty::$vars['newEntry'];
+		$this->assertEquals('nl', $entry->language);
+		$this->assertEquals('main', $entry->menu);
 	}
 	
 	public function testEditNotAllowed()

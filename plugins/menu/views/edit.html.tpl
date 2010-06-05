@@ -44,8 +44,8 @@
 		<h2>{'Add entry'|_}</h2>
 	
 		{form request='admin/menu/entry/save' instance=$newEntry}
-			<input type="hidden" name="menu" value="{$menu->name}" />
-			<input type="hidden" name="language" value="{$adminlanguage}" />
+			{input for=menu}
+			{input for=language}
 		
 			{input for=title label="Title" required}
 		
@@ -64,7 +64,7 @@
 		
 		{form request='admin/menu/update' instance=$menu}
 
-			<input type="hidden" name="name" value="{$menu->name}" />
+			{input for=name}
 			{input for=description type=textarea label="Small description" required size=small}
 		
 			{input type="submit" label="Edit menu"}
