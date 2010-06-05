@@ -1,14 +1,27 @@
 {block name='title'}{'Menu'|_}{/block}
 
+{block name='head' append}
+	<link rel="stylesheet" href="{'styles/menu.admin.css'|static:menu}" />
+{/block}
+
 {block name='content'}
 <h1>{'Menu'|_}</h1>
 
-<ul>
+<ul class="menulist">
 {foreach $menus as $menu}
 	<li>
-		<a href="{url controller="admin" scontroller="menu" action="edit" name=$menu->name}">
-			{$menu->name} {$menu->description}</li>
-		</a>
+		<a href="{url controller="admin/menu/edit" name=$menu->name}">{$menu->name|escape}</a>
+		<span class="description">{$menu->description|format:none}</span>
+		<span class="actions">
+			<a href="{url request="admin/menu/edit" name=$menu->name}">
+				<img src="{'images/icons/edit.png'|static}" />
+			</a>
+			{button request="admin/menu/delete"
+			        param_name=$menu->name}
+				<img src="{'images/icons/edit-delete.png'|static}" />
+			{/button}
+		</span>
+	</li>
 {/foreach}
 </ul>
 

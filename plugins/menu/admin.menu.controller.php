@@ -106,6 +106,17 @@ class AdminMenuController extends Controller
 		}
 	}
 	
+	/**
+	 * @Acl allow admin-menu-edit
+	 * @before find $name
+	*/
+	public function delete($name)
+	{
+		$this->_menu->delete();
+		$this->notice(t('Deleted menu "%n"', array('n'=>$name)));
+		$this->redirect('admin', 'menu');
+	}
+	
 	protected function find($name)
 	{
 		$this->_menu = Menu::get($name);

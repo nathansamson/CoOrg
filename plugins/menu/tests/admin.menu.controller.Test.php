@@ -166,6 +166,31 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 		$this->assertFlashError('Menu not found');
 	}
 	
+	public function testDelete()
+	{
+		$this->login('dvorak');
+		$this->request('admin/menu/delete', array('name'=>'main'));
+		$this->assertRedirected('admin/menu');
+		$this->assertFlashNotice('Deleted menu "main"');
+		$this->assertNull(Menu::get('main', 'en'));
+	}
+	
+	public function testDeleteNotAllowed()
+	{
+		$this->login('azerty');
+		$this->request('admin/menu/delete', array('name'=>'main'));
+		$this->assertRedirected('');
+		$this->assertFlashError('You don\'t have the rights to view this page');
+	}
+	
+	public function testDeleteNotFound()
+	{
+		$this->login('dvorak');
+		$this->request('admin/menu/delete', array('name'=>'pneut'));
+		$this->assertRedirected('admin/menu');
+		$this->assertFlashError('Menu not found');
+	}
+	
 	private function login($username)
 	{
 		$s = new UserSession($username, $username);

@@ -1,11 +1,11 @@
-{block name='title'}{'Edit %m'|_:$menu->name}{/block}
+{block name='title'}{'Edit %m'|_:$menu->name|escape}{/block}
 
 {block name='head' append}
 	<link rel="stylesheet" href="{'styles/menu.admin.css'|static:menu}" />
 {/block}
 
 {block name='content'}
-	<h1>{'Edit %m'|_:$menu->name}</h1>
+	<h1>{'Edit %m'|_:$menu->name|escape}</h1>
 	
 	<a href="{url request="admin/menu"}">{'Go back'|_}</a>
 	
@@ -13,7 +13,7 @@
 	<ol class="adminmenu">
 		{foreach $menu->entries({$adminlanguage}) as $entry}
 			<li>
-				{$entry->title}
+				{$entry->title|escape}
 				<span class="actions">
 					{if !$entry@first}
 						{button request="admin/menu/entry/move"
@@ -56,7 +56,7 @@
 			</span>
 		
 		
-			{input type="submit" label="Save menu"}
+			{input type="submit" label="Save menu entry"}
 		{/form}
 	</div>
 	<div class="rightc">

@@ -38,11 +38,11 @@
 	
 			<div id="content">
 				{foreach $notices as $notice}
-					<div class="notice">{$notice}</div>
+					<div class="notice">{$notice|escape}</div>
 				{/foreach}
 		
 				{foreach $errors as $error}
-					<div class="error">{$error}</div>
+					<div class="error">{$error|escape}</div>
 				{/foreach}
 		
 				{block name='content'}This space is intentionally left blank!{/block}

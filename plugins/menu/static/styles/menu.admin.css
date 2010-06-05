@@ -13,8 +13,27 @@ ol.adminmenu li {
 	border: dotted 1px black;
 	padding: 10px;
 	width: 400px;
+	overflow: hidden;
 }
 
-ol.adminmenu li .actions {
+ol.adminmenu li .actions, .menulist .actions {
 	float: right;
 }
+
+.menulist {
+	list-style-position: inside;
+	margin-left: 0;
+	padding: 0;
+}
+
+.menulist li {
+	margin: 5px 0px;
+}
+
+.menulist a {
+	text-decoration: none;
+}
+
+.menulist .description {
+	font-size: 75%;
+} 
