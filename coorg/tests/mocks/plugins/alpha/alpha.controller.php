@@ -87,6 +87,11 @@ class AlphaController extends Controller {
 	{
 		$this->status = 'ran';
 	}
+	
+	public function doredirect()
+	{
+		$this->redirect('some/redirect', 'to', 'a/pagewith?strangechars');
+	}
 
 	protected function aBefore($value, $name, $string)
 	{

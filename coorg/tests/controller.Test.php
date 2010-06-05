@@ -60,6 +60,12 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
 		
 		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);
 	}
+	
+	public function testRedirectWithSpecialSjeezelDoesWork()
+	{
+		CoOrg::process('alpha/doredirect');
+		$this->assertEquals('some/redirect/to/a$2fpagewith$3fstrangechars', Header::$redirect);
+	}
 }
 
 

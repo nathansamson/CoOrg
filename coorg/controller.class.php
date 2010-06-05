@@ -201,11 +201,11 @@ class Controller {
 		$this->smarty()->error($msg);
 	}
 	
+	//TODO: deprecate this function?
 	protected function redirect($to)
 	{
 		$args = func_get_args();
-		$to = implode('/', $args);
-		Header::redirect($to);
+		call_user_func_array(array('Header', 'redirect'), $args);
 	}
 
 	protected function render($tpl, $app = false, $baseFile = 'base')
