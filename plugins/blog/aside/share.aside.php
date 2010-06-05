@@ -8,7 +8,7 @@ class BlogShareAside extends AsideController
 	{
 		if ($request == 'blog/show')
 		{
-			return '<br />'.$id . '<- Share it!';
+			//return '<br />'.$id . '<- Share it!';
 		}
 	}
 }

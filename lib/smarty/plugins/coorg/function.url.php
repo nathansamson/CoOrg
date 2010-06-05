@@ -20,7 +20,7 @@
 
 function smarty_function_url($params, $smarty)
 {
-	return CoOrg::createURL(array_values($params));
+	return htmlspecialchars(CoOrg::createURL(array_values($params)));
 }
 
 ?>

@@ -33,11 +33,11 @@ function smarty_helper_function_build_option($key, $option, $value)
 	{
 		if ($key != $value)
 		{
-			$s = '<option value="'.$key.'">'.$option.'</option>';
+			$s = '<option value="'.htmlspecialchars($key).'">'.htmlspecialchars($option).'</option>';
 		}
 		else
 		{
-			$s = '<option value="'.$key.'" selected="selected">'.$option.'</option>';
+			$s = '<option value="'.htmlspecialchars($key).'" selected="selected">'.htmlspecialchars($option).'</option>';
 		}
 	}
 	return $s;
@@ -81,7 +81,7 @@ function smarty_function_input($params, $smarty)
 			if ($type != 'password')
 			{
 				$rawAttribute = $forName. '_raw';
-				$value = $instance->$rawAttribute;
+				$value = htmlspecialchars($instance->$rawAttribute);
 			}
 			else
 			{

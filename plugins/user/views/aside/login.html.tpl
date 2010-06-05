@@ -4,7 +4,7 @@
 	{input for=username label="Username" required}
 	{input for=password label="Password" required}
 	
-	<input type="hidden" name="redirect" value="{$coorgRequest}"/>
+	<input type="hidden" name="redirect" value="{$coorgRequest|escape}"/>
 	
 	{input type="submit" label="Login"}
 {/form}
