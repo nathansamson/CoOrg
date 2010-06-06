@@ -53,6 +53,14 @@ nav a
 	text-decoration: none;
 }
 
+nav a:hover {
+	color: #555;
+}
+
+nav .current a {
+	font-weight: bold;
+}
+
 nav ol
 {
 	display: inline-block;
@@ -84,10 +92,6 @@ nav .navigation-right
 nav ol li
 {
 	display: inline;
-}
-
-li.current a {
-	color: white;
 }
 
 #main
