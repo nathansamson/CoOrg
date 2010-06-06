@@ -288,6 +288,18 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('stopped', CoOrgSmarty::$vars['status']);
 	}
 	
+	public function testPropagationOfBeforeFilter()
+	{
+		AlphaSubController::$set = array();
+		CoOrg::process('alpha/sub/beforeFilterPropagation');
+		
+		$this->assertEquals(array('alphasub', 'propagate'), AlphaSubController::$set);
+		$this->assertTrue(AlphaSubController::$executed);
+		$this->assertEquals('value', CoOrgSmarty::$vars['value']);
+		$this->assertEquals('name', CoOrgSmarty::$vars['name']);
+		$this->assertEquals('string', CoOrgSmarty::$vars['string']);
+	}
+	
 	public function testLoadPluginInfo()
 	{
 		$this->assertFalse(class_exists('AlphaInfo'));

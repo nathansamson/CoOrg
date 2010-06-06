@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @before set alphasub
+*/
 class AlphaSubController extends Controller
 {
 	public static $indexExecuted = true;
@@ -11,6 +14,9 @@ class AlphaSubController extends Controller
 	public static $i18ntest2;
 	public static $i18nfromAlpha;
 	public static $notFoundWithParams;
+	
+	public static $executed;
+	public static $set = array();
 	
 	public function index()
 	{
@@ -34,6 +40,20 @@ class AlphaSubController extends Controller
 	public function doredirect()
 	{
 		$this->redirect('alpha/sub/google');
+	}
+	
+	/**
+	 * @before set propagate
+	*/
+	public function beforeFilterPropagation()
+	{
+		self::$executed = true;
+	}
+	
+	protected function set($v)
+	{
+		self::$set[] = $v;
+		return true;
 	}
 }
 

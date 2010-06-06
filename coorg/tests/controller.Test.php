@@ -38,6 +38,9 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('someID', AlphaController::$objectRetrieve);
 		$this->assertEquals(array('coorgRequest' => 'alpha/show/someID/someParameter',
 		                          'coorgUrl' => '/the/path/en/alpha/show/someID/someParameter',
+		                          'value' => 'value', /* value, name and string come from the alphacontroller*/
+		                          'name' => 'name', 
+		                          'string' => 'string',
 		                          'object' => 'someID',
 		                          'param' => 'someParameter'),
 		                    CoOrgSmarty::$vars);

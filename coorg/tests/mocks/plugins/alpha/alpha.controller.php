@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @before aBefore value name string
+*/
 class AlphaController extends Controller {
 	public static $betaExecuted = false;
 	public static $betaParams = array();

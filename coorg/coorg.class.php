@@ -130,7 +130,7 @@ class CoOrg {
 		
 		try
 		{
-			list($controllerClass, $action, $params, $request) = 
+			list($controllerClass, $action, $params, $request, $parentClasses) = 
 	                      self::findController($controllerName, $requestParams,
 	                                           $params, $post);
 			$controllerClass->coorgRequest = $requestWithoutPrefix;
@@ -146,8 +146,19 @@ class CoOrg {
 			}
 		
 			self::$_request = $request;
-			self::$_requestParameters = $params;	
-			if ($controllerClass->beforeFilters($action, self::$_beforeFilters, $params))
+			self::$_requestParameters = $params;
+			
+			$continue = true;
+			foreach ($parentClasses as $pClassName)
+			{
+				$pClass = new $pClassName;
+				$continue = $pClass->beforeFilters(null, self::$_beforeFilters, $params);
+				if (!$continue)
+				{
+					break;
+				}
+			}
+			if ($continue && $controllerClass->beforeFilters($action, self::$_beforeFilters, $params))
 			{
 				try
 				{
@@ -345,7 +356,8 @@ class CoOrg {
 
 	private static function findController($controllerName, $requestParams,
 	                                       $params, $post,
-	                                       $controllerID = null, $request = null)
+	                                       $controllerID = null, $request = null,
+	                                       $parentClasses = array())
 	{
 		if (strpos($controllerName, '.') !== false)
 		{
@@ -439,18 +451,19 @@ class CoOrg {
 						$params[] = coorgdecode($p);
 					}
 				}
-				return array($controllerClass, $actionName, $params, $request.'/'.$actionName);
+				return array($controllerClass, $actionName, $params, $request.'/'.$actionName, $parentClasses);
 			}
 			else
 			{
 				if ($actionName != 'index')
 				{
+					$parentClasses[] = $controllerClassName;
 					$subController = $controllerName.ucfirst($actionName);
 					$subControllerID = $controllerID.'.'.$actionName;
 					$subRequest = $request . '/'.$actionName;
 					return self::findController($subController, $requestParams,
 					                            $params, $post, $subControllerID,
-					                            $subRequest);
+					                            $subRequest, $parentClasses);
 				}
 				else
 				{

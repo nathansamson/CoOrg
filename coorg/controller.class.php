@@ -88,21 +88,28 @@ class Controller {
 	final public function beforeFilters($action, $filters, $parameters)
 	{
 		$reflectionClass = new ReflectionClass($this);
-		$reflectionMethod = $reflectionClass->getMethod($action);
 		$pNamesToValue = array();
-		foreach ($reflectionMethod->getParameters() as $i=>$param)
+		if ($action != null)
 		{
-			if ($i < count($parameters))
+			$reflectionMethod = $reflectionClass->getMethod($action);
+			foreach ($reflectionMethod->getParameters() as $i=>$param)
 			{
-				$pNamesToValue[$param->getName()] = $parameters[$i];
+				if ($i < count($parameters))
+				{
+					$pNamesToValue[$param->getName()] = $parameters[$i];
+				}
+				else
+				{
+					$pNamesToValue[$param->getName()] = $param->getDefaultValue();
+				}
 			}
-			else
-			{
-				$pNamesToValue[$param->getName()] = $param->getDefaultValue();
-			}
+			$comment = $reflectionClass->getDocComment().$reflectionMethod->getDocComment();
+		}
+		else
+		{
+			$comment = $reflectionClass->getDocComment();
 		}
 		
-		$comment = $reflectionMethod->getDocComment();
 		$loaded = array();
 		$lines = explode("\n", $comment);
 	
