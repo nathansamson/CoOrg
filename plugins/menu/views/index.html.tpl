@@ -10,7 +10,7 @@
 <ul class="menulist">
 {foreach $menus as $menu}
 	<li>
-		{a controller="admin/menu/edit" name=$menu->name}{$menu->name|escape}{/a}
+		{a request="admin/menu/edit" name=$menu->name}{$menu->name|escape}{/a}
 		<span class="description">{$menu->description|format:none}</span>
 		<div class="actions">
 			{a request="admin/menu/edit" name=$menu->name coorgStock=edit}{/a}
