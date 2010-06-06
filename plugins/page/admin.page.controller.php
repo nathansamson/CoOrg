@@ -18,32 +18,25 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+ * @Acl allow admin-page-edit
+*/
 class AdminPageController extends Controller
 {
 	private $_page;	
 	
-	/**
-	 * @Acl allow admin-page-edit
-	*/
 	public function index()
 	{
 		$this->pages = Page::pages(CoOrg::getLanguage());
 		$this->render('admin/index');
 	}
 	
-	/**
-	 * @Acl allow admin-page-edit
-	*/
 	public function create()
 	{
 		$this->newPage = new Page;
 		$this->render('admin/create');
 	}
 	
-	/**
-	 * @post
-	 * @Acl allow admin-page-edit
-	*/
 	public function save($title, $language, $content, $preview = null)
 	{
 		$page = new Page;
@@ -74,7 +67,6 @@ class AdminPageController extends Controller
 	}
 	
 	/**
-	 * @Acl allow admin-page-edit
 	 * @before find $ID
 	*/
 	public function edit($ID, $redirect = null)
@@ -85,8 +77,6 @@ class AdminPageController extends Controller
 	}
 	
 	/**
-	 * @post
-	 * @Acl allow admin-page-edit
 	 * @before find $ID
 	*/
 	public function update($ID, $title, $language, $content, $redirect = null, $preview = null)
@@ -127,8 +117,6 @@ class AdminPageController extends Controller
 	}
 	
 	/**
-	 * @post
-	 * @Acl allow admin-page-edit
 	 * @before find $ID
 	*/
 	public function delete($ID)

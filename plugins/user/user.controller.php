@@ -26,9 +26,6 @@ class UserController extends Controller
 		$this->render('create');
 	}
 	
-	/**
-	 * @post
-	*/
 	public function save($username, $email, $password, $passwordConfirmation)
 	{
 		$user = new User($username, $email);

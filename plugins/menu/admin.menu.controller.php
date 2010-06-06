@@ -18,13 +18,13 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/**
+ * @Acl allow admin-menu-edit
+*/
 class AdminMenuController extends Controller
 {
 	private $_menu;
 
-	/**
-	 * @Acl allow admin-menu-edit
-	*/
 	public function index()
 	{
 		$this->menus = Menu::all();
@@ -32,10 +32,6 @@ class AdminMenuController extends Controller
 		$this->render('index');
 	}
 	
-	/**
-	 * @post
-	 * @Acl allow admin-menu-edit
-	*/
 	public function save($name, $description)
 	{
 		$menu = new Menu;
@@ -58,7 +54,6 @@ class AdminMenuController extends Controller
 	}
 	
 	/**
-	 * @Acl allow admin-menu-edit
 	 * @before find $name
 	*/
 	public function edit($name, $language = null)
@@ -83,7 +78,6 @@ class AdminMenuController extends Controller
 	}
 	
 	/**
-	 * @Acl allow admin-menu-edit
 	 * @before find $name
 	*/
 	public function update($name, $description, $language = null)
@@ -110,7 +104,6 @@ class AdminMenuController extends Controller
 	}
 	
 	/**
-	 * @Acl allow admin-menu-edit
 	 * @before find $name
 	*/
 	public function delete($name)

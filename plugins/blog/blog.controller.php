@@ -45,7 +45,6 @@ class BlogController extends Controller
 	}
 	
 	/**
-	 * @post
 	 * @Acl allow blog-writer
 	 * @Acl allow admin
 	*/
@@ -80,49 +79,34 @@ class BlogController extends Controller
 		$this->render('show');
 	}
 	
+	/**
+	 * @before get $year $month $day $id null edit
+	*/
 	public function edit($year, $month, $day, $id)
 	{
-		$blog = Blog::getBlog($year, $month, $day, $id, CoOrg::getLanguage());
-		if ($blog && $blog->authorID == UserSession::get()->username)
-		{
-			$this->blog = $blog;
-			$this->render('edit');
-		}
-		else
-		{
-			$this->error(t('Blog item is not found'));
-			$this->notFound();
-		}
+		$this->blog = $this->_blog;
+		$this->render('edit');
 	}
 	
 	/**
-	 * @post
+	 * @before get $year $month $day $id null true
 	*/
 	public function update($year, $month, $day, $id, $title, $text)
 	{
-		$blog = Blog::getBlog($year, $month, $day, $id, CoOrg::getLanguage());
-		if ($blog && $blog->authorID == UserSession::get()->username)
+		$this->_blog->title = $title;
+		$this->_blog->text = $text;
+		try
 		{
-			$blog->title = $title;
-			$blog->text = $text;
-			try
-			{
-				$blog->save();
-				
-				$this->notice(t('Your blog item is updated'));
-				$this->redirect('blog/show', $year, $month, $day, $blog->ID);
-			}
-			catch (ValidationException $e)
-			{
-				$this->error(t('Your blog item is not saved'));
-				$this->blog = $blog;
-				$this->render('edit');
-			}
+			$this->_blog->save();
+			
+			$this->notice(t('Your blog item is updated'));
+			$this->redirect('blog/show', $year, $month, $day, $this->_blog->ID);
 		}
-		else
+		catch (ValidationException $e)
 		{
-			$this->error(t('Blog item is not found'));
-			$this->notFound();
+			$this->error(t('Your blog item is not saved'));
+			$this->blog = $this->_blog;
+			$this->render('edit');
 		}
 	}
 
@@ -133,20 +117,21 @@ class BlogController extends Controller
 	*/
 	public function translate($year, $month, $day, $id, $fromLanguage)
 	{
-		$this->originalBlog = Blog::getBlog($year, $month, $day, $id, $fromLanguage);
+		$this->originalBlog = $this->_blog;
 		$this->translatedBlog = new Blog('', '', '', '');
 		$this->render('translate');
 	}
 
 	/**
 	 * @post
+	 * @before get $year $month $day $id $fromLanguage
 	 * @Acl allow blog-writer
 	 * @Acl allow blog-translator
 	*/
 	public function translateSave($year, $month, $day, $id, $fromLanguage,
 	                              $title, $text)
 	{
-		$original = Blog::getBlog($year, $month, $day, $id, $fromLanguage);
+		$original = $this->_blog;
 
 		try
 		{
@@ -163,12 +148,12 @@ class BlogController extends Controller
 		}
 	}
 	
-	protected function get($year, $month, $day, $id, $language = null)
+	protected function get($year, $month, $day, $id, $language = null, $author = false)
 	{
-		if ($language == null)
+		if ($language == null || $language == 'null')
 			$language = CoOrg::getLanguage();
 		$this->_blog = Blog::getBlog($year, $month, $day, $id, $language);
-		if (!$this->_blog)
+		if (!$this->_blog || ($author == true && $this->_blog->authorID != UserSession::get()->username))
 		{
 			$this->error(t('Blog item is not found'));
 			$this->notFound();
