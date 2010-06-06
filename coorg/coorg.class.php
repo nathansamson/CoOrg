@@ -134,7 +134,9 @@ class CoOrg {
 	                      self::findController($controllerName, $requestParams,
 	                                           $params, $post);
 			$controllerClass->coorgRequest = $requestWithoutPrefix;
-			$controllerClass->coorgUrl = self::config()->get('path').$prefix.$requestWithoutPrefix;
+			$coorgUrl = self::config()->get('path').$prefix.$requestWithoutPrefix;
+			self::normalizeRequest($coorgUrl);
+			$controllerClass->coorgUrl = $coorgUrl;
 			if (!$post && $controllerClass->isPost($action))
 			{
 				throw new WrongRequestMethodException();

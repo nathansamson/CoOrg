@@ -46,6 +46,16 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
 		                    CoOrgSmarty::$vars);
 	}
 	
+	public function testCoOrgURLOnHome()
+	{
+		CoOrg::config()->set('path', '/the/path/');
+		CoOrg::process('en/');
+		$this->assertEquals(array('coorgRequest' => '',
+		                          'coorgUrl' => '/the/path/en',
+		                          'language' => 'en'),
+		                    CoOrgSmarty::$vars);
+	}
+	
 	public function testBaseHTMLRendered()
 	{
 		CoOrg::process('alpha/show/someID/someParameter');
