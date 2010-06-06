@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="{CoOrg::getLanguage()}">
 	<head>
 		<meta charset="UTF-8" />
 		<title>{block name='title'}Default title{/block}</title>
