@@ -69,6 +69,14 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
 		CoOrg::process('alpha/doredirect');
 		$this->assertEquals('some/redirect/to/a$2fpagewith$3fstrangechars', Header::$redirect);
 	}
+	
+	public function testAutoPost()
+	{
+		$c = new AlphaController;
+		$this->assertTrue($c->isPost('update'));
+		$this->assertTrue($c->isPost('save'));
+		$this->assertTrue($c->isPost('delete'));
+	}
 }
 
 

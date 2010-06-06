@@ -36,6 +36,7 @@ class Controller {
 	
 	public function isPost($name)
 	{
+		if (in_array($name, array('update', 'save', 'delete'))) return true;
 		$reflectionClass = new ReflectionClass($this);
 		$reflectionMethod = $reflectionClass->getMethod($name);
 		
