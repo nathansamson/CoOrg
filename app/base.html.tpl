@@ -23,13 +23,13 @@
 			<h2>{Coorg::config()->get('site/subtitle')}</h2>
 			
 			<nav class="main-navigation">
-				<span class="navigation-left">
+				<div class="navigation-left">
 					{aside name='navigation-left'}
-				</span>
+				</div>
 
-				<span class="navigation-right">
+				<div class="navigation-right">
 					{aside name='navigation-right'}
-				</span>
+				</div>
 			</nav>
 		</header>
 	
