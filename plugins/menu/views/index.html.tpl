@@ -10,17 +10,15 @@
 <ul class="menulist">
 {foreach $menus as $menu}
 	<li>
-		<a href="{url controller="admin/menu/edit" name=$menu->name}">{$menu->name|escape}</a>
+		{a controller="admin/menu/edit" name=$menu->name}{$menu->name|escape}{/a}
 		<span class="description">{$menu->description|format:none}</span>
-		<span class="actions">
-			<a href="{url request="admin/menu/edit" name=$menu->name}">
-				<img src="{'images/icons/edit.png'|static}" />
-			</a>
+		<div class="actions">
+			{a request="admin/menu/edit" name=$menu->name coorgStock=edit}{/a}
 			{button request="admin/menu/delete"
-			        param_name=$menu->name}
-				<img src="{'images/icons/edit-delete.png'|static}" />
-			{/button}
-		</span>
+			        param_name=$menu->name
+			        coorgStock="delete"
+			        coorgConfirm="Are you sure you want to remove '%m'?"|_:$menu->name}{/button}
+		</div>
 	</li>
 {/foreach}
 </ul>

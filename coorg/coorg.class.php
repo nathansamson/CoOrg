@@ -310,6 +310,17 @@ class CoOrg {
 		}
 	}
 	
+	public static function stocks($stock)
+	{
+		$stocks = array(
+			'edit' => array('img' => 'images/icons/edit.png', 'alt' => t('Edit'), 'title' => t('Edit')),
+			'delete' => array('img' => 'images/icons/edit-delete.png', 'alt' => t('Delete'), 'title' => t('Delete')),
+			'list-remove' => array('img' => 'images/icons/list-remove.png', 'alt' => t('Remove'), 'title' => t('Remove'))
+		);
+		
+		return $stocks[$stock];
+	}
+	
 	/* == These functions are only used for testing purposes == */
 	
 	public static function setSite($url)
@@ -551,7 +562,7 @@ class CoOrg {
 
 function coorgencode($input)
 {
-	$toEncode = array('$', '?', '/', '&', '.');
+	$toEncode = array('$', '?', '/', '&', '.', '#');
 	foreach ($toEncode as $char)
 	{
 		$input = str_replace($char, '$'.dechex(ord($char)), $input);
@@ -561,7 +572,7 @@ function coorgencode($input)
 
 function coorgdecode($input)
 {
-	$toDecode = array('?', '/', '&', '.', '$');
+	$toDecode = array('?', '/', '&', '.', '#', '$');
 	foreach ($toDecode as $char)
 	{
 		$input = str_replace('$'.dechex(ord($char)), $char, $input);

@@ -7,14 +7,14 @@
 {block name='content'}
 	<h1>{'Edit %m'|_:$menu->name|escape}</h1>
 	
-	<a href="{url request="admin/menu"}">{'Go back'|_}</a>
+	{a request="admin/menu"}{'Go back'|_}{/a}
 	
 	<h2>{'Entries'|_}</h2>
 	<ol class="adminmenu">
 		{foreach $menu->entries({$adminlanguage}) as $entry}
 			<li>
 				{$entry->title|escape}
-				<span class="actions">
+				<div class="actions">
 					{if !$entry@first}
 						{button request="admin/menu/entry/move"
 							    param_entry=$entry->ID
@@ -31,11 +31,11 @@
 					{/if}
 					
 					{button request="admin/menu/entry/delete"
-					        param_entry=$entry->ID}
-						<img src="{'images/icons/list-remove.png'|static}" />
+					        param_entry=$entry->ID
+					        coorgStock="list-remove"
+					        coorgConfirm="Are you sure you want to remove '%n' from the menu?"|_:$entry->title}
 					{/button}
-					
-				</span>
+				</div>
 			</li>
 		{/foreach}
 	</ol>
@@ -51,9 +51,9 @@
 		
 			{input type=select for=entryID label="To" options=$providerActionCombos}
 		
-			<span id="url-data">
+			<div id="url-data">
 				{input for=data label="Data"}
-			</span>
+			</div>
 		
 		
 			{input type="submit" label="Save menu entry"}

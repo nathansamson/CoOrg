@@ -18,50 +18,34 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function smarty_block_button($params, $contents, $smarty)
+function smarty_block_a($params, $contents, $smarty)
 {
 	if ($contents !== NULL)
 	{
-		$confirm = @$params['coorgConfirm'];
-		unset($params['coorgConfirm']);
-		
-		if ($confirm)
-		{
-			$confirm = htmlspecialchars($confirm);
-			$confirm = str_replace('\'', '\\\'', $confirm);
-		}
-		
-		$form = '<form action="'.CoOrg::createURL(explode('/', $params['request'])).
-		              '" method="post" class="normal-post-url"'.
-		              ($confirm ? '  onsubmit="return confirm(\''.$confirm.'\');"' : '').
-		              '>';
-		
-		foreach ($params as $key => $value)
-		{
-			if (strpos($key, 'param_') === 0)
-			{
-				$name = substr($key, 6);
-				$form .= '<input type="hidden" name="'.$name.'" value="'.htmlspecialchars($value).'"/>';
-			}
-		}
-		
 		$stock = @$params['coorgStock'];
 		unset($params['coorgStock']);
+		$urlParams = array($params['request']);
+		unset($params['request']);
+		$urlParams = array_merge($urlParams, array_values($params));
+		
+		$a = '<a href="'.htmlspecialchars(CoOrg::createURL($urlParams)).'">';
 		if ($stock)
 		{
 			$stockInfo = CoOrg::stocks($stock);
-			$contents = '<img src="'.CoOrg::staticFile($stockInfo['img']).'"
+			$a .= '<img src="'.CoOrg::staticFile($stockInfo['img']).'"
 			            alt="'.$stockInfo['alt'].'"
 			            title="'.$stockInfo['title'].'"/>';
 			if ($stockInfo['text'])
 			{
-				$contents = $stockInfo['text'];
+				$a .= $stockInfo['text'];
 			}
 		}
-		
-		$form .= '<button type="submit">'.$contents.'</button>';
-		$form .= '</form>';
-		return $form;
+		else
+		{
+			$a .= $contents;
+		}
+		$a .= '</a>';
+		return $a;
 	}
 }
 

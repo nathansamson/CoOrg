@@ -79,6 +79,8 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 		
 		$this->assertRendered('edit');
 		$this->assertVarSet('menu');
+		$this->assertVarSet('adminlanguage');
+		$this->assertVarIs('adminlanguage', 'en');
 		$entry = CoOrgSmarty::$vars['newEntry'];
 		$this->assertEquals('en', $entry->language);
 		$this->assertEquals('main', $entry->menu);
@@ -93,6 +95,8 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 		$this->assertRendered('edit');
 		$this->assertVarSet('menu');
 		$this->assertVarSet('providerActionCombos');
+		$this->assertVarSet('adminlanguage');
+		$this->assertVarIs('adminlanguage', 'nl');
 		$entry = CoOrgSmarty::$vars['newEntry'];
 		$this->assertEquals('nl', $entry->language);
 		$this->assertEquals('main', $entry->menu);
@@ -102,6 +106,8 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 	{
 		$this->login('dvorak');
 		$this->request('nl/admin/menu/edit/main');
+		$this->assertVarSet('adminlanguage');
+		$this->assertVarIs('adminlanguage', 'nl');
 		$entry = CoOrgSmarty::$vars['newEntry'];
 		$this->assertEquals('nl', $entry->language);
 		$this->assertEquals('main', $entry->menu);

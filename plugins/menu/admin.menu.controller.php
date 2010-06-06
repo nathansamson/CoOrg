@@ -73,6 +73,7 @@ class AdminMenuController extends Controller
 		{
 			$adminLanguage = CoOrg::getLanguage();
 		}
+		$this->adminlanguage = $adminLanguage;
 		$this->providerActionCombos = Menu::providerActionCombos($adminLanguage);
 		$newEntry = new MenuEntry;
 		$newEntry->menu = $name;
