@@ -63,6 +63,7 @@ class I18n
 			$translated = $string;
 		}
 		
+		$translated = preg_replace('/@(%?[a-zA-Z0-9]*)\:(%?[^@]*)@/', '<a href="$1">$2</a>', $translated);
 		foreach ($params as $key =>$replacement)
 		{
 			$translated = str_replace('%'.$key, $replacement, $translated);

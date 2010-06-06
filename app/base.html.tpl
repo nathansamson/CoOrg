@@ -48,5 +48,10 @@
 				{block name='content'}This space is intentionally left blank!{/block}
 			</div>
 		</div>
+		
+		<footer>
+			{'Powered by @%coorg:CoOrg@!'|_:'http://launchpad.net/coorg'}
+			{'CoOrg is @%fsf:free software@ download the @%source:source@.'|_:'http://gnu.org/':'http://code.launchpad.net/coorg/'}
+		</footer>
 	</body>
 </html>

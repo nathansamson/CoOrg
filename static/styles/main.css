@@ -3,13 +3,16 @@ body
 	font-family: sans-serif;
 }
 
-body > header
+body > header, body > footer
 {
+	clear: both;
 	display: block;
 	width: 900px;
 	margin-left: auto;
 	margin-right: auto;
-	
+}
+
+body > header {
 	text-align: right;
 	
 	margin-bottom: 10px;
@@ -33,6 +36,17 @@ body > header h2
 	font-size: 1em;
 	margin: 0;
 	padding: 0;
+}
+
+body > footer {
+	padding: 7px;
+	border: 1px dotted #a9a9a9;
+	font-size: 9px;
+	text-align: center;
+}
+
+footer a {
+	color: black;
 }
 
 /* === MENU === */
@@ -100,6 +114,7 @@ nav ol li
 	
 	margin-left: auto;
 	margin-right: auto;
+	margin-bottom: 10px;
 }
 
 #content
@@ -208,6 +223,10 @@ aside h2 {
 
 aside h3, aside h4, aside h5, aside h6 {
 	font-size: 1.0em;
+}
+
+#main aside {
+	margin-bottom: 10px;
 }
 
 /* === FORMS === */
