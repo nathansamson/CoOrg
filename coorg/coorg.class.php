@@ -274,6 +274,7 @@ class CoOrg {
 			$className = ucfirst($p[0]).ucfirst($p[1]).'Aside';
 			$i = new $className($smarty, dirname(self::$_asides[$p[0]][$p[1]]).'/../views/');
 			$r = self::$_requestParameters;
+			if ($r == null) $r = array();
 			array_unshift($r, self::$_request);
 			array_unshift($r, $widgetParams);
 			$s .= call_user_func_array(array($i, 'run'), $r);
