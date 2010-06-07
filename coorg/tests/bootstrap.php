@@ -19,7 +19,7 @@ function prepare()
 	$q = DB::prepare('CREATE TABLE Mock(
 	 name VARCHAR(256) PRIMARY KEY,
 	 description VARCHAR(65000),
-	 email VARCHAR(256) UNIQUE NOT NULL,
+	 email VARCHAR(256) NOT NULL,
 	 rot13name VARCHAR(64) NOT NULL,
 	 conditional INT)');
 	$q->execute();

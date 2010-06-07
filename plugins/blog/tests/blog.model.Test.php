@@ -94,15 +94,20 @@ class BlogTest extends CoOrgModelTest
 		}
 	}
 	
-	public function testLatest()
+	public function testBlogs()
 	{
-		$blogs = Blog::latest('en', 3);
+		$blogPager = Blog::blogs('en');
+		$blogs = $blogPager->execute(1, 3);
 		$this->assertEquals(3, count($blogs));
 		$this->assertEquals('XYZ', $blogs[0]->title);
 		$this->assertEquals('Some Blog', $blogs[1]->title);
 		$this->assertEquals('Some Other Blog', $blogs[2]->title);
 		
-		$blogs = Blog::latest('en');
+		$blogs = $blogPager->execute(2, 3);
+		$this->assertEquals(1, count($blogs));
+		$this->assertEquals('Blog post', $blogs[0]->title);
+		
+		$blogs = $blogPager->execute(1, 10);
 		$this->assertEquals(4, count($blogs));
 		$this->assertEquals('XYZ', $blogs[0]->title);
 		$this->assertEquals('Some Blog', $blogs[1]->title);

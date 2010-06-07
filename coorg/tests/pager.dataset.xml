@@ -1,0 +1,213 @@
+<dataset>
+	<Mock
+		name="AABB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="AABC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="AACB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="AACC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	<Mock
+		name="ABBB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	<Mock
+		name="ABBC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="ABCB"
+		email="ABCC"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="ABCC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="ACBB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="ACBC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="ACCB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="ACCC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	
+	<Mock
+		name="BABB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="BABC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="BACB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="BACC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	<Mock
+		name="BBBB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	<Mock
+		name="BBBC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="BBCB"
+		email="ABCC"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="BBCC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="BCBB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="BCBC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="BCCB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="BCCC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="CABB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="CABC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="CACB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="CACC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	<Mock
+		name="CBBB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	<Mock
+		name="CBBC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="CBCB"
+		email="ABCC"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="CBCC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="CCBB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="CCBC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="CCCB"
+		email="AABB"
+		rot13name="AABB"
+	/>
+	
+	<Mock
+		name="CCCC"
+		email="AABB"
+		rot13name="AABB"
+	/>
+
+</dataset>

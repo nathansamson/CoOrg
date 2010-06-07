@@ -25,14 +25,15 @@ class AdminPageController extends Controller
 {
 	private $_page;	
 	
-	public function index()
+	public function index($page = 1)
 	{
-		$this->pages = Page::pages(CoOrg::getLanguage());
+		$this->pager = Page::pages(CoOrg::getLanguage());
+		$this->pages = $this->pager->execute($page, 20);
 		$this->render('admin/index');
 	}
 	
 	public function create()
-	{
+	{	
 		$this->newPage = new Page;
 		$this->render('admin/create');
 	}

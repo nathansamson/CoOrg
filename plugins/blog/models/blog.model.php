@@ -97,24 +97,15 @@ class Blog extends DBModel
 		}
 	}
 	
-	public static function latest($language, $n = 0)
+	public static function blogs($language)
 	{
-		$qs = 'SELECT * FROM Blog
+		$pager = new BlogPager(
+		             'SELECT * FROM Blog
 		                  WHERE language=:language
-		                  ORDER BY timePosted DESC';
-		if ($n > 0)
-		{
-			$qs .= ' LIMIT '.(int)$n;
-		}
-		$q = DB::prepare($qs);
-		$q->execute(array('language' => $language));
-		
-		$blogs = array();
-		foreach ($q->fetchAll() as $row)
-		{
-			$blogs[] = self::fetch($row, 'Blog');
-		}
-		return $blogs;
+		                  ORDER BY timePosted DESC',
+		             array('language' => $language));
+
+		return $pager;
 	}
 	
 	protected function normalizeTitle($title)

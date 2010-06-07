@@ -134,14 +134,16 @@ class PageTest extends CoOrgModelTest
 	
 	public function testPages()
 	{
-		$pages = Page::pages('en');
+		$pager = Page::pages('en');
+		$pages = $pager->execute(1, 10);
 		$this->assertEquals(3, count($pages));
 		
 		$this->assertEquals('aabbcc', $pages[0]->ID);
 		$this->assertEquals('some-page', $pages[1]->ID);
 		$this->assertEquals('tidelodoo', $pages[2]->ID);
 		
-		$pages = Page::pages('nl');
+		$pager = Page::pages('nl');
+		$pages = $pager->execute(1, 10);
 		$this->assertEquals(2, count($pages));
 		
 		$this->assertEquals('aabbcc', $pages[0]->ID);

@@ -37,7 +37,34 @@ class BlogControllerTest extends CoOrgControllerTest
 		
 		$this->assertVarSet('blogs');
 		$blogs = CoOrgSmarty::$vars['blogs'];
+		$blogpager = CoOrgSmarty::$vars['blogpager'];
+		$this->assertNull($blogpager->prev());
+		$this->assertNull($blogpager->next());
 		$this->assertEquals(4, count($blogs));
+		$this->assertEquals('en', $blogs[0]->language);
+		$this->assertRendered('latest');
+	}
+	
+	public function testIndexWithPager()
+	{
+		for ($i = 0; $i < 40; $i++)
+		{
+			$b = new Blog;
+			$b->title = 'Some Title ' . $i;
+			$b->authorID = 'nathan';
+			$b->text = 'Some Random Content (4) <-- Its random';
+			$b->language = 'en';
+			$b->save();
+		}
+	
+		$this->request('blog/index/3');
+		$this->assertVarSet('blogs');
+		$blogs = CoOrgSmarty::$vars['blogs'];
+		$blogpager = CoOrgSmarty::$vars['blogpager'];
+		$this->assertEquals(2, $blogpager->prev());
+		$this->assertEquals(4, $blogpager->next());
+		$this->assertEquals(2, count($blogpager->pages(2)));
+		$this->assertEquals(10, count($blogs));
 		$this->assertEquals('en', $blogs[0]->language);
 		$this->assertRendered('latest');
 	}

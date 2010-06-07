@@ -15,12 +15,12 @@
 			<td>
 			{a request="admin/page/edit"
 			   page=$page->ID
-			   redirect="admin/page"}{$page->title|escape}{/a}</td>
+			   redirect=$coorgRequest}{$page->title|escape}{/a}</td>
 			<td>{$page->content|format:none|truncate:100}</td>
 			<td>
 				{a request="admin/page/edit"
 			       page=$page->ID
-			       redirect="admin/page"
+			       redirect=$coorgRequest
 			       coorgStock=edit}{/a}
 				{button request="admin/page/delete"
 				        param_ID=$page->ID
@@ -31,4 +31,5 @@
 		</tr>
 	{/foreach}
 	</table>
+	{pager pager=$pager request="admin/page/index" page='.*.' coorgWidth=11}
 {/block}

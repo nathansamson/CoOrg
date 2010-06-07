@@ -34,7 +34,8 @@ class BlogMenuEntryProvider implements IMenuEntryProvider
 	{
 		if ($action == 'show')
 		{
-			$blogs = Blog::latest($language);
+			$pager = Blog::blogs($language);
+			$blogs = $pager->execute(0, 0);
 			$menu = array();
 			foreach ($blogs as $blog)
 			{

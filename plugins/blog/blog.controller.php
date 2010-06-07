@@ -22,15 +22,19 @@ class BlogController extends Controller
 {
 	private $_blog;
 
-	public function index()
+	/**
+	 * @before fetchLatest $page
+	*/
+	public function index($page = 1)
 	{
-		$this->blogs = Blog::latest(CoOrg::getLanguage(), 10);
 		$this->render('latest');
 	}
 	
+	/**
+	 * @before fetchLatest
+	*/
 	public function latest()
 	{
-		$this->blogs = Blog::latest(CoOrg::getLanguage(), 10);
 		$this->render('latest', false, null);
 	}
 
@@ -159,6 +163,14 @@ class BlogController extends Controller
 			$this->notFound();
 			return false;
 		}
+		return true;
+	}
+	
+	protected function fetchLatest($page = 1)
+	{
+		$pager = Blog::blogs(CoOrg::getLanguage());
+		$this->blogs = $pager->execute($page, 10);
+		$this->blogpager = $pager;
 		return true;
 	}
 }

@@ -3,6 +3,9 @@
 {block name="content"}
 	<h1>{'Blog'|_}</h1>
 	
+	{twowaypager pager=$blogpager request="blog/index" page=".*."
+	             coorgPrev='Newer posts'|_
+	             coorgNext='Older posts'|_}
 	{foreach $blogs as $blog}
 		<article>
 			<header>
@@ -15,4 +18,7 @@
 			{$blog->text|format:text|truncate:200}
 		</article>
 	{/foreach}
+	{twowaypager pager=$blogpager request="blog/index" page=".*."
+	             coorgPrev='Newer posts'|_
+	             coorgNext='Older posts'|_}
 {/block}

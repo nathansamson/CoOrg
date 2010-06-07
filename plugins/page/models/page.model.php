@@ -63,15 +63,10 @@ class Page extends DBModel
 	
 	public static function pages($language)
 	{
-		$q = DB::prepare('SELECT * FROM Page WHERE language=:l ORDER BY title');
-		$q->execute(array(':l' => $language));
-		
-		$ps = array();
-		foreach ($q->fetchAll() as $row)
-		{
-			$ps[] = self::fetch($row, 'Page');
-		}
-		return $ps;
+		$pager = new PagePager('SELECT * FROM Page WHERE language=:l
+		                         ORDER BY title',
+		                       array(':l' => $language));
+		return $pager;
 	}
 	
 	private static function normalizeTitle($title, $language)

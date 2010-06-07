@@ -31,6 +31,7 @@ class AdminPageControllerTest extends CoOrgControllerTest
 		$this->assertVarSet('pages');
 		$pages = CoOrgSmarty::$vars['pages'];
 		$this->assertEquals(3, count($pages));
+		$this->assertVarSet('pager');
 	}
 	
 	public function testIndexI18n()
@@ -42,6 +43,34 @@ class AdminPageControllerTest extends CoOrgControllerTest
 		$this->assertVarSet('pages');
 		$pages = CoOrgSmarty::$vars['pages'];
 		$this->assertEquals(2, count($pages));
+		$this->assertVarSet('pager');
+		$pager = CoOrgSmarty::$vars['pager'];
+		$this->assertNull($pager->prev());
+		$this->assertNull($pager->next());
+	}
+	
+	public function testIndexOtherPager()
+	{
+		for ($i = 0; $i <= 20; $i++)
+		{
+			$page = new Page;
+			$page->title = 'Some Name';
+			$page->language = 'nl';
+			$page->content = 'X';
+			$page->author = 'nathan';
+			$page->save();
+		}
+		$this->login('admin');
+		
+		$this->request('nl/admin/page/index/2');
+		$this->assertRendered('admin/index');
+		$this->assertVarSet('pages');
+		$pages = CoOrgSmarty::$vars['pages'];
+		$this->assertEquals(3, count($pages));
+		$this->assertVarSet('pager');
+		$pager = CoOrgSmarty::$vars['pager'];
+		$this->assertEquals(1, $pager->prev());
+		$this->assertNull($pager->next());
 	}
 	
 	public function testIndexNotAllowed()
