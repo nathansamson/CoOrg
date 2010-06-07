@@ -23,3 +23,20 @@
 a img {
 	border: none;
 }
+
+.languages {
+	list-style-type: none;
+	margin: 10px 0;
+	padding: 0;
+}
+
+.languages li {
+	width: 400px;
+	border: dotted 1px #999;
+	padding: 10px;
+	margin: 10px 0;
+}
+
+.languages li .actions {
+	float: right;
+}

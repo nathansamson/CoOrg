@@ -44,6 +44,19 @@ class Language extends DBModel
 		}
 	}
 	
+	public static function languages()
+	{
+		$q = DB::prepare('SELECT * FROM Language ORDER BY language');
+		$q->execute();
+		
+		$l = array();
+		foreach ($q->fetchAll() as $row)
+		{
+			$l[] = self::fetch($row, 'Language');
+		}
+		return $l;
+	}
+	
 	protected function validate($for)
 	{
 		parent::validate($for);

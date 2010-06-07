@@ -34,6 +34,23 @@ class ToSiteAdminModule extends AdminModule
 	}
 }
 
+class i18nAdminModule extends AdminModule
+{
+	public function __construct()
+	{
+		$this->name = t('Languages');
+		$this->url = CoOrg::createURL(array('admin/i18n'));
+		$this->priority = 1;
+		$this->image = CoOrg::staticFile('images/locale.png', 'admin');
+	}
+	
+	public function isAllowed($user)
+	{
+		return Acl::isAllowed($user->username, 'admin-language');
+	}
+}
+
 Admin::registerModule('ToSiteAdminModule');
+Admin::registerModule('i18nAdminModule');
 
 ?>

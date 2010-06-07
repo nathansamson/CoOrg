@@ -73,6 +73,16 @@ class LanguageTests extends CoOrgModelTest
 		
 		$this->assertNull(Language::get('nl'));
 	}
+	
+	public function testLanguages()
+	{
+		$l = Language::languages();
+		$this->assertEquals(2, count($l));
+		$this->assertEquals('en', $l[0]->language);
+		$this->assertEquals('English', $l[0]->name);
+		$this->assertEquals('nl', $l[1]->language);
+		$this->assertEquals('Nederlands', $l[1]->name);
+	}
 }
 
 ?>

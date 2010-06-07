@@ -24,13 +24,19 @@
 		allowed="1"
 	/>
 	
-	<Language
-		language="en"
-		name="English"
+	<Acl 
+		groupID="__dvorak"
+		keyID="admin-language"
+		allowed="1"
 	/>
 	
 	<Language
 		language="nl"
 		name="Nederlands"
+	/>
+	
+	<Language
+		language="en"
+		name="English"
 	/>
 </dataset>
