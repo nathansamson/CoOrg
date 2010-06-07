@@ -23,4 +23,14 @@
 		keyID="admin"
 		allowed="1"
 	/>
+	
+	<Language
+		language="en"
+		name="English"
+	/>
+	
+	<Language
+		language="nl"
+		name="Nederlands"
+	/>
 </dataset>
