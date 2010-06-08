@@ -15,6 +15,11 @@
 					cWYSIWYG(element);
 				});
 			});
+			
+			function staticFile(file)
+			{
+				return "{$staticPath}"+file;
+			}
 		</script>
 	</head>
 	<body>

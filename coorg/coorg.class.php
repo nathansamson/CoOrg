@@ -138,6 +138,7 @@ class CoOrg {
 			$coorgUrl = self::config()->get('path').$prefix.$requestWithoutPrefix;
 			self::normalizeRequest($coorgUrl);
 			$controllerClass->coorgUrl = $coorgUrl;
+			$controllerClass->staticPath = self::$_config->get('path').'static/';
 			if (!$post && $controllerClass->isPost($action))
 			{
 				throw new WrongRequestMethodException();

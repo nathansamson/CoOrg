@@ -44,7 +44,7 @@ class BlogController extends Controller
 	*/
 	public function create()
 	{
-		$this->blog = new Blog('', '', '', CoOrg::getLanguage());
+		$this->blog = new Blog('', '', 'Google is tof<br /> <br />smaar ik ben nog vele toffer', CoOrg::getLanguage());
 		$this->render('create');
 	}
 	
