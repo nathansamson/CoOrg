@@ -32,35 +32,73 @@ class AdminPageController extends Controller
 		$this->render('admin/index');
 	}
 	
-	public function create()
+	/**
+	 * @before find $originalID $originalLanguage
+	*/
+	public function create($originalID = null, $originalLanguage = null, $trLanguage = null)
 	{	
-		$this->newPage = new Page;
+		$page = new Page;
+		$page->language = $trLanguage ? $trLanguage : CoOrg::getLanguage();
+		
+		if ($originalID)
+		{
+			$this->originalPage = $this->_page;
+			$page->originalID = $originalID;
+			$page->originalLanguage = $originalLanguage;
+		}
+		
+		$this->newPage = $page;
 		$this->render('admin/create');
 	}
 	
-	public function save($title, $language, $content, $preview = null)
+	public function save($title, $language, $content, $originalID = null, $originalLanguage = null, $preview = null)
 	{
 		$page = new Page;
 		$page->title = $title;
 		$page->language = $language;
 		$page->content = $content;
 		$page->author = UserSession::get()->username;
+		
+		if ($originalID)
+		{
+			$page->originalID = $originalID;
+			$page->originalLanguage = $originalLanguage;
+		}
+		
 		try
 		{
 			if (!$preview)
 			{
 				$page->save();
-				$this->notice(t('New page created'));
-				$this->redirect('page', 'show', $page->ID);
+				if (!$originalID)
+				{
+					$this->notice(t('New page created'));
+					$this->redirect('page', 'show', $page->ID);
+				}
+				else
+				{
+					$opage = Page::get($originalID, $originalLanguage);
+					$this->notice(t('Saved translation of "%o"', array('o'=>$opage->title)));
+					if ($language != CoOrg::getLanguage())
+					{
+						$this->redirect('page', 'show', $page->ID, $language);
+					}
+					else
+					{
+						$this->redirect('page', 'show', $page->ID);
+					}
+				}
 			}
 			else
 			{
+				if ($originalID) $this->originalPage = Page::get($originalID, $originalLanguage);
 				$this->newPage = $page;
 				$this->render('admin/create');
 			}
 		}
 		catch (ValidationException $e)
 		{
+			if ($originalID) $this->originalPage = Page::get($originalID, $originalLanguage);
 			$this->newPage = $page;
 			$this->error(t('Creating page failed'));
 			$this->render('admin/create');
@@ -127,9 +165,10 @@ class AdminPageController extends Controller
 		$this->redirect('admin/page');
 	}
 	
-	protected function find($ID)
+	protected function find($ID, $language = null)
 	{
-		$this->_page = Page::get($ID, CoOrg::getLanguage());
+		if ($ID == null) {return true;}
+		$this->_page = Page::get($ID, $language ? $language : CoOrg::getLanguage());
 		if (!$this->_page)
 		{
 			$this->error(t('Page not found'));

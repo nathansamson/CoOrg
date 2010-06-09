@@ -193,6 +193,15 @@ class PageTest extends CoOrgModelTest
 		$l->language = 'de';
 		$l->name = 'German';
 		$l->save();
+		$l = new Language;
+		$l->language = 'es';
+		$l->name = 'Espanjol';
+		$l->save();
+		$page = Page::get('tidelodoo', 'en');
+		$untranslated = $page->untranslated();
+		$this->assertEquals(2, count($untranslated));
+		$this->assertEquals('es', $untranslated[0]->language);
+		$this->assertEquals('de', $untranslated[1]->language);
 		
 		$p = new Page;
 		$p->title = 'Joedialtitoe';
@@ -230,6 +239,10 @@ class PageTest extends CoOrgModelTest
 		$this->assertEquals('de', $languages[0]->language);
 		$this->assertEquals('German', $languages[0]->name);
 		$this->assertEquals($p->ID, $languages[0]->pageID);
+		
+		$untranslated = $page->untranslated();
+		$this->assertEquals(1, count($untranslated));
+		$this->assertEquals('es', $untranslated[0]->language);
 	}
 	
 	public function testCreateAlreadyTranslated()

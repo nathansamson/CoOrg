@@ -88,6 +88,8 @@ class AdminPageControllerTest extends CoOrgControllerTest
 		
 		$this->request('admin/page/create');
 		$this->assertVarSet('newPage');
+		$newPage = CoOrgSmarty::$vars['newPage'];
+		$this->assertEquals('en', $newPage->language);
 		$this->assertRendered('admin/create');
 	}
 	
@@ -98,6 +100,47 @@ class AdminPageControllerTest extends CoOrgControllerTest
 		$this->request('admin/page/create');
 		$this->assertRedirected('');
 		$this->assertFlashError('You don\'t have the rights to view this page');
+	}
+	
+	public function testCreateTranslation()
+	{
+		$this->login('admin');
+		$this->request('admin/page/create/aabbcc/en/fr');
+		
+		$this->assertRendered('admin/create');
+		$this->assertVarSet('newPage');
+		$newPage = CoOrgSmarty::$vars['newPage'];
+		$this->assertEquals('fr', $newPage->language);
+		$this->assertEquals('en', $newPage->originalLanguage_raw);
+		$this->assertEquals('aabbcc', $newPage->originalID_raw);
+		$this->assertVarSet('originalPage');
+		$oPage = CoOrgSmarty::$vars['originalPage'];
+		$this->assertEquals('AA BB CC', $oPage->title);
+	}
+	
+	public function testCreateTranslationNotFound()
+	{
+		$this->login('admin');
+		$this->request('admin/page/create/notfound/en/fr');
+		
+		$this->assertRendered('notfound');
+		$this->assertFlashError('Page not found');
+	}
+	
+	public function testCreateTranslationThisLanguage()
+	{
+		$this->login('admin');
+		$this->request('fr/admin/page/create/aabbcc/en');
+		
+		$this->assertRendered('admin/create');
+		$this->assertVarSet('newPage');
+		$newPage = CoOrgSmarty::$vars['newPage'];
+		$this->assertEquals('fr', $newPage->language);
+		$this->assertEquals('en', $newPage->originalLanguage_raw);
+		$this->assertEquals('aabbcc', $newPage->originalID_raw);
+		$this->assertVarSet('originalPage');
+		$oPage = CoOrgSmarty::$vars['originalPage'];
+		$this->assertEquals('AA BB CC', $oPage->title);
 	}
 	
 	public function testSave()
@@ -132,6 +175,7 @@ class AdminPageControllerTest extends CoOrgControllerTest
 		$this->assertEquals('Some New Page', $newPage->title);
 		$this->assertEquals('The Very Much Appreciated Content', $newPage->content);
 		$this->assertEquals('admin', $newPage->author);
+		$this->assertEquals('en', $newPage->language);
 		
 		$this->assertNull(Page::get('some-new-page', 'en'));
 	}
@@ -160,6 +204,96 @@ class AdminPageControllerTest extends CoOrgControllerTest
 		$this->assertVarSet('newPage');
 		$newPage = CoOrgSmarty::$vars['newPage'];
 		$this->assertEquals('Some New Page', $newPage->title);
+	}
+	
+	public function testSaveTranslation()
+	{
+		$this->login('admin');
+		
+		$this->request('admin/page/save', array(
+		                   'title' => 'Translation of AA BB CC',
+		                   'language' => 'fr',
+		                   'content' => 'Translated',
+		                   'originalLanguage' => 'en',
+		                   'originalID' => 'aabbcc'));
+		
+		$page = Page::get('translation-of-aa-bb-cc', 'fr');
+		$this->assertEquals('Translated', $page->content);
+		$this->assertEquals('Translation of AA BB CC', $page->title);
+		$t = $page->languages();
+		$this->assertEquals(1, count($t));
+		$this->assertEquals('en', $t[0]->language);
+		$this->assertEquals('aabbcc', $t[0]->pageID);
+		$this->assertFlashNotice('Saved translation of "AA BB CC"');
+		$this->assertRedirected('page/show/translation-of-aa-bb-cc/fr');
+	}
+	
+	public function testSaveTranslationInCurrentLanguage()
+	{
+		$this->login('admin');
+		
+		$this->request('fr/admin/page/save', array(
+		                   'title' => 'Translation of AA BB CC',
+		                   'language' => 'fr',
+		                   'content' => 'Translated',
+		                   'originalLanguage' => 'en',
+		                   'originalID' => 'aabbcc'));
+		
+		$this->assertFlashNotice(t('Saved translation of "%o"', array('o'=>'AA BB CC')));
+		$this->assertRedirected('page/show/translation-of-aa-bb-cc');
+	}
+	
+	public function testSaveTranslationPreview()
+	{
+		$this->login('admin');
+		
+		$this->request('admin/page/save', array(
+		                   'title' => 'Translation of AA BB CC',
+		                   'language' => 'fr',
+		                   'content' => 'Translated',
+		                   'originalLanguage' => 'en',
+		                   'originalID' => 'aabbcc',
+		                   'preview' => 'Preview'));
+	
+		$this->assertRendered('admin/create');
+		$this->assertVarSet('originalPage');
+		$this->assertVarSet('newPage');
+		$newPage = CoOrgSmarty::$vars['newPage'];
+		$this->assertEquals('Translation of AA BB CC', $newPage->title);
+		$this->assertEquals('Translated', $newPage->content);
+		$this->assertEquals('admin', $newPage->author);
+		$this->assertEquals('aabbcc', $newPage->originalID_raw);
+		$this->assertEquals('en', $newPage->originalLanguage_raw);
+		$oPage = CoOrgSmarty::$vars['originalPage'];
+		$this->assertEquals('AA BB CC', $oPage->title);
+		
+		$this->assertNull(Page::get('translation-of-aa-bb-cc', 'fr'));
+	}
+	
+	public function testSaveTranslationFailure()
+	{
+		$this->login('admin');
+		
+		$this->request('admin/page/save', array(
+		                   'title' => 'Translation of AA BB CC',
+		                   'language' => 'fr',
+		                   'content' => '',
+		                   'originalLanguage' => 'en',
+		                   'originalID' => 'aabbcc'));
+	
+		$this->assertRendered('admin/create');
+		$this->assertVarSet('originalPage');
+		$this->assertVarSet('newPage');
+		$newPage = CoOrgSmarty::$vars['newPage'];
+		$this->assertEquals('Translation of AA BB CC', $newPage->title);
+		$this->assertEquals('', $newPage->content);
+		$this->assertEquals('admin', $newPage->author);
+		$this->assertEquals('aabbcc', $newPage->originalID_raw);
+		$this->assertEquals('en', $newPage->originalLanguage_raw);
+		$oPage = CoOrgSmarty::$vars['originalPage'];
+		$this->assertEquals('AA BB CC', $oPage->title);
+		
+		$this->assertNull(Page::get('translation-of-aa-bb-cc', 'fr'));
 	}
 	
 	public function testEdit()

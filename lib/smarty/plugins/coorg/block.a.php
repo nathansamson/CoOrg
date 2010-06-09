@@ -24,11 +24,16 @@ function smarty_block_a($params, $contents, $smarty)
 	{
 		$stock = @$params['coorgStock'];
 		unset($params['coorgStock']);
+		$title = @$params['coorgTitle'];
+		unset($params['coorgTitle']);
+		$l = @$params['coorgLanguage'];
+		unset($params['coorgLanguage']);
 		$urlParams = array($params['request']);
 		unset($params['request']);
 		$urlParams = array_merge($urlParams, array_values($params));
 		
-		$a = '<a href="'.htmlspecialchars(CoOrg::createURL($urlParams)).'">';
+		$a = '<a href="'.htmlspecialchars(CoOrg::createURL($urlParams, $l ? $l : null)).'"'.
+		         ($title ? ' title="'.$title.'"' : '').'>';
 		if ($stock)
 		{
 			$stockInfo = CoOrg::stocks($stock);

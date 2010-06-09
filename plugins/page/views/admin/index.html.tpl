@@ -8,6 +8,7 @@
 		<tr>
 			<th>{'Title'|_}</th>
 			<th>{'Short fragment'|_}</th>
+			<th>{'Other languages'|_}</th>
 			<th>&nbsp;</th>
 		</tr>
 	{foreach $pages as $page}
@@ -17,6 +18,15 @@
 			   page=$page->ID
 			   redirect=$coorgRequest}{$page->title|escape}{/a}</td>
 			<td>{$page->content|format:none|truncate:100}</td>
+			<td>
+				{foreach $page->languages() as $lang}
+					{a request="admin/page/edit"
+					   coorgLanguage=$lang->language
+					    page=$lang->pageID
+					    redirect=$coorgRequest
+					    coorgTitle=$lang->name}{$lang->language}{/a}
+				{/foreach}
+			</td>
 			<td>
 				{a request="admin/page/edit"
 			       page=$page->ID

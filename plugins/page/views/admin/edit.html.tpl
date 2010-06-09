@@ -1,6 +1,23 @@
 {block name="title"}{'Edit %p'|_:$page->title|escape}{/block}
 
 {block name="content"}
+	{if $page->untranslated()}
+	<div class="page-actions">
+		{form request="admin/page/create" method="get"}
+			{input name="originalID" value="{$page->ID}"}
+			{input name="originalLanguage" value="{$page->language}"}
+			<select name="trLanguage" id="translate_langCode">
+				<option val="__choose__">{'Translate this page'|_}</option>
+				{foreach $page->untranslated() as $lang}
+					<option value="{$lang->language}">
+						{$lang->name|escape}
+					</option>
+				{/foreach}
+			</select>
+			<input type="submit" value="{'Start translation'|_}"/>
+		{/form}
+	</div>
+	{/if}
 	<h1>{'Edit %p'|_:$page->title|escape}</h1>
 	{if $preview}
 		<h2>{'Preview'|_}</h2>

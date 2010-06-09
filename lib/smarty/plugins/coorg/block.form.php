@@ -36,7 +36,16 @@ function smarty_block_form($params, $content, $smarty)
 	$request = $params['request'];
 	$URL = call_user_func($smarty->_coorg_createURL, $request);
 	
-	return '<form method="post" action="'.$URL.'" '.($form->formID ? 'id="'.$form->formID.'"': '').'>'.$content.'</form>';
+	if (array_key_exists('method', $params))
+	{
+		$method = $params['method'];
+	}
+	else
+	{
+		$method = 'post';
+	}
+	
+	return '<form method="'.$method.'" action="'.$URL.'" '.($form->formID ? 'id="'.$form->formID.'"': '').'>'.$content.'</form>';
 }
 
 ?>

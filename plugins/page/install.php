@@ -57,6 +57,9 @@ function page_install_db()
 
 function page_delete_db()
 {
+	$s = DB::prepare('DROP VIEW IF EXISTS PageLanguagesBidiV');
+	$s->execute();
+
 	$s = DB::prepare('DROP TABLE IF EXISTS PageLanguage');
 	$s->execute();
 

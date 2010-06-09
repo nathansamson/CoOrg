@@ -92,6 +92,26 @@ class Page extends DBModel
 		}
 		return $languages;
 	}
+	
+	public function untranslated()
+	{
+		$q = DB::prepare('SELECT * FROM Language
+		                    WHERE language NOT IN
+		                     (SELECT page2Language FROM
+		                      PageLanguagesBidiV WHERE
+		                        page1Language = :l AND
+		                        page1ID = :ID)
+		                      AND language != :l
+		                   ORDER BY name');
+		$q->execute(array(':l' => $this->language, ':ID' => $this->ID));
+		
+		$l = array();
+		foreach ($q->fetchAll() as $row)
+		{
+			$l[] = self::fetch($row, 'Language');
+		}
+		return $l;
+	}
 
 	public static function get($ID, $language)
 	{
