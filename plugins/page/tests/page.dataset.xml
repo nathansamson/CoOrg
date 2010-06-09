@@ -1,4 +1,19 @@
 <dataset>
+	<Language
+		language="en"
+		name="English"
+	/>
+	
+	<Language
+		language="nl"
+		name="Nederlands"
+	/>
+	
+	<Language
+		language="fr"
+		name="Français"
+	/>
+
 	<Page
 		ID="some-page"
 		language="en"
@@ -36,12 +51,42 @@
 	/>
 	
 	<Page
-		ID="tidelodoo"
+		ID="tidelodoe"
 		language="nl"
-		title="Tidelodoo"
+		title="Tidelodoe"
 		author="nathan"
 		created="2009-04-03"
 		content="Me Content"
+	/>
+	
+	<Page
+		ID="toedeloedoe"
+		language="fr"
+		title="Toedeloedoe"
+		author="nathan"
+		created="2009-04-03"
+		content="French Content"
+	/>
+	
+	<PageLanguage
+		page1ID="tidelodoe"
+		page1Language="nl"
+		page2ID="tidelodoo"
+		page2Language="en"
+	/>
+	
+	<PageLanguage
+		page1ID="toedeloedoe"
+		page1Language="fr"
+		page2ID="tidelodoo"
+		page2Language="en"
+	/>
+	
+	<PageLanguage
+		page1ID="toedeloedoe"
+		page1Language="fr"
+		page2ID="tidelodoe"
+		page2Language="nl"
 	/>
 	
 	<User 

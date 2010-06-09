@@ -27,6 +27,8 @@
  * @property lastEditor String('Last Editor', 24); required only('update')
  * @property title String(t('Title'), 256); required
  * @property content String(t('Content')); required
+ * @property writeonly; originalLanguage String('', 6);
+ * @property writeonly; originalID String('', 256);
 */
 class Page extends DBModel
 {
@@ -41,9 +43,54 @@ class Page extends DBModel
 		$this->ID = self::normalizeTitle($this->title, $this->language);
 	}
 	
+	public function afterInsert()
+	{
+		if ($this->originalLanguage)
+		{
+			$original = Page::get($this->originalID, $this->originalLanguage);
+			
+			$insert = DB::prepare('INSERT INTO PageLanguage
+			                       (page1Language, page1ID, page2Language, page2ID)
+			                       VALUES(:l1, :p1, :l2, :p2)');
+			foreach ($original->languages() as $language)
+			{
+				$insert->execute(array(
+				  ':l1' => $language->language, 
+				  ':p1' => $language->pageID,
+				  ':l2' => $this->language,
+				  ':p2' => $this->ID));
+			}
+			$insert->execute(array(
+				':l1' => $original->language, 
+				':p1' => $original->ID,
+				':l2' => $this->language,
+				':p2' => $this->ID));
+		}
+	}
+	
 	public function beforeUpdate()
 	{
 		$this->updated = date('Y-m-d');
+	}
+	
+	public function languages()
+	{
+		$q = DB::prepare('SELECT * FROM PageLanguagesBidiV
+		                    LEFT JOIN Language ON page2Language = language
+		                   WHERE page1Language =:l AND page1ID = :ID
+		                  ORDER BY language ASC');
+		$q->execute(array(':l' => $this->language, ':ID' => $this->ID));
+		
+		$languages = array();
+		foreach ($q->fetchAll() as $row)
+		{
+			$l = new stdClass;
+			$l->language = $row['language'];
+			$l->name = $row['name'];
+			$l->pageID = $row['page2ID'];
+			$languages[] = $l;
+		}
+		return $languages;
 	}
 
 	public static function get($ID, $language)
@@ -67,6 +114,34 @@ class Page extends DBModel
 		                         ORDER BY title',
 		                       array(':l' => $language));
 		return $pager;
+	}
+	
+	protected function hasTranslation($language)
+	{
+		$q = DB::prepare('SELECT * FROM PageLanguagesBidiV
+		                     WHERE page1Language =:l1 AND page1ID = :ID1
+		                      AND page2Language =:l2');
+		$q->execute(array(':l1' => $this->language,
+		                  ':ID1' => $this->ID,
+		                  ':l2' => $language));
+		return $q->fetch() ? true : false;
+	}
+	
+	protected function validate($for)
+	{
+		parent::validate($for);
+		if ($for == 'insert')
+		{
+			if ($this->originalLanguage)
+			{
+				$original = Page::get($this->originalID, $this->originalLanguage);
+				if ($original->hasTranslation($this->language))
+				{
+					$this->title_error = t('This page is already translated');
+					throw new ValidationException($this);
+				}
+			}
+		}
 	}
 	
 	private static function normalizeTitle($title, $language)

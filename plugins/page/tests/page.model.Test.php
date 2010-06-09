@@ -147,7 +147,139 @@ class PageTest extends CoOrgModelTest
 		$this->assertEquals(2, count($pages));
 		
 		$this->assertEquals('aabbcc', $pages[0]->ID);
-		$this->assertEquals('tidelodoo', $pages[1]->ID);
+		$this->assertEquals('tidelodoe', $pages[1]->ID);
+	}
+	
+	public function testLanguages()
+	{
+		$page = Page::get('tidelodoo', 'en');
+		$languages = $page->languages();
+		$this->assertEquals(2, count($languages));
+		
+		$this->assertEquals('fr', $languages[0]->language);
+		$this->assertEquals('Français', $languages[0]->name);
+		$this->assertEquals('toedeloedoe', $languages[0]->pageID);
+		$this->assertEquals('nl', $languages[1]->language);
+		$this->assertEquals('Nederlands', $languages[1]->name);
+		$this->assertEquals('tidelodoe', $languages[1]->pageID);
+		
+		
+		$page = Page::get('toedeloedoe', 'fr');
+		$languages = $page->languages();
+		$this->assertEquals(2, count($languages));
+		
+		$this->assertEquals('en', $languages[0]->language);
+		$this->assertEquals('English', $languages[0]->name);
+		$this->assertEquals('tidelodoo', $languages[0]->pageID);
+		$this->assertEquals('nl', $languages[1]->language);
+		$this->assertEquals('Nederlands', $languages[1]->name);
+		$this->assertEquals('tidelodoe', $languages[1]->pageID);
+		
+		$page = Page::get('tidelodoe', 'nl');
+		$languages = $page->languages();
+		$this->assertEquals(2, count($languages));
+		
+		$this->assertEquals('en', $languages[0]->language);
+		$this->assertEquals('English', $languages[0]->name);
+		$this->assertEquals('tidelodoo', $languages[0]->pageID);
+		$this->assertEquals('fr', $languages[1]->language);
+		$this->assertEquals('Français', $languages[1]->name);
+		$this->assertEquals('toedeloedoe', $languages[1]->pageID);
+	}
+	
+	public function testCreateTranslation()
+	{
+		$l = new Language;
+		$l->language = 'de';
+		$l->name = 'German';
+		$l->save();
+		
+		$p = new Page;
+		$p->title = 'Joedialtitoe';
+		$p->language = 'de';
+		$p->author = 'nathan';
+		$p->content = 'German text';
+		$p->originalLanguage = 'fr';
+		$p->originalID = 'toedeloedoe';
+		$p->save();
+		
+		$page = Page::get($p->ID, 'de');
+		$languages = $page->languages();
+		$this->assertEquals(3, count($languages));
+		
+		$page = Page::get('toedeloedoe', 'fr');
+		$languages = $page->languages();
+		$this->assertEquals(3, count($languages));
+		
+		$this->assertEquals('de', $languages[0]->language);
+		$this->assertEquals('German', $languages[0]->name);
+		$this->assertEquals($p->ID, $languages[0]->pageID);
+		
+		$page = Page::get('tidelodoe', 'nl');
+		$languages = $page->languages();
+		$this->assertEquals(3, count($languages));
+		
+		$this->assertEquals('de', $languages[0]->language);
+		$this->assertEquals('German', $languages[0]->name);
+		$this->assertEquals($p->ID, $languages[0]->pageID);
+		
+		$page = Page::get('tidelodoo', 'en');
+		$languages = $page->languages();
+		$this->assertEquals(3, count($languages));
+		
+		$this->assertEquals('de', $languages[0]->language);
+		$this->assertEquals('German', $languages[0]->name);
+		$this->assertEquals($p->ID, $languages[0]->pageID);
+	}
+	
+	public function testCreateAlreadyTranslated()
+	{
+		$p = new Page;
+		$p->title = 'Ole Ola';
+		$p->language = 'fr';
+		$p->author = 'nathan';
+		$p->content = 'French text';
+		$p->originalLanguage = 'en';
+		$p->originalID = 'tidelodoo';
+		
+		try
+		{
+			$p->save();
+			$this->fail('Exception expected');
+		}
+		catch (ValidationException $e)
+		{
+			$this->assertEquals($p->title_error, 'This page is already translated');
+		}
+	}
+	
+	public function testDeleteTranslation()
+	{
+		$page = Page::get('tidelodoo', 'en');
+		$page->delete();
+		
+		$p = new Page;
+		$p->title = 'Tidelodoo';
+		$p->language = 'en';
+		$p->author = 'nathan';
+		$p->content = 'English text';
+		$p->save();
+		
+		$page = Page::get('toedeloedoe', 'fr');
+		$languages = $page->languages();
+		$this->assertEquals(1, count($languages));
+		
+		$this->assertEquals('nl', $languages[0]->language);
+		$this->assertEquals('Nederlands', $languages[0]->name);
+		$this->assertEquals('tidelodoe', $languages[0]->pageID);
+		
+		$page = Page::get('tidelodoe', 'nl');
+		$languages = $page->languages();
+		$this->assertEquals(1, count($languages));
+		
+		$this->assertEquals('fr', $languages[0]->language);
+		$this->assertEquals('Français', $languages[0]->name);
+		$this->assertEquals('toedeloedoe', $languages[0]->pageID);
 	}
 	
 	private static function today()

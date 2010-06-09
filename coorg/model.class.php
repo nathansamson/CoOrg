@@ -247,12 +247,14 @@ class DBModel extends Model
 			$this->beforeUpdate();
 			$this->validate('update');
 			$r = $this->update();
+			$this->afterUpdate();
 		}
 		else
 		{
 			$this->beforeInsert();
 			$this->validate('insert');
 			$r = $this->insert();
+			$this->afterInsert();
 		}
 		$this->setSaved();
 		return $r;
@@ -380,7 +382,15 @@ class DBModel extends Model
 	{
 	}
 	
+	protected function afterUpdate()
+	{
+	}
+	
 	protected function beforeInsert()
+	{
+	}
+	
+	protected function afterInsert()
 	{
 	}
 	

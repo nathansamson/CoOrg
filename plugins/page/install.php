@@ -32,10 +32,34 @@ function page_install_db()
 	   PRIMARY KEY (ID, language))
 	');
 	$s->execute();
+	
+	$s = DB::prepare('CREATE TABLE PageLanguage (
+	   page1ID VARCHAR(256),
+	   page1Language VARCHAR(6),
+	   page2ID VARCHAR(256),
+	   page2Language VARCHAR(6),
+	   FOREIGN KEY (page1ID, page1Language) REFERENCES Page(ID, language) ON DELETE CASCADE,
+	   FOREIGN KEY (page2ID, page2Language) REFERENCES Page(ID, language) ON DELETE CASCADE
+	)');
+	$s->execute();
+	
+	$q = DB::prepare('CREATE VIEW PageLanguagesBidiV AS
+		SELECT  page1ID AS page1ID, page1Language AS page1Language,
+		       page2ID AS page2ID, page2Language AS page2Language
+		     FROM PageLanguage
+		 UNION
+		SELECT page2ID AS page1ID, page2Language AS page1Language,
+		       page1ID AS page2ID, page1Language AS page2Language
+		     FROM PageLanguage
+	');
+	$q->execute();
 }
 
 function page_delete_db()
 {
+	$s = DB::prepare('DROP TABLE IF EXISTS PageLanguage');
+	$s->execute();
+
 	$s = DB::prepare('DROP TABLE IF EXISTS Page');
 	$s->execute();
 }
