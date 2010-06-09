@@ -100,19 +100,21 @@ class BlogTest extends CoOrgModelTest
 		$blogs = $blogPager->execute(1, 3);
 		$this->assertEquals(3, count($blogs));
 		$this->assertEquals('XYZ', $blogs[0]->title);
-		$this->assertEquals('Some Blog', $blogs[1]->title);
-		$this->assertEquals('Some Other Blog', $blogs[2]->title);
+		$this->assertEquals('XYZER', $blogs[1]->title);
+		$this->assertEquals('Some Blog', $blogs[2]->title);
 		
 		$blogs = $blogPager->execute(2, 3);
-		$this->assertEquals(1, count($blogs));
-		$this->assertEquals('Blog post', $blogs[0]->title);
+		$this->assertEquals(2, count($blogs));
+		$this->assertEquals('Some Other Blog', $blogs[0]->title);
+		$this->assertEquals('Blog post', $blogs[1]->title);
 		
 		$blogs = $blogPager->execute(1, 10);
-		$this->assertEquals(4, count($blogs));
+		$this->assertEquals(5, count($blogs));
 		$this->assertEquals('XYZ', $blogs[0]->title);
-		$this->assertEquals('Some Blog', $blogs[1]->title);
-		$this->assertEquals('Some Other Blog', $blogs[2]->title);
-		$this->assertEquals('Blog post', $blogs[3]->title);
+		$this->assertEquals('XYZER', $blogs[1]->title);
+		$this->assertEquals('Some Blog', $blogs[2]->title);
+		$this->assertEquals('Some Other Blog', $blogs[3]->title);
+		$this->assertEquals('Blog post', $blogs[4]->title);
 	}
 	
 	public function testUpdate()
@@ -190,6 +192,12 @@ class BlogTest extends CoOrgModelTest
 		$this->assertEquals('nathan', $tR->authorID);
 		$this->assertEquals('some-other-blog', $tR->parentID);
 		$this->assertEquals('en', $tR->parentLanguage);
+		
+		// Translations should work in other direction
+		$this->assertTrue($t->translatedIn('en'));
+		$translations = $t->translations();
+		$this->assertEquals(1, count($translations));
+		$this->assertEquals($blog, $translations['en']);
 	}
 
 	public function testTranslateTwice()
@@ -206,6 +214,43 @@ class BlogTest extends CoOrgModelTest
 		{
 			$this->assertEquals('This blog is already translated in this language', $e->instance->text_error);
 		}
+	}
+	
+	public function testTranslateChain()
+	{
+		$blog = Blog::getBlog('2010', '04', '10', 'translated-blog', 'nl');
+		$tr = $blog->translate('nathan', 'Translation', 'Translation of the blog', 'fr');
+		
+		$this->assertEquals($tr->parentID, $blog->parentID);
+		$this->assertEquals($tr->parentLanguage, $blog->parentLanguage);
+		
+		$trs = $blog->translations();
+		$this->assertEquals(2, count($trs));
+		$this->assertEquals('Translation', $trs['fr']->title);
+		$this->assertEquals('Some Blog', $trs['en']->title);
+		
+		$trs = $tr->translations();
+		$this->assertEquals(2, count($trs));
+		$this->assertEquals('Mijn Vertaalde Blog', $trs['nl']->title);
+		$this->assertEquals('Some Blog', $trs['en']->title);
+		
+		$trs = Blog::getBlog('2010', '04', '10', 'some-blog', 'en')->translations();
+		$this->assertEquals(2, count($trs));
+		$this->assertEquals('Mijn Vertaalde Blog', $trs['nl']->title);
+		$this->assertEquals('Translation', $trs['fr']->title);
+	}
+	
+	public function testUntranslated()
+	{
+		$blog = Blog::getBlog('2010', '04', '10', 'translated-blog', 'nl');
+		$untranslated = $blog->untranslated();
+		$this->assertEquals(2, count($untranslated));
+		$this->assertEquals('Français', $untranslated[0]->name);
+		$this->assertEquals('German', $untranslated[1]->name);
+		
+		$blog = Blog::getBlog('2010', '04', '10', 'some-blog', 'en');
+		$untranslated2 = $blog->untranslated();
+		$this->assertEquals($untranslated, $untranslated2);
 	}
 }
 

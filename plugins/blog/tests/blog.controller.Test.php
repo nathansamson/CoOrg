@@ -40,7 +40,7 @@ class BlogControllerTest extends CoOrgControllerTest
 		$blogpager = CoOrgSmarty::$vars['blogpager'];
 		$this->assertNull($blogpager->prev());
 		$this->assertNull($blogpager->next());
-		$this->assertEquals(4, count($blogs));
+		$this->assertEquals(5, count($blogs));
 		$this->assertEquals('en', $blogs[0]->language);
 		$this->assertRendered('latest');
 	}
@@ -84,6 +84,7 @@ class BlogControllerTest extends CoOrgControllerTest
 		$this->login();
 		$this->request('blog/create');
 		$this->assertVarSet('blog');
+		$this->assertEquals('en', CoOrgSmarty::$vars['blog']->language);
 		$this->assertRendered('create');
 	}
 	
@@ -149,6 +150,13 @@ class BlogControllerTest extends CoOrgControllerTest
 		$this->assertRendered('show');
 	}
 	
+	public function testShowOtherLanguage()
+	{
+		$this->request('blog/show/2010/04/10/translated-blog/nl');
+		$this->assertVarSet('blog');
+		$this->assertRendered('show');
+	}
+	
 	public function testEdit()
 	{
 		$this->login();
@@ -171,6 +179,14 @@ class BlogControllerTest extends CoOrgControllerTest
 		$this->request('blog/edit/2010/4/9/blog-post');
 		$this->assertFlashError('Blog item is not found');
 		$this->assertRendered('notfound');
+	}
+	
+	public function testEditOtherLanguage()
+	{
+		$this->login();
+		$this->request('blog/edit/2010/4/10/translated-blog/nl');
+		$this->assertVarSet('blog');
+		$this->assertRendered('edit');
 	}
 	
 	public function testUpdate()
@@ -217,21 +233,38 @@ class BlogControllerTest extends CoOrgControllerTest
 		$this->assertFlashError('Blog item is not found');
 		$this->assertRendered('notfound');
 	}
+	
+	public function testUpdateOtherLanguage()
+	{
+		$this->login('nathan');
+		$this->request('blog/update', array(
+		                                'year' => '2010',
+		                                'month' => '4',
+		                                'day' => '10',
+		                                'id' => 'translated-blog',
+		                                'title' => 'Updated translation',
+		                                'text' => 'Some new Content',
+		                                'language' => 'nl'));
+
+		$this->assertRedirected('blog/show/2010/4/10/translated-blog/nl');
+		$this->assertFlashNotice('Your blog item is updated');
+	}
 
 	public function testTranslate()
 	{
 		$this->login('nathan');
-		$this->request('blog/translate/2010/04/10/some-other-blog/en');
+		$this->request('blog/translate/2010/04/10/some-other-blog/en/nl');
 		
 		$this->assertVarSet('originalBlog');
 		$this->assertVarSet('translatedBlog');
+		$this->assertEquals('nl', CoOrgSmarty::$vars['translatedBlog']->language);
 		$this->assertRendered('translate');
 	}
 
 	public function testTranslateNotFound()
 	{
 		$this->login('nathan');
-		$this->request('blog/translate/2010/04/12/some-other-blog/en');
+		$this->request('blog/translate/2010/04/12/some-other-blog/en/nl');
 
 		$this->assertFlashError('Blog item is not found');
 		$this->assertRendered('notfound');
@@ -240,7 +273,7 @@ class BlogControllerTest extends CoOrgControllerTest
 	public function testTranslateWrongAuth()
 	{
 		$this->login('nele');
-		$this->request('nl/blog/translate/2010/04/10/some-other-blog/en');
+		$this->request('nl/blog/translate/2010/04/10/some-other-blog/en/nl');
 
 		$this->assertFlashError('You don\'t have the rights to view this page');
 		$this->assertRedirected('');
@@ -255,11 +288,31 @@ class BlogControllerTest extends CoOrgControllerTest
 		                                        'id' => 'some-other-blog',
 		                                        'fromLanguage' => 'en',
 		                                        'title' => 'Vertaald',
-		                                        'text' => 'Vertaalde tekst'));
+		                                        'text' => 'Vertaalde tekst',
+		                                        'language' => 'nl'));
 
 		
 		$this->assertFlashNotice(t('Your translation of the blog is saved'));
 		$this->assertRedirected('blog/show/2010/04/10/vertaald');
+
+		$this->assertNotNull(Blog::getBlog(2010, 4, 10, 'vertaald', 'nl'));
+	}
+	
+	public function testTranslateSaveOtherLanguage()
+	{
+		$this->login('nathan');
+		$this->request('blog/translateSave', array('year'=>2010,
+		                                       'month' => '04',
+		                                        'day' => '10',
+		                                        'id' => 'some-other-blog',
+		                                        'fromLanguage' => 'en',
+		                                        'title' => 'Vertaald',
+		                                        'text' => 'Vertaalde tekst',
+		                                        'language' => 'nl'));
+
+		
+		$this->assertFlashNotice('Your translation of the blog is saved');
+		$this->assertRedirected('blog/show/2010/04/10/vertaald/nl');
 
 		$this->assertNotNull(Blog::getBlog(2010, 4, 10, 'vertaald', 'nl'));
 	}
@@ -273,11 +326,13 @@ class BlogControllerTest extends CoOrgControllerTest
 		                                        'id' => 'some-other-blog',
 		                                        'fromLanguage' => 'en',
 		                                        'title' => 'Vertaald',
-		                                        'text' => ''));
+		                                        'text' => '',
+		                                        'language' => 'nl'));
 
 		$this->assertFlashError(t('Blog translation is not saved'));
 		$this->assertVarSet('originalBlog');
 		$this->assertVarSet('translatedBlog');
+		$this->assertEquals('nl', CoOrgSmarty::$vars['translatedBlog']->language);
 		$this->assertRendered('translate');
 	}
 
@@ -303,7 +358,7 @@ class BlogControllerTest extends CoOrgControllerTest
 		$this->assertContentType('application/xml+atom');
 		$this->assertVarSet('blogs');
 		$blogs = CoOrgSmarty::$vars['blogs'];
-		$this->assertEquals(4, count($blogs));
+		$this->assertEquals(5, count($blogs));
 		$this->assertEquals('en', $blogs[0]->language);
 		$this->assertRendered('latest', 'atom', null);
 	}

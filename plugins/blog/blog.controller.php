@@ -44,7 +44,7 @@ class BlogController extends Controller
 	*/
 	public function create()
 	{
-		$this->blog = new Blog('', '', 'Google is tof<br /> <br />smaar ik ben nog vele toffer', CoOrg::getLanguage());
+		$this->blog = new Blog('', '', '', CoOrg::getLanguage());
 		$this->render('create');
 	}
 	
@@ -75,27 +75,27 @@ class BlogController extends Controller
 	}
 	
 	/**
-	 * @before get $year $month $day $id
+	 * @before get $year $month $day $id $language
 	*/
-	public function show($year, $month, $day, $id)
+	public function show($year, $month, $day, $id, $language = null)
 	{
 		$this->blog = $this->_blog;
 		$this->render('show');
 	}
 	
 	/**
-	 * @before get $year $month $day $id null edit
+	 * @before get $year $month $day $id $language edit
 	*/
-	public function edit($year, $month, $day, $id)
+	public function edit($year, $month, $day, $id, $language = null)
 	{
 		$this->blog = $this->_blog;
 		$this->render('edit');
 	}
 	
 	/**
-	 * @before get $year $month $day $id null true
+	 * @before get $year $month $day $id $language true
 	*/
-	public function update($year, $month, $day, $id, $title, $text)
+	public function update($year, $month, $day, $id, $title, $text, $language)
 	{
 		$this->_blog->title = $title;
 		$this->_blog->text = $text;
@@ -104,7 +104,14 @@ class BlogController extends Controller
 			$this->_blog->save();
 			
 			$this->notice(t('Your blog item is updated'));
-			$this->redirect('blog/show', $year, $month, $day, $this->_blog->ID);
+			if ($language == CoOrg::getLanguage())
+			{
+				$this->redirect('blog/show', $year, $month, $day, $this->_blog->ID);
+			}
+			else
+			{
+				$this->redirect('blog/show', $year, $month, $day, $this->_blog->ID, $language);
+			}
 		}
 		catch (ValidationException $e)
 		{
@@ -119,10 +126,12 @@ class BlogController extends Controller
 	 * @Acl allow blog-writer
 	 * @Acl allow blog-translator
 	*/
-	public function translate($year, $month, $day, $id, $fromLanguage)
+	public function translate($year, $month, $day, $id, $fromLanguage, $toLanguage)
 	{
 		$this->originalBlog = $this->_blog;
-		$this->translatedBlog = new Blog('', '', '', '');
+		$blog = new Blog('', '', '', '');
+		$blog->language = $toLanguage;
+		$this->translatedBlog = $blog;
 		$this->render('translate');
 	}
 
@@ -133,28 +142,37 @@ class BlogController extends Controller
 	 * @Acl allow blog-translator
 	*/
 	public function translateSave($year, $month, $day, $id, $fromLanguage,
-	                              $title, $text)
+	                              $title, $text, $language)
 	{
 		$original = $this->_blog;
 
 		try
 		{
-			$t = $original->translate(UserSession::get()->username, $title, $text, CoOrg::getLanguage());
+			$t = $original->translate(UserSession::get()->username, $title, $text, $language);
 			$this->notice(t('Your translation of the blog is saved'));
-			$this->redirect('blog/show', $year, $month, $day, $t->ID);
+			if ($language == CoOrg::getLanguage())
+			{
+				$this->redirect('blog/show', $year, $month, $day, $t->ID);
+			}
+			else
+			{
+				$this->redirect('blog/show', $year, $month, $day, $t->ID, $language);
+			}
 		}
 		catch (ValidationException $e)
 		{
 			$this->error(t('Blog translation is not saved'));
 			$this->originalBlog = $original;
-			$this->translatedBlog = new Blog($title, '', $text, '');
+			$blog = new Blog($title, '', $text, '');
+			$blog->language = $language;
+			$this->translatedBlog = $blog;
 			$this->render('translate');
 		}
 	}
 	
 	protected function get($year, $month, $day, $id, $language = null, $author = false)
 	{
-		if ($language == null || $language == 'null')
+		if ($language == null)
 			$language = CoOrg::getLanguage();
 		$this->_blog = Blog::getBlog($year, $month, $day, $id, $language);
 		if (!$this->_blog || ($author == true && $this->_blog->authorID != UserSession::get()->username))

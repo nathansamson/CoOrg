@@ -46,25 +46,56 @@ class Blog extends DBModel
 	public function translate($translator, $title, $text, $language)
 	{
 		$translation = new Blog($title, $translator, $text, $language, $this->datePosted);
-		$translation->parentID  = $this->ID;
-		$translation->parentLanguage = $this->language;
+		if (!$this->parentID)
+		{
+			$translation->parentID  = $this->ID;
+			$translation->parentLanguage = $this->language;
+		}
+		else
+		{
+			$translation->parentID = $this->parentID;
+			$translation->parentLanguage = $this->parentLanguage;
+		}
 		$translation->save();
 		return $translation;
 	}
 
 	public function translatedIn($l)
 	{
-		return self::translatedInWithParams($this->ID, $this->datePosted_db, $l);
+		return self::translatedInWithParams($this->ID, $this->datePosted_db, $l,
+		                              $this->parentID ? $this->parentID : null);
 	}
 
 	public function translations()
 	{
-		$q = DB::prepare('SELECT * FROM Blog
+		if (!$this->parentID)
+		{
+			$q = DB::prepare('SELECT * FROM Blog
 		                     WHERE datePosted = :postDate
 		                       AND
-		                           parentID=:ID');
-		$q->execute(array('postDate' => $this->datePosted_db,
-		                  'ID' => $this->ID));
+		                           parentID=:ID
+		                       AND
+		                           parentLanguage=:language');
+			$q->execute(array('postDate' => $this->datePosted_db,
+		                  'ID' => $this->ID,
+		                  ':language' => $this->language));
+		}
+		else
+		{
+			$q = DB::prepare('SELECT * FROM Blog
+		                     WHERE datePosted = :postDate
+		                       AND
+		                          ((parentID=:parentID AND parentLanguage=:parentLanguage)
+   		                             OR 
+   		                           (ID=:parentID AND language=:parentLanguage))
+   		                       AND NOT
+   		                         ID=:ID    
+		                       ');
+			$q->execute(array('postDate' => $this->datePosted_db,
+		                  'ID' => $this->ID,
+		                  ':parentID' => $this->parentID,
+		                  ':parentLanguage' => $this->parentLanguage));		
+		}
 
 		$trs = array();
 		foreach ($q->fetchAll() as $row)
@@ -72,6 +103,33 @@ class Blog extends DBModel
 			$trs[$row['language']] = self::fetch($row, 'Blog');
 		}
 		return $trs;
+	}
+	
+	public function untranslated()
+	{
+		$q = DB::prepare('SELECT * FROM Language
+		      WHERE language NOT IN 
+		                (SELECT language FROM Blog
+		                  WHERE (ID=:pID AND language=:pLanguage)
+		                    OR
+		                        (parentID=:pID AND parentLanguage=:pLanguage))
+		      ORDER BY name');
+		if (!$this->parentID)
+		{
+			$q->execute(array(':pID' => $this->ID,
+			                  ':pLanguage' => $this->language));
+		}
+		else
+		{
+			$q->execute(array(':pID' => $this->parentID,
+			                  ':pLanguage' => $this->parentLanguage));
+		}
+		$u = array();
+		foreach ($q->fetchAll() as $row)
+		{
+			$u[] = self::fetch($row, 'Language');
+		}
+		return $u;
 	}
 	
 	public static function getBlog($year, $month, $day, $ID, $language)
@@ -140,15 +198,25 @@ class Blog extends DBModel
 		}
 	}
 
-	private static function translatedInWithParams($ID, $date, $language)
+	private static function translatedInWithParams($ID, $date, $language, $parentID = null)
 	{
-		$q = DB::prepare('SELECT * FROM Blog
-		                     WHERE datePosted = :postDate
-		                       AND
-		                           parentID=:ID
-		                       AND language=:language');
+		if (!$parentID)
+		{
+			$q = DB::prepare('SELECT * FROM Blog
+				                 WHERE datePosted = :postDate
+				                   AND
+				                       parentID=:ID
+				                   AND language=:language');
+		}
+		else
+		{
+			$q = DB::prepare('SELECT * FROM BLOG
+			                    WHERE datePosted = :postDate
+			                    AND (parentID=:ID OR ID=:ID)
+			                    AND language =:language');
+		}
 		$q->execute(array(':postDate' => $date,
-		                  ':ID' => $ID,
+		                  ':ID' => $parentID ? $parentID : $ID,
 		                  ':language' => $language));
 
 		$row = $q->fetch();

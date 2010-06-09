@@ -1,4 +1,24 @@
 <dataset>
+	<Language
+		language="en"
+		name="English"
+	/>
+	
+	<Language
+		language="fr"
+		name="Français"
+	/>
+	
+	<Language
+		language="nl"
+		name="Nederlands"
+	/>
+	
+	<Language
+		language="de"
+		name="German"
+	/>
+	
 	<User
 	  username="nathan"
 	  email="..."
@@ -86,4 +106,28 @@
 	   text="My Very long Blog"
 	   language="en"
 	/>
+	
+	<Blog
+		ID="some-blog"
+		datePosted="2010-04-10"
+		 timePosted="2010-04-11 14:20:20"
+	   timeEdited="2010-04-11 14:20:20"
+	   authorID="nathan"
+	    title="XYZER"
+	    text="test"
+	    language="de"
+	  />
+	
+	<Blog
+		ID="xyzer"
+		datePosted="2010-04-10"
+		 timePosted="2010-04-11 14:20:20"
+	   timeEdited="2010-04-11 14:20:20"
+	   authorID="nathan"
+	    title="XYZER"
+	    text="test"
+	    language="en"
+	    parentID="some-blog"
+	    parentLanguage="de"
+	  />
 </dataset>

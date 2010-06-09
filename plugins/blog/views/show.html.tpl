@@ -8,6 +8,7 @@
 	   month=$blog->datePosted|date_format:'m'
 	   day=$blog->datePosted|date_format:'d'
 	   id=$blog->ID
+	   language=$blog->language
 	   coorgStock="edit"}{/a}
 	</span>
 {/if}
