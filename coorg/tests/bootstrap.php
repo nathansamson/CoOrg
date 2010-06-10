@@ -23,6 +23,15 @@ function prepare()
 	 rot13name VARCHAR(64) NOT NULL,
 	 conditional INT)');
 	$q->execute();
+	
+	$q = DB::prepare('DROP TABLE IF EXISTS Photos');
+	$q->execute();
+
+	$q = DB::prepare('CREATE TABLE Photos(
+	 name VARCHAR(64) PRIMARY KEY,
+	 photobook VARCHAR(64),
+	 sequence INT)');
+	$q->execute();
 }
 
 prepare();

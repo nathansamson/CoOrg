@@ -30,13 +30,14 @@ class Model
 	protected static $_modelInfo = array();
 
 	private $_properties = array();
+	private $_extensions = array();
 	
 	protected function __construct()
 	{
 		$class = get_class($this);
 		if (!array_key_exists($class, self::$_modelInfo))
 		{
-			self::$_modelInfo[$class] = array('properties' => self::parseProperties($class));
+			self::$_modelInfo[$class] = self::parseProperties($class);
 		}
 
 		foreach (self::$_modelInfo[$class]['properties'] as $name=>$propertyInfo)
@@ -44,6 +45,12 @@ class Model
 			$info = $propertyInfo;
 			$info['property'] = clone $propertyInfo['property'];
 			$this->_properties[$name] = $info;
+		}
+		foreach (self::$_modelInfo[$class]['extensions'] as $name => $extension)
+		{
+			$ext  = clone $extension;
+			$ext->connect($this);
+			$this->_extensions[$name] = $ext;
 		}
 	}
 	
@@ -84,7 +91,7 @@ class Model
 		}
 		else
 		{
-			throw new Exception('Attribute not found.');
+			throw new Exception('Attribute "'.$name.'" not found.');
 		}
 	}
 	
@@ -109,7 +116,7 @@ class Model
 		}
 		else
 		{
-			throw new Exception('Attribute not found.');
+			throw new Exception('Attribute "'.$name.'" not found.');
 		}
 	}
 	
@@ -141,6 +148,11 @@ class Model
 		return $this->_properties;
 	}
 	
+	protected function extensions()
+	{
+		return $this->_extensions;
+	}
+	
 	protected function autoincrements()
 	{
 		$ais = array();
@@ -157,6 +169,7 @@ class Model
 	static private function parseProperties($class)
 	{
 		$propertyInfo = array();
+		$extensions = array();
 		$reflClass = new ReflectionClass($class);
 		$docComment = $reflClass->getDocComment();
 	
@@ -169,8 +182,17 @@ class Model
 			{
 				$line = trim(substr($line, 1));
 			}
-			$pCommand = substr($line, 0, strlen('@property'));
-			$pDesc = substr($line, strlen('@property'));
+			
+			$pExplode = explode(' ', $line, 2);
+			$pCommand = $pExplode[0];
+			if (count($pExplode) == 2)
+			{ 
+				$pDesc = $pExplode[1];
+			}
+			else
+			{
+				$pDesc = '';
+			}
 			if ($pCommand == '@property')
 			{
 				$primary = false;
@@ -221,8 +243,21 @@ class Model
 				                             'auto-increment' => $autoincrement,
 				                             'class' => $class);
 			}
+			else if ($pCommand == '@extends')
+			{
+				$params = explode(' ', $pDesc);
+				$extClass = array_shift($params);
+				array_unshift($params, $class);
+				$ext = new $extClass($params);
+				
+				foreach ($ext->properties() as $name => $p)
+				{
+					$propertyInfo[$name] = $p;
+				}
+				$extensions[] = $ext;
+			}
 		}
-		return $propertyInfo;
+		return array('properties' => $propertyInfo, 'extensions' => $extensions);
 	}
 
 	static public function filterDB($f)
@@ -233,6 +268,22 @@ class Model
 	static public function filterPrimary($f)
 	{
 		return $f['primary'];
+	}
+	
+	static protected function callStatic($class, $fnc, $arguments)
+	{
+		if (! array_key_exists($class, self::$_modelInfo))
+		{
+			self::$_modelInfo[$class] = self::parseProperties($class);
+		}
+		$modelInfo = self::$_modelInfo[$class];
+		foreach ($modelInfo['extensions'] as $ext)
+		{
+			if ($ext->hasMethod($fnc))
+			{
+				return call_user_func_array(array($ext, $fnc), $arguments);
+			}
+		}
 	}
 }
 
@@ -245,6 +296,10 @@ class DBModel extends Model
 		if ($this->_saved)
 		{
 			$this->beforeUpdate();
+			foreach ($this->extensions() as $ext)
+			{
+				$ext->beforeUpdate();
+			}
 			$this->validate('update');
 			$r = $this->update();
 			$this->afterUpdate();
@@ -252,6 +307,10 @@ class DBModel extends Model
 		else
 		{
 			$this->beforeInsert();
+			foreach ($this->extensions() as $ext)
+			{
+				$ext->beforeInsert();
+			}
 			$this->validate('insert');
 			$r = $this->insert();
 			$this->afterInsert();
@@ -269,7 +328,7 @@ class DBModel extends Model
 		{
 			if ($p['property']->changed())
 			{
-				if ($p['property']->db() != null)
+				if ($p['property']->db() !== null)
 				{
 					$properties[] = $k;
 					$sets[] = $k .'=:' . $k; 
@@ -315,7 +374,7 @@ class DBModel extends Model
 		foreach ($this->dbproperties() as $k => $p)
 		{
 			$db = $k.'_db';
-			if ($this->$db != null)
+			if ($this->$db !== null)
 			{
 				$properties[] = $k;
 			}

@@ -72,8 +72,8 @@ class PropertyInteger extends Property implements IProperty
 
 	protected function toDB($value)
 	{
-		$value = trim($value);
-		if ($value == '')
+		if (is_string($value)) $value = trim($value);
+		if ($value === '' || $value === null)
 		{
 			return null;
 		}

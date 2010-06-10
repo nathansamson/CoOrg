@@ -121,7 +121,7 @@ abstract class Property
 	
 	public function changed()
 	{
-		return $this->db() != $this->old();
+		return $this->db() !== $this->old();
 	}
 	
 	public function setUnchanged()

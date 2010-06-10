@@ -374,6 +374,14 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 		$i->set('0');
 		$this->assertEquals(0, $i->get());
 		$this->assertEquals(0, $i->db());
+		
+		$i = new PropertyInteger('..');
+		$i->set('0');
+		$this->assertTrue($i->changed());
+		$i->set(0);
+		$this->assertTrue($i->changed());
+		$i->set(null);
+		$this->assertFalse($i->changed());
 	}
 	
 	public function testEmptyInt()
