@@ -21,7 +21,6 @@
 /**
  * @property primary autoincrement; ID Integer('ID');
  * @property menu String(t('Menu'), 32); required
- * @property sequence Integer('Sequence'); required
  * @property language String('Language', 6); required
  * @property url String(t('URL'), 1024); required
  * @property title String(t('Title'), 64); required
@@ -29,70 +28,13 @@
  * @property action String('Action', 64); required
  * @property data String('Data', 128);
  * @property writeonly; entryID String('EntryID');
+ * @extends Sortable menu language
 */
 class MenuEntry extends DBModel
 {
 	public function __construct()
 	{
 		parent::__construct();
-	}
-
-	protected function beforeInsert()
-	{
-		//TODO: See if we can insert this as a subquery into the insert of DBModel
-		$q = DB::prepare('SELECT MAX(sequence) AS seq FROM MenuEntry WHERE
-		                    menu=:menu AND language=:l');
-		$q->execute(array(':menu' => $this->menu, ':l' => $this->language));
-		$result = $q->fetch();
-		if ($result)
-		{
-			$this->sequence = (int)$result['seq'] + 1;
-		}
-		else
-		{
-			$this->sequence = 0;
-		}
-	}
-	
-	protected function beforeUpdate()
-	{
-		if ($this->sequence_changed)
-		{
-			if ($this->sequence_old > $this->sequence_db)
-			{
-				// Moved forward
-				$q = DB::prepare('UPDATE MenuEntry SET sequence=sequence+1
-				                        WHERE sequence < :oldsequence
-				                          AND sequence >= :newsequence
-				                          AND menu=:menu
-				                          AND language=:l');
-			}
-			else
-			{
-				// Moved backward
-				$q = DB::prepare('UPDATE MenuEntry SET sequence=sequence-1
-				                        WHERE sequence > :oldsequence
-				                          AND sequence <= :newsequence
-				                          AND menu=:menu
-				                          AND language=:l');
-			}
-			$q->execute(array(':oldsequence' => $this->sequence_old,
-				              ':newsequence' => $this->sequence_db,
-				              ':menu' => $this->menu,
-				              ':l' => $this->language));
-		}
-	}
-	
-	public function delete()
-	{
-		parent::delete();
-		$q = DB::prepare('UPDATE MenuEntry SET sequence=sequence-1
-				                        WHERE sequence > :sequence
-				                          AND menu=:menu
-				                          AND language=:l');
-		$q->execute(array(':sequence' => $this->sequence,
-				          ':menu' => $this->menu,
-				          ':l' => $this->language));
 	}
 	
 	public function __set($name, $value)
