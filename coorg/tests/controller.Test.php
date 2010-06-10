@@ -38,6 +38,7 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('someID', AlphaController::$objectRetrieve);
 		$this->assertEquals(array('coorgRequest' => 'alpha/show/someID/someParameter',
 		                          'coorgUrl' => '/the/path/en/alpha/show/someID/someParameter',
+		                          'staticPath' => '/the/path/static/',
 		                          'value' => 'value', /* value, name and string come from the alphacontroller*/
 		                          'name' => 'name', 
 		                          'string' => 'string',
@@ -52,6 +53,7 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
 		CoOrg::process('en/');
 		$this->assertEquals(array('coorgRequest' => '',
 		                          'coorgUrl' => '/the/path/en',
+		                          'staticPath' => '/the/path/static/',
 		                          'language' => 'en'),
 		                    CoOrgSmarty::$vars);
 	}
