@@ -83,8 +83,6 @@ class Sortable
 		{
 			if ($result)
 			{
-				$q = DB::prepare('SELECT * FROM Photos WHERE photobook=:d');
-				$q->execute(array(':d' => 'D'));
 				if ($result['seq'] !== null)
 				{
 					$this->_object->sequence = $max + 1;
@@ -150,6 +148,17 @@ class Sortable
 		}
 		$queryArgs[':oldSequence'] = $this->_object->sequence_old;
 		$queryArgs[':newSequence'] = $this->_object->sequence_db;
+		$q->execute($queryArgs);
+	}
+	
+	public function afterDelete()
+	{
+		list($queryExpressions, $queryArgs) = $this->params();
+		$q = DB::prepare('UPDATE '.$this->_class.
+					              ' SET sequence=sequence-1'.' WHERE '.
+						          implode(' AND ', $queryExpressions) .
+						          ' AND sequence >  :oldSequence');
+		$queryArgs[':oldSequence'] = $this->_object->sequence;
 		$q->execute($queryArgs);
 	}
 	

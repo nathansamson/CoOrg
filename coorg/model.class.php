@@ -414,6 +414,10 @@ class DBModel extends Model
 			$q->bindValue(':p'.$pk, $pp['property']->old());
 		}
 		$q->execute();
+		foreach ($this->extensions() as $ext)
+		{
+			$ext->afterDelete();
+		}
 	}
 	
 	protected function tableName()

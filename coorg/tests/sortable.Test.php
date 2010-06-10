@@ -299,6 +299,21 @@ class ModelSortableTest extends CoOrgModelTest
 		$this->assertEquals('Photo 3B', $photobook[5]->name);
 	}
 	
+	public function testDelete()
+	{
+		$photo = Photos::get('Photo 3B');
+		$photo->delete();
+		
+		$photobook = Photos::photobook('B');
+		$this->assertEquals(5, count($photobook));
+		$this->sanityCheck($photobook);
+		$this->assertEquals('Photo 1B', $photobook[0]->name);
+		$this->assertEquals('Photo 2B', $photobook[1]->name);
+		$this->assertEquals('Photo 4B', $photobook[2]->name);
+		$this->assertEquals('Photo 5B', $photobook[3]->name);
+		$this->assertEquals('Photo 6B', $photobook[4]->name);
+	}
+	
 	private function sanityCheck($array)
 	{
 		foreach ($array as $key => $value)
