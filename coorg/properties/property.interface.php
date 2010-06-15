@@ -18,6 +18,14 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+interface IPropertyVariant
+{
+	public function __construct(IProperty $property);
+
+	public function get();
+	public function set($value);
+}
+
 interface IProperty
 {
 	public function get();
@@ -34,6 +42,8 @@ interface IProperty
 	public function old();
 	public function changed();
 	public function setUnchanged();
+	
+	public function attachVariant(IPropertyVariant $var);
 }
 
 abstract class Property
@@ -43,6 +53,7 @@ abstract class Property
 	protected $_errors = array();
 	protected $_required = false;
 	protected $_oldValue = null;
+	private $_variants = array();
 	
 	public function __construct($name)
 	{
@@ -57,6 +68,10 @@ abstract class Property
 	public function set($value)
 	{
 		$this->_value = $value;
+		foreach ($this->_variants as $variant)
+		{
+			$variant->update();
+		}
 	}
 	
 	public function raw()
@@ -127,6 +142,11 @@ abstract class Property
 	public function setUnchanged()
 	{
 		$this->_oldValue = $this->_value;
+	}
+	
+	public function attachVariant(IPropertyVariant $variant)
+	{
+		$this->_variants[] = $variant;
 	}
 	
 	protected function toDB($value)

@@ -18,6 +18,26 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+class Rot13Variant implements IPropertyVariant
+{
+	private $_original;
+
+	public function __construct(IProperty $org)
+	{
+		$this->_original = $org;
+	}
+
+	public function get()
+	{
+		return str_rot13($this->_original->get());
+	}
+	
+	public function set($value)
+	{
+		$this->_original->set(str_rot13($value));
+	}
+}
+
 /**
  * @property primary; name String('Name', 64); required
  * @property description String('Description');
@@ -25,6 +45,7 @@
  * @property conditional Integer('Conditional value'); required only('special') 
  * @property writeonly; shadowProperty String('Shadow'); required only('insert')
  * @property protected; rot13name String('Name', 64); required
+ * @variant rot13 rot13 name
 */
 class MockModel extends DBModel
 {
@@ -265,6 +286,15 @@ class ModelTest extends CoOrgModelTest
 		$this->assertNotNull(MockModel::getByName('abczyx'));
 		$this->assertNotNull(MockModel::getByName('dvorak'));
 		$this->assertNull(MockModel::getByName('qwerty'));
+	}
+	
+	public function testVariants()
+	{
+		$n = new MockModel('abczyx', '', '...');
+		$this->assertEquals('nopmlk', $n->rot13);
+		$n->rot13 = 'abczyx';
+		$this->assertEquals('abczyx', $n->rot13);
+		$this->assertEquals('nopmlk', $n->name);
 	}
 }
 

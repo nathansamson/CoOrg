@@ -30,6 +30,7 @@ class Model
 	protected static $_modelInfo = array();
 
 	private $_properties = array();
+	private $_variants = array();
 	private $_extensions = array();
 	
 	protected function __construct()
@@ -52,6 +53,12 @@ class Model
 			$ext->connect($this);
 			$this->_extensions[$name] = $ext;
 		}
+		foreach (self::$_modelInfo[$class]['variants'] as $name => $variantInfo)
+		{
+			$var = new $variantInfo['class']($this->_properties[$variantInfo['property']]['property']);
+			$this->_variants[$name] = array('propertyName' => $variantInfo['property'] ,
+			                                'variant' => $var);
+		}
 	}
 	
 	public function __get($key)
@@ -72,9 +79,24 @@ class Model
 			$fnc = 'get';
 		}
 		
-		if (array_key_exists($name, $this->_properties))
+		$prop = false;
+		$var = false;
+		if (($prop = array_key_exists($name, $this->_properties)) ||
+		    ($var = array_key_exists($name, $this->_variants)))
 		{
-			$propertyInfo = $this->_properties[$name];
+			if ($prop)
+			{
+				$propertyInfo = $this->_properties[$name];
+			}
+			else if ($var)
+			{
+				$variantInfo = $this->_variants[$name];
+				$propertyInfo = $this->_properties[$variantInfo['propertyName']];
+			}
+			else
+			{
+				die('This cant happen');
+			}
 
 			if ($propertyInfo['protected'] || 
 			    ($propertyInfo['writeonly'] && $fnc == 'get'))
@@ -87,7 +109,14 @@ class Model
 				}
 			}
 			
-			return $propertyInfo['property']->$fnc();
+			if ($prop)
+			{
+				return $propertyInfo['property']->$fnc();
+			}
+			else
+			{
+				return $variantInfo['variant']->$fnc();
+			}
 		}
 		else
 		{
@@ -109,10 +138,31 @@ class Model
 			$fnc = 'set';
 		}
 		
-		if (array_key_exists($name, $this->_properties))
+		$prop = false;
+		$var = false;
+		if (($prop = array_key_exists($name, $this->_properties)) ||
+		    ($var = array_key_exists($name, $this->_variants)))
 		{
-			// Fix Access
-			$this->_properties[$name]['property']->$fnc($value);
+			//TODO: Fix Access
+			if ($prop)
+			{
+				$this->_properties[$name]['property']->$fnc($value);
+			}
+			else if ($var)
+			{
+				if ($fnc == 'set')
+				{
+					$this->_variants[$name]['variant']->$fnc($value);
+				}
+				else
+				{
+					$this->_properties[$this->_variants[$name]['propertyName']]['property']->$fnc($value);
+				}
+			}
+			else
+			{
+				die('Cant never happen');
+			}
 		}
 		else
 		{
@@ -170,6 +220,7 @@ class Model
 	{
 		$propertyInfo = array();
 		$extensions = array();
+		$variants = array();
 		$reflClass = new ReflectionClass($class);
 		$docComment = $reflClass->getDocComment();
 	
@@ -256,8 +307,16 @@ class Model
 				}
 				$extensions[] = $ext;
 			}
+			else if ($pCommand == '@variant')
+			{
+				$params = explode(' ', $pDesc);
+				$variants[$params[0]] = array('class' => ucfirst($params[1]).'Variant',
+				                              'property' => $params[2]);
+			}
 		}
-		return array('properties' => $propertyInfo, 'extensions' => $extensions);
+		return array('properties' => $propertyInfo,
+		             'extensions' => $extensions,
+		             'variants' => $variants);
 	}
 
 	static public function filterDB($f)
