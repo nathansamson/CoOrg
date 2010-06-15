@@ -3,9 +3,9 @@
 {block name='content'}
 	<div class="page-actions">
 		{form request="blog/translate" method="get"}
-			{input value=$blog->datePosted|date_format:'Y' name=year}
-			{input value=$blog->datePosted|date_format:'m' name=month}
-			{input value=$blog->datePosted|date_format:'d' name=day}
+			{input value=$blog->year name=year}
+			{input value=$blog->month name=month}
+			{input value=$blog->day name=day}
 			
 			{input value=$blog->ID name=id}
 			{input value=$blog->language name=fromLanguage}
@@ -25,9 +25,9 @@
 	<h1>{'Edit %b'|_:$blog->title}</h1>
 
 	{form request='blog/update' instance=$blog}
-		{input value=$blog->datePosted|date_format:'Y' name=year}
-		{input value=$blog->datePosted|date_format:'m' name=month}
-		{input value=$blog->datePosted|date_format:'d' name=day}
+		{input value=$blog->year name=year}
+		{input value=$blog->month name=month}
+		{input value=$blog->day name=day}
 		{input for=ID name=id}
 		
 		{input for=language}

@@ -38,6 +38,9 @@ class BlogTest extends CoOrgModelTest
 		$time = time();
 		$blog->save();
 		
+		$this->assertSame((int)$year, $blog->year);
+		$this->assertSame((int)$month, $blog->month);
+		$this->assertSame((int)$day, $blog->day);
 		$blog = Blog::getBlog($year, $month, $day, $blog->ID, 'en');
 
 		$this->assertNotNull($blog);
@@ -47,6 +50,9 @@ class BlogTest extends CoOrgModelTest
 		$this->assertEquals('en', $blog->language);
 		$this->assertTrue(abs($time - $blog->timePosted) <= 2);
 		$this->assertNull($blog->timeEdited);
+		$this->assertSame((int)$year, $blog->year);
+		$this->assertSame((int)$month, $blog->month);
+		$this->assertSame((int)$day, $blog->day);
 	}
 	
 	public function testTitleMissing()

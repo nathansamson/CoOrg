@@ -4,9 +4,9 @@
 {if Acl::isAllowed(UserSession::get()->username,'admin')}
 	<span class="page-actions">
 	{a request="blog/edit"
-	   year=$blog->datePosted|date_format:'Y'
-	   month=$blog->datePosted|date_format:'m'
-	   day=$blog->datePosted|date_format:'d'
+	   year=$blog->year
+	   month=$blog->month
+	   day=$blog->day
 	   id=$blog->ID
 	   language=$blog->language
 	   coorgStock="edit"}{/a}

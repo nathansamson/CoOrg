@@ -9,9 +9,9 @@
 	{foreach $blogs as $blog}
 		<article>
 			<header>
-				<h1><a href="{url request="blog/show" year=$blog->datePosted|date_format:'Y'
-                                      month=$blog->datePosted|date_format:'m'
-                                      day=$blog->datePosted|date_format:'d'
+				<h1><a href="{url request="blog/show" year=$blog->year
+                                      month=$blog->month
+                                      day=$blog->day
                                       id=$blog->ID}">{$blog->title|escape}</a></h1>
 				<p>By {$blog->authorID} @ {$blog->datePosted|date_format}</p>
 			</header>

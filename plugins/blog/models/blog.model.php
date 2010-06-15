@@ -29,6 +29,9 @@
  * @property timeEdited DateTime('Edited');
  * @property parentID String('Title', 256);
  * @property parentLanguage String('Parent Language', 6);
+ * @variant year year datePosted
+ * @variant month month datePosted
+ * @variant day day datePosted
 */
 class Blog extends DBModel
 {

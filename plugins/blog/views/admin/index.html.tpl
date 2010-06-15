@@ -8,9 +8,9 @@
 			<tr>
 				<td>
 					{a request="blog/edit"
-					   year=$blog->datePosted|date_format:'Y'
-					   month=$blog->datePosted|date_format:'m'
-					   day=$blog->datePosted|date_format:'d'
+					   year=$blog->year
+					   month=$blog->month
+					   day=$blog->day
 					   blog=$blog->ID}{$blog->title|escape}{/a}
 				</td>
 				<td>
@@ -19,9 +19,9 @@
 				<td>
 					{foreach $blog->translations() as $translation}
 						{a request="blog/edit"
-						   year=$blog->datePosted|date_format:'Y'
-						   month=$blog->datePosted|date_format:'m'
-						   day=$blog->datePosted|date_format:'d'
+						   year=$blog->year
+						   month=$blog->month
+						   day=$blog->day
 						   blog=$translation->ID
 						   language=$translation->language}{$translation->language}{/a}
 					{/foreach}
@@ -29,9 +29,9 @@
 				<td>
 					{a request="blog/edit"
 					   coorgStock="edit"
-					   year=$blog->datePosted|date_format:'Y'
-					   month=$blog->datePosted|date_format:'m'
-					   day=$blog->datePosted|date_format:'d'
+					   year=$blog->year
+					   month=$blog->month
+					   day=$blog->day
 					   blog=$blog->ID}{/a}
 				</td>
 			</tr>
