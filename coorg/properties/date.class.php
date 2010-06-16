@@ -105,7 +105,7 @@ class YearVariant implements IPropertyVariant
 {
 	private $_p = null;
 
-	function __construct(IProperty $p)
+	private function __construct(IProperty $p)
 	{
 		$this->_p = $p;
 	}
@@ -121,13 +121,20 @@ class YearVariant implements IPropertyVariant
 		return mktime(date('H', $v), date('i', $v), date('s', $v),
 		              date('m', $v), date('d', $v), $year);
 	}
+	
+	public function update() {}
+	
+	public static function instance(IProperty $p, $args)
+	{
+		return new YearVariant($p);
+	}
 }
 
 class MonthVariant implements IPropertyVariant
 {
 	private $_p = null;
 
-	function __construct(IProperty $p)
+	private function __construct(IProperty $p)
 	{
 		$this->_p = $p;
 	}
@@ -143,13 +150,20 @@ class MonthVariant implements IPropertyVariant
 		return mktime(date('H', $v), date('i', $v), date('s', $v),
 		              $month, date('d', $v), date('Y', $v));
 	}
+	
+	public function update() {}
+	
+	public static function instance(IProperty $p, $args)
+	{
+		return new MonthVariant($p);
+	}
 }
 
 class DayVariant implements IPropertyVariant
 {
 	private $_p = null;
 
-	function __construct(IProperty $p)
+	private function __construct(IProperty $p)
 	{
 		$this->_p = $p;
 	}
@@ -164,6 +178,13 @@ class DayVariant implements IPropertyVariant
 		$v = $this->_p->get();
 		return mktime(date('H', $v), date('i', $v), date('s', $v),
 		              date('m', $v), $day, date('Y', $v));
+	}
+	
+	public function update() {}
+	
+	public static function instance(IProperty $p, $args)
+	{
+		return new DayVariant($p);
 	}
 }
 

@@ -32,6 +32,24 @@ function prepare()
 	 photobook VARCHAR(64),
 	 sequence INT)');
 	$q->execute();
+	
+	
+	$q = DB::prepare('DROP TABLE IF EXISTS SomeContainment');
+	$q->execute();
+	
+	$q = DB::prepare('DROP TABLE IF EXISTS SomeContainer');
+	$q->execute();
+
+	$q = DB::prepare('CREATE TABLE SomeContainer(
+	 ID VARCHAR(32) PRIMARY KEY,
+	 content TEXT)');
+	$q->execute();
+
+	$q = DB::prepare('CREATE TABLE SomeContainment(
+	 name VARCHAR(64) PRIMARY KEY,
+	 containerID VARCHAR(32),
+	 FOREIGN KEY (containerID) REFERENCES SomeContainer(ID))');
+	$q->execute();
 }
 
 prepare();

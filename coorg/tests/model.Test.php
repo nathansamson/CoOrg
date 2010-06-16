@@ -22,7 +22,7 @@ class Rot13Variant implements IPropertyVariant
 {
 	private $_original;
 
-	public function __construct(IProperty $org)
+	private function __construct(IProperty $org)
 	{
 		$this->_original = $org;
 	}
@@ -35,6 +35,13 @@ class Rot13Variant implements IPropertyVariant
 	public function set($value)
 	{
 		$this->_original->set(str_rot13($value));
+	}
+	
+	public function update() {}
+	
+	public static function instance(IProperty $p, $args)
+	{
+		return new Rot13Variant($p);
 	}
 }
 

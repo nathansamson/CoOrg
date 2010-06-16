@@ -28,6 +28,7 @@ require_once 'coorg/properties/bool.class.php';
 class Model
 {
 	protected static $_modelInfo = array();
+	protected static $_relations = array();
 
 	private $_properties = array();
 	private $_variants = array();
@@ -55,7 +56,10 @@ class Model
 		}
 		foreach (self::$_modelInfo[$class]['variants'] as $name => $variantInfo)
 		{
-			$var = new $variantInfo['class']($this->_properties[$variantInfo['property']]['property']);
+			$property = $this->_properties[$variantInfo['property']]['property'];
+			$variantClass = $variantInfo['class'];
+			$var =  $variantClass::instance($property, $variantInfo['args']);
+			$property->attachVariant($var);
 			$this->_variants[$name] = array('propertyName' => $variantInfo['property'] ,
 			                                'variant' => $var);
 		}
@@ -221,6 +225,7 @@ class Model
 		$propertyInfo = array();
 		$extensions = array();
 		$variants = array();
+		$relations = array();
 		$reflClass = new ReflectionClass($class);
 		$docComment = $reflClass->getDocComment();
 	
@@ -311,9 +316,21 @@ class Model
 			{
 				$params = explode(' ', $pDesc);
 				$variants[$params[0]] = array('class' => ucfirst($params[1]).'Variant',
-				                              'property' => $params[2]);
+				                              'property' => $params[2],
+				                              'args' => array());
 			}
 		}
+		
+		foreach (self::$_relations as $relation)
+		{
+			$part = $relation->relationpart($class);
+			if ($part == null) continue;
+			foreach ($part->variants() as $name => $variant)
+			{
+				$variants[$name] = $variant;
+			}
+		}
+		
 		return array('properties' => $propertyInfo,
 		             'extensions' => $extensions,
 		             'variants' => $variants);
@@ -327,6 +344,11 @@ class Model
 	static public function filterPrimary($f)
 	{
 		return $f['primary'];
+	}
+	
+	static public function registerRelation($class)
+	{
+		self::$_relations[] = $class;
 	}
 	
 	static protected function callStatic($class, $fnc, $arguments)

@@ -28,6 +28,11 @@ require_once 'coorg/model.class.php';
 require_once 'coorg/i18n.class.php';
 require_once 'coorg/pager.class.php';
 require_once 'coorg/sortable.class.php';
+require_once 'coorg/relations/genericmodel.variant.php';
+require_once 'coorg/relations/relation.interface.php';
+require_once 'coorg/relations/relationpart.interface.php';
+require_once 'coorg/relations/one2many.class.php';
+require_once 'coorg/relations/onerelation.class.php';
 require_once 'coorg/header.interface.php';
 require_once 'coorg/coorgsmarty.interface.php';
 require_once 'coorg/state.interface.php';
@@ -135,6 +140,7 @@ class CoOrg {
 			list($controllerClass, $action, $params, $request, $parentClasses) = 
 	                      self::findController($controllerName, $requestParams,
 	                                           $params, $post);
+			self::loadPluginInfo('relations');
 			$controllerClass->coorgRequest = $requestWithoutPrefix;
 			$coorgUrl = self::config()->get('path').$prefix.$requestWithoutPrefix;
 			self::normalizeRequest($coorgUrl);

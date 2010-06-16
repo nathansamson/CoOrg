@@ -20,10 +20,12 @@
 
 interface IPropertyVariant
 {
-	public function __construct(IProperty $property);
+	public static function instance(IProperty $property, $args);
 
 	public function get();
 	public function set($value);
+	
+	public function update();
 }
 
 interface IProperty

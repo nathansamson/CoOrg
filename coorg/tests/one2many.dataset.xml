@@ -1,0 +1,36 @@
+<dataset>
+	<SomeContainer
+		ID="one"
+		content="One Text"
+	/>
+	
+	<SomeContainer
+		ID="two"
+		content="Two Text"
+	/>
+	
+	<SomeContainer
+		ID="three"
+		content="Three Text"
+	/>
+	
+	<SomeContainment
+		name="Containment of One"
+		containerID="one"
+	/>
+	
+	<SomeContainment
+		name="Another Containment of One"
+		containerID="one"
+	/>
+	
+	<SomeContainment
+		name="Last Containment of One"
+		containerID="one"
+	/>
+	
+	<SomeContainment
+		name="Containment of Three"
+		containerID="three"
+	/>
+</dataset>
