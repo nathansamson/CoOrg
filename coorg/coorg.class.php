@@ -238,10 +238,21 @@ class CoOrg {
 	
 	public static function staticFile($file, $app = null)
 	{
+		$external = self::$_config->get('staticpath');	
+	
 		if ($app == null)
 		{
 			$version = self::$_resources['/'][$file];
-			return self::$_config->get('path').'static/'.$file.'?v='.$version;
+			
+			if ($external)
+			{
+				$path = $external.'_root/';
+			}
+			else
+			{
+				$path = self::$_config->get('path').'static/';
+			}
+			return $path.$file.'?v='.$version;
 		}
 		else
 		{
@@ -255,14 +266,21 @@ class CoOrg {
 				throw new Exception('No version specified for '.$file.'::'.$app);
 			}
 			
-			$pluginPath = self::$_config->get('path') . '/';
-			if (in_array($app, self::$_config->get('enabled_plugins')))
+			if ($external && self::$_config->get('staticpath/'.$app))
 			{
-				$pluginPath .= self::$_pluginDir.'/'.$app;
+				$pluginPath = $external.$app;
 			}
 			else
 			{
-				$pluginPath .= self::$_appdir.'/'.$app;
+				$pluginPath = self::$_config->get('path') . '/';
+				if (in_array($app, self::$_config->get('enabled_plugins')))
+				{
+					$pluginPath .= self::$_pluginDir.'/'.$app;
+				}
+				else
+				{
+					$pluginPath .= self::$_appdir.'/'.$app;
+				}
 			}
 			return $pluginPath. '/static/'.$file.'?v='.$version;
 		}

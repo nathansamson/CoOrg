@@ -348,6 +348,22 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		                    CoOrg::staticFile('mockfile.css'));
 	}
 	
+	public function testExternalStaticFile()
+	{
+		CoOrg::config()->set('staticpath', 'http://mystatic.somestatic.com/static/path/');
+		CoOrg::config()->set('staticpath/alpha', true);
+		CoOrg::config()->set('staticpath/home', false);
+		
+		$this->assertEquals('/coorg/tests/mocks/app/home/static/homefile.css?v=theversion',
+		                    CoOrg::staticFile('homefile.css', 'home'));
+		
+		$this->assertEquals('http://mystatic.somestatic.com/static/path/alpha/static/somefile.css?v=2010-10-03',
+		                    CoOrg::staticFile('somefile.css', 'alpha'));
+
+		$this->assertEquals('http://mystatic.somestatic.com/static/path/_root/mockfile.css?v=A',
+		                    CoOrg::staticFile('mockfile.css'));
+	}
+	
 	private function alternativeConfig($config)
 	{
 		CoOrg::init($config, 'coorg/tests/mocks/app', 'coorg/tests/mocks/plugins');
