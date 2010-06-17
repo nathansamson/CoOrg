@@ -316,13 +316,23 @@ class CoOrg {
 		return self::$_config;
 	}
 	
-	public static function loadPluginInfo($id)
+	public static function loadPluginInfo($id, $dir = null)
 	{
 		if (array_key_exists($id, self::$_extras))
 		{
-			foreach (self::$_extras[$id] as $file)
+			if ($dir == null)
 			{
-				include_once $file;
+				foreach (self::$_extras[$id] as $file)
+				{
+					include_once $file;
+				}
+			}
+			else
+			{
+				if (array_key_exists($dir, self::$_extras[$id]))
+				{
+					include_once (self::$_extras[$id][$dir]);
+				}
 			}
 		}
 	}
@@ -533,11 +543,11 @@ class CoOrg {
 							$ID = substr($sfile, 0, -4);
 							if (array_key_exists($ID, self::$_extras))
 							{
-								self::$_extras[$ID][] = $file;
+								self::$_extras[$ID][$subdir] = $file;
 							}
 							else
 							{
-								self::$_extras[$ID] = array($file);
+								self::$_extras[$ID] = array($subdir => $file);
 							}
 						}
 					}

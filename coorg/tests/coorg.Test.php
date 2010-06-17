@@ -304,7 +304,7 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 	{
 		$this->assertFalse(class_exists('AlphaInfo'));
 		$this->assertFalse(class_exists('BetaInfo'));
-		$this->assertFalse(class_exists('HomoInfo'));
+		$this->assertFalse(class_exists('HomeInfo'));
 	
 		CoOrg::loadPluginInfo('info');
 		
@@ -323,6 +323,20 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('a/b/c/d/parameterwith$3fand$2f',
 		                    CoOrg::createURL(array('a/b/c/d',
 		                                           'parameterwith?and/')));
+	}
+	
+	public function testLoadPluginInfoSpecific()
+	{
+		$this->assertFalse(class_exists('Alpha2Info'));
+		$this->assertFalse(class_exists('Home2Info'));
+		
+		CoOrg::loadPluginInfo('info2', 'home');
+		
+		$this->assertFalse(class_exists('Alpha2Info'));
+		$this->assertTrue(class_exists('Home2Info'));
+		
+		CoOrg::loadPluginInfo('info2', 'sub'); // Sub does not have an info2
+		CoOrg::loadPluginInfo('info2', 'home');
 	}
 	
 	private function alternativeConfig($config)
