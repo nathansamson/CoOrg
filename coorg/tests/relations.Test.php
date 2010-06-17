@@ -41,6 +41,11 @@ Model::registerRelation(new ContainmentHasContainer);
 */
 class SomeContainer extends DBModel
 {
+	public function __construct()
+	{
+		parent::__construct();
+	}
+
 	public function get($id)
 	{
 		$q = DB::prepare('SELECT * FROM SomeContainer WHERE ID=:id');
@@ -56,6 +61,11 @@ class SomeContainer extends DBModel
 */
 class SomeContainment extends DBModel
 {
+	public function __construct()
+	{
+		parent::__construct();
+	}
+
 	public function get($id)
 	{
 		$q = DB::prepare('SELECT * FROM SomeContainment WHERE name=:id');
@@ -77,6 +87,82 @@ class One2ManyTest extends CoOrgModelTest
 		
 		$containment->container = SomeContainer::get('two');
 		$this->assertEquals('two', $containment->containerID);
+	}
+	
+	public function testCollections()
+	{
+		$container = SomeContainer::get('one');
+		$this->assertEquals(3, count($container->containments));
+		
+		$expected = array('Containment of One',
+		                  'Another Containment of One',
+		                  'Last Containment of One');
+
+		foreach ($container->containments as $key => $value)
+		{
+			$this->assertEquals($expected[$key], $value->name);
+		}
+		
+		$this->assertEquals('Another Containment of One',
+		                    $container->containments[1]->name);
+	}
+	
+	public function testAppendCollection()
+	{
+		$containment = new SomeContainment;
+		$containment->name = 'Me Name';
+		
+		$container = SomeContainer::get('one');
+		$container->containments[] = $containment;
+		
+		$this->assertEquals('one', $containment->containerID);
+		$this->assertEquals('one', $containment->container->ID);
+		$retrieve = SomeContainment::get('Me Name');
+		$this->assertNotNull($retrieve);
+		$this->assertEquals('one', $retrieve->containerID);
+		$this->assertEquals('one', $retrieve->container->ID);
+		$this->assertEquals(4, count($container->containments));
+	}
+	
+	public function testAppendCollectionFailure()
+	{
+		$containment = new SomeContainment;
+		
+		$container = SomeContainer::get('one');
+		try
+		{
+			$container->containments[] = $containment;
+		}
+		catch (ValidationException $e)
+		{
+			$this->assertEquals('Name is required', $containment->name_error);
+		}
+		
+		$this->assertEquals(3, count($container->containments));
+	}
+	
+	public function testUnsetCollection()
+	{
+		$container = SomeContainer::get('one');
+		unset($container->containments[1]);
+		$this->assertNull(SomeContainment::get('Another Containment of One'));
+		$this->assertEquals('Last Containment of One', $container->containments[2]->name);
+		$this->assertEquals(2, count($container->containments));
+		
+		$this->assertTrue($container->containments->offsetExists(2));
+	}
+	
+	public function testSetIsNotAllowedCollection()
+	{
+		$container = SomeContainer::get('one');
+		try
+		{
+			$container->containments[2] = SomeContainment::get('Containment of Three');
+			$this->fail('Exception expected');
+		}
+		catch (Exception $e)
+		{
+		}
 	}
 }
 

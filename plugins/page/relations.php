@@ -19,11 +19,21 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-interface IRelationPart
+class PageHasAuthorRelation extends One2Many
 {
-	public function attributes();
-	public function variants();
-	public function collections();
+	protected function info()
+	{
+		return array(
+			'from' => 'Page',
+			'to' => 'User',
+			'local' => 'author',
+			'localAs' => 'theAuthorClass',
+			'foreign' => 'username',
+			'foreignAs' => 'pages'
+		);
+	}
 }
+
+Model::registerRelation(new PageHasAuthorRelation);
 
 ?>

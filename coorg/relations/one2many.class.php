@@ -33,6 +33,15 @@ abstract class One2Many implements IRelation
 			$r->foreignKeys = $info['foreign'];
 			return $r;
 		}
+		else if ($modelClass == $info['to'])
+		{
+			$r = new ManyRelation;
+			$r->toClass = $info['from'];
+			$r->name = $info['foreignAs'];
+			$r->localKeys= $info['foreign'];
+			$r->foreignKeys = $info['local'];
+			return $r;
+		}
 		return null;
 	}
 	

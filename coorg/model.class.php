@@ -33,6 +33,7 @@ class Model
 	private $_properties = array();
 	private $_variants = array();
 	private $_extensions = array();
+	private $_collections = array();
 	
 	protected function __construct()
 	{
@@ -62,6 +63,11 @@ class Model
 			$property->attachVariant($var);
 			$this->_variants[$name] = array('propertyName' => $variantInfo['property'] ,
 			                                'variant' => $var);
+		}
+		foreach (self::$_modelInfo[$class]['collections'] as $name => $collectionInfo)
+		{
+			$collClass = $collectionInfo['class'];
+			$this->_collections[$name] = $collClass::instance($collectionInfo, $this);
 		}
 	}
 	
@@ -121,6 +127,12 @@ class Model
 			{
 				return $variantInfo['variant']->$fnc();
 			}
+		}
+		else if (array_key_exists($name, $this->_collections))
+		{
+			$coll = $this->_collections[$name]; 
+			$coll->activate();
+			return $coll;
 		}
 		else
 		{
@@ -226,6 +238,7 @@ class Model
 		$extensions = array();
 		$variants = array();
 		$relations = array();
+		$collections = array();
 		$reflClass = new ReflectionClass($class);
 		$docComment = $reflClass->getDocComment();
 	
@@ -329,11 +342,16 @@ class Model
 			{
 				$variants[$name] = $variant;
 			}
+			foreach ($part->collections() as $name => $collection)
+			{
+				$collections[$name] = $collection;
+			}
 		}
 		
 		return array('properties' => $propertyInfo,
 		             'extensions' => $extensions,
-		             'variants' => $variants);
+		             'variants' => $variants,
+		             'collections' => $collections);
 	}
 
 	static public function filterDB($f)
@@ -540,6 +558,7 @@ class DBModel extends Model
 	
 	public static function fetch($row, $model)
 	{
+		if ($row == null) return null;
 		$instance = new $model;
 		foreach (self::$_modelInfo[$model]['properties'] as $pName => $pInfo)
 		{

@@ -46,6 +46,11 @@ class OneRelation implements IRelationPart
 		                'property' => $this->localKeys,
 		                'args' => $args));
 	}
+	
+	public function collections()
+	{
+		return array();
+	}
 }
 
 ?>

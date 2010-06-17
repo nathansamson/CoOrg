@@ -19,11 +19,31 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-interface IRelationPart
+class ManyRelation implements IRelationPart
 {
-	public function attributes();
-	public function variants();
-	public function collections();
+	public $toClass;
+	public $name;
+	public $foreignKeys;
+	public $localKeys;
+
+	public function attributes()
+	{
+		return array();
+	}
+	
+	public function variants()
+	{
+		return array();
+	}
+	
+	public function collections()
+	{
+		return array($this->name => 
+						array('class' => 'ManyCollection',
+						      'from' => $this->toClass,
+						      'foreign' => $this->foreignKeys,
+						      'local' => $this->localKeys));
+	}
 }
 
 ?>
