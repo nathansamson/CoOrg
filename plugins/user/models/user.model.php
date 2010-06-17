@@ -94,6 +94,11 @@ class User extends DBModel
 		}
 	}
 	
+	public static function get($user)
+	{
+		return self::getUserByName($user);
+	}
+	
 	protected function validate($for)
 	{
 		parent::validate($for);

@@ -18,7 +18,7 @@
 		ID="some-page"
 		language="en"
 		title="Some Page"
-		author="nathan"
+		authorID="nathan"
 		created="2010-04-03"
 		content="Me Content"
 	/>
@@ -27,7 +27,7 @@
 		ID="aabbcc"
 		language="en"
 		title="AA BB CC"
-		author="nathan"
+		authorID="nathan"
 		created="2010-04-02"
 		content="Me Content"
 	/>
@@ -36,7 +36,7 @@
 		ID="tidelodoo"
 		language="en"
 		title="Tidelodoo"
-		author="nathan"
+		authorID="nathan"
 		created="2009-04-03"
 		content="Me Content"
 	/>
@@ -45,7 +45,7 @@
 		ID="aabbcc"
 		language="nl"
 		title="AA BB CC"
-		author="nathan"
+		authorID="nathan"
 		created="2010-04-02"
 		content="Me Content"
 	/>
@@ -54,7 +54,7 @@
 		ID="tidelodoe"
 		language="nl"
 		title="Tidelodoe"
-		author="nathan"
+		authorID="nathan"
 		created="2009-04-03"
 		content="Me Content"
 	/>
@@ -63,7 +63,7 @@
 		ID="toedeloedoe"
 		language="fr"
 		title="Toedeloedoe"
-		author="nathan"
+		authorID="nathan"
 		created="2009-04-03"
 		content="French Content"
 	/>

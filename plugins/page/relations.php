@@ -26,8 +26,8 @@ class PageHasAuthorRelation extends One2Many
 		return array(
 			'from' => 'Page',
 			'to' => 'User',
-			'local' => 'author',
-			'localAs' => 'theAuthorClass',
+			'local' => 'authorID',
+			'localAs' => 'author',
 			'foreign' => 'username',
 			'foreignAs' => 'pages'
 		);

@@ -28,12 +28,40 @@ class PageTest extends CoOrgModelTest
 		$page->language = 'en';
 		$page->title = 'My First Blog Ever';
 		$page->content = 'This is My First Blog Ever';
-		$page->author = 'nathan';
+		$this->assertNull($page->author);
+		$page->authorID = 'user';
+		$this->assertNotNull($page->author);
+		$this->assertEquals('user', $page->author->username);
 		$page->save();
 		$this->assertEquals(self::today(), $page->created);
 		$this->assertNull($page->updated);
 		
 		$page = Page::get($page->ID, 'en');
+		$this->assertNotNull($page->author);
+		$this->assertEquals('user', $page->author->username);
+		$this->assertEquals('My First Blog Ever', $page->title);
+		$this->assertEquals('This is My First Blog Ever', $page->content);
+		$this->assertEquals(self::today(), $page->created);
+	}
+	
+	public function testCreateWithUser()
+	{
+		$page = new Page;
+		$page->language = 'en';
+		$page->title = 'My First Blog Ever';
+		$page->content = 'This is My First Blog Ever';
+		$this->assertNull($page->author);
+		$page->author = User::getUserByName('user');
+		$this->assertNotNull($page->authorID);
+		$this->assertEquals('user', $page->authorID);
+		$page->save();
+		$this->assertEquals(self::today(), $page->created);
+		$this->assertNull($page->updated);
+		
+		$page = Page::get($page->ID, 'en');
+		$this->assertEquals('user', $page->authorID);
+		$this->assertNotNull($page->author);
+		$this->assertEquals('user', $page->author->username);
 		$this->assertEquals('My First Blog Ever', $page->title);
 		$this->assertEquals('This is My First Blog Ever', $page->content);
 		$this->assertEquals(self::today(), $page->created);
@@ -45,7 +73,7 @@ class PageTest extends CoOrgModelTest
 		$page->language = 'en';
 		$page->title = 'Test Blog';
 		$page->content = 'A';
-		$page->author = 'nathan';
+		$page->authorID = 'nathan';
 		$page->save();
 		$id1 = $page->ID;
 		
@@ -53,7 +81,7 @@ class PageTest extends CoOrgModelTest
 		$page->language = 'en';
 		$page->title = 'Test Blog';
 		$page->content = 'B';
-		$page->author = 'nathan';
+		$page->authorID = 'nathan';
 		$page->save();
 		$id2 = $page->ID;
 		
@@ -71,7 +99,7 @@ class PageTest extends CoOrgModelTest
 		$page->language = 'en';
 		$page->title = 'Test Blog';
 		$page->content = 'A';
-		$page->author = 'nathan';
+		$page->authorID = 'nathan';
 		$page->save();
 		$id1 = $page->ID;
 		
@@ -79,7 +107,7 @@ class PageTest extends CoOrgModelTest
 		$page->language = 'nl';
 		$page->title = 'Test Blog';
 		$page->content = 'B';
-		$page->author = 'nathan';
+		$page->authorID = 'nathan';
 		$page->save();
 		$id2 = $page->ID;
 		
@@ -98,13 +126,13 @@ class PageTest extends CoOrgModelTest
 		$page->language = 'en';
 		$page->title = 'Test Blog';
 		$page->content = 'A';
-		$page->author = 'nathan';
+		$page->authorID = 'nathan';
 		$page->save();
 		$id1 = $page->ID;
 		
 		$page->title = 'Some Other Title because I made a Typo';
 		$page->content = 'New Content';
-		$page->lastEditor = 'someoneelse';
+		$page->lastEditorID = 'someoneelse';
 		$page->save();
 		$this->assertEquals($id1, $page->ID);
 		
@@ -125,7 +153,7 @@ class PageTest extends CoOrgModelTest
 		$page->language = 'en';
 		$page->title = 'Some Page';
 		$page->content = 'meduladoedo';
-		$page->author = 'nathan';
+		$page->authorID = 'nathan';
 		$page->save();
 		
 		$page = Page::get('some-page', 'en');
@@ -206,7 +234,7 @@ class PageTest extends CoOrgModelTest
 		$p = new Page;
 		$p->title = 'Joedialtitoe';
 		$p->language = 'de';
-		$p->author = 'nathan';
+		$p->authorID = 'nathan';
 		$p->content = 'German text';
 		$p->originalLanguage = 'fr';
 		$p->originalID = 'toedeloedoe';
@@ -250,7 +278,7 @@ class PageTest extends CoOrgModelTest
 		$p = new Page;
 		$p->title = 'Ole Ola';
 		$p->language = 'fr';
-		$p->author = 'nathan';
+		$p->authorID = 'nathan';
 		$p->content = 'French text';
 		$p->originalLanguage = 'en';
 		$p->originalID = 'tidelodoo';
@@ -274,7 +302,7 @@ class PageTest extends CoOrgModelTest
 		$p = new Page;
 		$p->title = 'Tidelodoo';
 		$p->language = 'en';
-		$p->author = 'nathan';
+		$p->authorID = 'nathan';
 		$p->content = 'English text';
 		$p->save();
 		

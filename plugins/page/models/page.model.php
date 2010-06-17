@@ -23,8 +23,8 @@
  * @property primary; language String(t('Language'), 6); required
  * @property created Date('Created'); required
  * @property updated Date('Updated'); required only('update')
- * @property author String(t('Author'), 24); required
- * @property lastEditor String('Last Editor', 24); required only('update')
+ * @property authorID String(t('Author'), 24); required
+ * @property lastEditorID String('Last Editor', 24); required only('update')
  * @property title String(t('Title'), 256); required
  * @property content String(t('Content')); required
  * @property writeonly; originalLanguage String('', 6);
