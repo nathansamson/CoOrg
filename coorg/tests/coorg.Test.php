@@ -339,6 +339,15 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		CoOrg::loadPluginInfo('info2', 'home');
 	}
 	
+	public function testStaticFile()
+	{
+		$this->assertEquals('/coorg/tests/mocks/plugins/alpha/static/somefile.css?v=2010-10-03',
+		                    CoOrg::staticFile('somefile.css', 'alpha'));
+
+		$this->assertEquals('static/mockfile.css?v=A',
+		                    CoOrg::staticFile('mockfile.css'));
+	}
+	
 	private function alternativeConfig($config)
 	{
 		CoOrg::init($config, 'coorg/tests/mocks/app', 'coorg/tests/mocks/plugins');

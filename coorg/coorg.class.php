@@ -20,6 +20,7 @@
 
 error_reporting(E_ALL);
 
+require_once 'static/resources.coorg.php';
 require_once 'coorg/controller.class.php';
 require_once 'coorg/asidecontroller.class.php';
 require_once 'coorg/config.class.php';
@@ -47,6 +48,7 @@ class CoOrg {
 	private static $_appdir;
 	private static $_pluginDir;
 	private static $_config;
+	private static $_resources = array();
 	
 	private static $_request;
 	private static $_requestParameters;
@@ -234,14 +236,25 @@ class CoOrg {
 		return $url;
 	}
 	
-	public static function staticFile($file, $app = '__')
+	public static function staticFile($file, $app = null)
 	{
-		if ($app == '__')
+		if ($app == null)
 		{
-			return self::$_config->get('path').'static/'.$file;
+			$version = self::$_resources['/'][$file];
+			return self::$_config->get('path').'static/'.$file.'?v='.$version;
 		}
 		else
 		{
+			self::loadPluginInfo('resources.coorg', $app);
+			if (array_key_exists($file, self::$_resources[$app]))
+			{
+				$version = self::$_resources[$app][$file];
+			}
+			else
+			{
+				throw new Exception('No version specified for '.$file.'::'.$app);
+			}
+			
 			$pluginPath = self::$_config->get('path') . '/';
 			if (in_array($app, self::$_config->get('enabled_plugins')))
 			{
@@ -251,7 +264,7 @@ class CoOrg {
 			{
 				$pluginPath .= self::$_appdir.'/'.$app;
 			}
-			return $pluginPath. '/static/'.$file;
+			return $pluginPath. '/static/'.$file.'?v='.$version;
 		}
 	}
 	
@@ -346,6 +359,11 @@ class CoOrg {
 		);
 		
 		return $stocks[$stock];
+	}
+	
+	public static function resreg($app, $resource, $version)
+	{
+		self::$_resources[$app][$resource] = $version;
 	}
 	
 	/* == These functions are only used for testing purposes == */
@@ -503,6 +521,12 @@ class CoOrg {
 			if ($restrict != null && !in_array($subdir, $restrict)) continue;
 			if (is_dir($dir))
 			{
+				if (!array_key_exists($subdir, self::$_resources))
+				{
+					// In testing we clear loadDir a few times, but we only include
+					// resources.coorg once for each run, so do not throw away this info
+					self::$_resources[$subdir] = array();
+				}
 				self::$_asides[$subdir] = array();
 				// Scan files in dir
 				foreach (scandir($dir) as $sfile)

@@ -18,7 +18,7 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function smarty_modifier_static($param, $plugin = '__')
+function smarty_modifier_static($param, $plugin = null)
 {
 	return CoOrg::staticFile($param, $plugin);
 }
