@@ -95,7 +95,7 @@ function smarty_function_input($params, $smarty)
 		else
 		{
 			$name = $params['name'];
-			$value = $params['value'];
+			$value = htmlspecialchars($params['value']);
 		}
 	}
 	else
