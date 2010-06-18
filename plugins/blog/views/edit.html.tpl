@@ -1,6 +1,7 @@
 {block name='title'}{'Edit %b'|_:$blog->title}{/block}
 
 {block name='content'}
+	{if $blog->untranslated()}
 	<div class="page-actions">
 		{form request="blog/translate" method="get"}
 			{input value=$blog->datePosted|date_format:'Y' name=year}
@@ -22,6 +23,7 @@
 			{input type="submit" label="Translate blog"}
 		{/form}
 	</div>
+	{/if}
 	<h1>{'Edit %b'|_:$blog->title|escape}</h1>
 
 	{form request='blog/update' instance=$blog}
