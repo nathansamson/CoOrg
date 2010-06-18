@@ -166,7 +166,31 @@ class Blog extends DBModel
 		return $pager;
 	}
 	
-	public static function getArchive($language)
+	public static function getArchive($language, $year, $month = null)
+	{
+		while (strlen($year) != 4) $year ='0'.$year;
+		if ($month) while (strlen($month) != 2) $month ='0'.$month;
+		
+		$q = DB::prepare('SELECT * FROM Blog WHERE
+		                    language = :l AND
+		                    YEAR(datePosted) = :year'.
+		                    ($month ? ' AND MONTH(datePosted) = :month' : '').
+		                    ' ORDER BY timePosted DESC');
+		
+		
+		$params = array(':l' => $language, ':year' => $year);
+		if ($month) $params[':month'] = $month;
+		
+		$q->execute($params);
+		$a = array();
+		foreach ($q->fetchAll() as $row)
+		{
+			$a[] = Blog::fetch($row, 'Blog');
+		}
+		return $a;
+	}
+	
+	public static function getArchives($language)
 	{
 		$q = DB::prepare('SELECT YEAR(datePosted) AS year,
 		                         MONTH(datePosted) AS month,

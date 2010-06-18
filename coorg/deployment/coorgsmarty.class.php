@@ -25,6 +25,9 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 
 	private $_errors = array();
 	private $_notices = array();
+	
+	// public because handler must access it
+	public $_stylesheets = array();
 
 	public function __construct()
 	{
@@ -62,6 +65,7 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 	{
 		$this->assign('notices', $this->_notices);
 		$this->assign('errors', $this->_errors);
+		$this->register->outputFilter('add_stylesheets');
 		parent::display($tpl);
 		$this->_notices = array();
 		$this->_errors = array();
@@ -84,6 +88,24 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 			setcookie('coorg_errors['.$i.']', $error, 0, '/');
 		}
 	}
+	
+	public function stylesheet($style)
+	{
+		$this->_stylesheets[] = $style;
+	}
+}
+
+function add_stylesheets($output, &$smarty)
+{
+	$r = '';
+	
+	$s = array_unique($smarty->_stylesheets);
+	foreach ($s as $stylesheet)
+	{
+		$r .= '<link rel="stylesheet" href="'.$stylesheet.'" />';
+	}
+	
+	return str_replace('%%$$EXTRASTYLESHEETSCOMEHERE$$%%</head>', $r, $output);
 }
 
 ?>

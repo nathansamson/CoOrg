@@ -196,7 +196,7 @@
 	  <Blog
 	  	ID="b"
 	  	datePosted="2009-01-02"
-	  	timePosted="2009-01-02 12:12:12"
+	  	timePosted="2009-01-02 14:12:12"
 	  	authorID="nathan"
 	  	title="A"
 	  	text="A"
@@ -224,7 +224,7 @@
 	  />
 	  
 	  <Blog
-	  	ID="a"
+	  	ID="ccdd"
 	  	datePosted="2009-03-15"
 	  	timePosted="2009-03-15 12:12:12"
 	  	authorID="nathan"
@@ -234,7 +234,7 @@
 	  />
 	  
 	  <Blog
-	  	ID="a"
+	  	ID="abba"
 	  	datePosted="2009-06-12"
 	  	timePosted="2009-06-12 12:12:12"
 	  	authorID="nathan"

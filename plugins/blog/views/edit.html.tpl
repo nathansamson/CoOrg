@@ -22,7 +22,7 @@
 			{input type="submit" label="Translate blog"}
 		{/form}
 	</div>
-	<h1>{'Edit %b'|_:$blog->title}</h1>
+	<h1>{'Edit %b'|_:$blog->title|escape}</h1>
 
 	{form request='blog/update' instance=$blog}
 		{input value=$blog->datePosted|date_format:'Y' name=year}

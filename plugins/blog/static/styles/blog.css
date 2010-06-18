@@ -1,0 +1,29 @@
+.archive {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.archive h2 {
+	font-size: 14px;
+	margin-bottom: 2px;
+	padding: 0;
+}
+
+.archive ol {
+	list-style-type: none;
+	padding: 0 10px;
+	font-size: 12px;
+	margin-bottom: 5px;
+}
+
+.archive a {
+	text-decoration: none;
+}
+
+.archive a .count {
+	font-size: 9px;
+	color: #999999;
+	vertical-align: middle;
+	margin-left: 2px;
+}

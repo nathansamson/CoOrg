@@ -253,9 +253,9 @@ class BlogTest extends CoOrgModelTest
 		$this->assertEquals($untranslated, $untranslated2);
 	}
 	
-	public function testArchive()
+	public function testArchives()
 	{
-		$archive = Blog::getArchive('br');
+		$archive = Blog::getArchives('br');
 		
 		$this->assertEquals(7, count($archive));
 		$this->assertEquals('2009', $archive[0]->year);
@@ -285,6 +285,19 @@ class BlogTest extends CoOrgModelTest
 		$this->assertEquals('2008', $archive[6]->year);
 		$this->assertEquals('05', $archive[6]->month);
 		$this->assertEquals(1, $archive[6]->posts);
+	}
+	
+	public function testArchive()
+	{
+		$archive = Blog::getArchive('br', 2009, 1);
+		$this->assertEquals(2, count($archive));
+		$this->assertEquals('b', $archive[0]->ID);
+		$this->assertEquals('a', $archive[1]->ID);
+		
+		$archive = Blog::getArchive('br', 2009);
+		$this->assertEquals(6, count($archive));
+		$this->assertEquals('abba', $archive[0]->ID);
+		$this->assertEquals('ccdd', $archive[1]->ID);
 	}
 }
 

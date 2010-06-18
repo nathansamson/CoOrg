@@ -18,21 +18,7 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-interface ICoOrgSmarty
+function smarty_function_stylesheet($params, $smarty)
 {
-	public function notice($notice);
-	public function error($error);
-
-	public function assign($key, $value);
-	public function clearAssign($key);
-	public function getVariable($key);
-
-	public function display($tpl);
-	public function fetch($tpl);
-	
-	public function stylesheet($style);
-	
-	public function saveState();
+	$smarty->stylesheet($params['file']);
 }
-
-?>

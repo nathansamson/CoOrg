@@ -53,6 +53,25 @@ function smarty_modifier_date_format($string, $format = SMARTY_RESOURCE_DATE_FOR
             $format = str_replace($_win_from, $_win_to, $format);
         } 
         return strftime($format, $timestamp);
+    } elseif (strpos($format, '_') !== false) {
+        $months = array('pad',
+            t('January'),
+            t('February'),
+            t('March'),
+            t('April'),
+            t('May'),
+            t('June'),
+            t('July'),
+            t('August'),
+            t('September'),
+            t('October'),
+            t('November'),
+            t('December')
+        );
+        if ($format == '_month')
+        {
+            return $months[(int)$string];
+        }
     } else {
         return date($format, $timestamp);
     }

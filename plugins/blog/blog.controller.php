@@ -170,6 +170,14 @@ class BlogController extends Controller
 		}
 	}
 	
+	public function archive($year, $month = null)
+	{
+		$this->blogs = Blog::getArchive(CoOrg::getLanguage(), $year, $month);
+		$this->archiveYear = $year;
+		if ($month) $this->archiveMonth = $month;
+		$this->render('archive');
+	}
+	
 	protected function get($year, $month, $day, $id, $language = null, $author = false)
 	{
 		if ($language == null)

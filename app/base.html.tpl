@@ -21,7 +21,7 @@
 				return "{$staticPath}"+file;
 			}
 		</script>
-	</head>
+	%%$$EXTRASTYLESHEETSCOMEHERE$$%%</head>
 	<body>
 		<header>
 			<h1><a href="{url request='/'}">{Coorg::config()->get('site/title')}</a></h1>

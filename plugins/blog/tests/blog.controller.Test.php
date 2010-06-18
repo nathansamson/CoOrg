@@ -363,6 +363,25 @@ class BlogControllerTest extends CoOrgControllerTest
 		$this->assertRendered('latest', 'atom', null);
 	}
 	
+	public function testArchive()
+	{
+		$this->request('br/blog/archive/2009');
+		
+		$this->assertVarSet('blogs');
+		$this->assertVarIs('archiveYear', 2009);
+		$this->assertRendered('archive');
+	}
+	
+	public function testArchiveMonth()
+	{
+		$this->request('br/blog/archive/2009/6');
+		
+		$this->assertVarSet('blogs');
+		$this->assertVarIs('archiveYear', 2009);
+		$this->assertVarIs('archiveMonth', 6);
+		$this->assertRendered('archive');
+	}
+	
 	private function login($u = 'nathan')
 	{
 		$session = new UserSession($u, $u);
