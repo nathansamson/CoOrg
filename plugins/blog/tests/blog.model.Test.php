@@ -252,6 +252,40 @@ class BlogTest extends CoOrgModelTest
 		$untranslated2 = $blog->untranslated();
 		$this->assertEquals($untranslated, $untranslated2);
 	}
+	
+	public function testArchive()
+	{
+		$archive = Blog::getArchive('br');
+		
+		$this->assertEquals(7, count($archive));
+		$this->assertEquals('2009', $archive[0]->year);
+		$this->assertEquals('06', $archive[0]->month);
+		$this->assertEquals(1, $archive[0]->posts);
+		
+		$this->assertEquals('2009', $archive[1]->year);
+		$this->assertEquals('03', $archive[1]->month);
+		$this->assertEquals(3, $archive[1]->posts);
+		
+		$this->assertEquals('2009', $archive[2]->year);
+		$this->assertEquals('01', $archive[2]->month);
+		$this->assertEquals(2, $archive[2]->posts);
+		
+		$this->assertEquals('2008', $archive[3]->year);
+		$this->assertEquals('12', $archive[3]->month);
+		$this->assertEquals(1, $archive[3]->posts);
+		
+		$this->assertEquals('2008', $archive[4]->year);
+		$this->assertEquals('08', $archive[4]->month);
+		$this->assertEquals(1, $archive[4]->posts);
+		
+		$this->assertEquals('2008', $archive[5]->year);
+		$this->assertEquals('06', $archive[5]->month);
+		$this->assertEquals(2, $archive[5]->posts);
+		
+		$this->assertEquals('2008', $archive[6]->year);
+		$this->assertEquals('05', $archive[6]->month);
+		$this->assertEquals(1, $archive[6]->posts);
+	}
 }
 
 ?>

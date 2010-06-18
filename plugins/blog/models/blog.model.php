@@ -166,6 +166,28 @@ class Blog extends DBModel
 		return $pager;
 	}
 	
+	public static function getArchive($language)
+	{
+		$q = DB::prepare('SELECT YEAR(datePosted) AS year,
+		                         MONTH(datePosted) AS month,
+		                         COUNT(*) as count  FROM Blog
+		         WHERE language=:lang
+		         GROUP BY year, month
+		         ORDER BY year DESC, month DESC');
+		$q->execute(array(':lang' => $language));
+		
+		$archive = array();
+		foreach ($q->fetchAll() as $row)
+		{
+			$monthInfo = new stdClass;
+			$monthInfo->year = $row['year'];
+			$monthInfo->month = $row['month'];
+			$monthInfo->posts = $row['count'];
+			$archive[] = $monthInfo;
+		}
+		return $archive;
+	}
+	
 	protected function normalizeTitle($title)
 	{
 		return str_replace(' ', '-', strtolower($title));
@@ -210,7 +232,7 @@ class Blog extends DBModel
 		}
 		else
 		{
-			$q = DB::prepare('SELECT * FROM BLOG
+			$q = DB::prepare('SELECT * FROM Blog
 			                    WHERE datePosted = :postDate
 			                    AND (parentID=:ID OR ID=:ID)
 			                    AND language =:language');
