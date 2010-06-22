@@ -23,7 +23,7 @@ abstract class AsideController
 
 	private $_viewsPath;
 	private $_smarty;
-	private $_variablesSetByMe = array();
+	private $_data = null;
 	
 	public function __construct($smarty, $viewsPath)
 	{
@@ -35,25 +35,17 @@ abstract class AsideController
 	
 	protected function render($tpl)
 	{
-		$s = $this->_smarty->fetch($this->_viewsPath.$tpl.'.html.tpl');
-		foreach ($this->_variablesSetByMe as $var)
-		{
-			$this->_smarty->clearAssign($var);
-		}
-		return $s;
+		$tpl = $this->_smarty->createTemplate($this->_viewsPath.$tpl.'.html.tpl', $this->_data);
+		return $tpl->fetch();
 	}
 
 	final public function __set($var, $value)
 	{
-		if ($this->_smarty->getVariable($var) instanceof Undefined_Smarty_Variable)
+		if ($this->_data == null)
 		{
-			$this->_variablesSetByMe[] = $var;
-			$this->_smarty->assign($var, $value);
+			$this->_data = $this->_smarty->createData($this->_smarty);
 		}
-		else
-		{
-			throw new Exception('Can not overwrite template variable!');
-		}
+		$this->_data->assign($var, $value);
 	}
 }
 

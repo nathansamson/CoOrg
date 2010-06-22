@@ -218,26 +218,21 @@ class Controller {
 
 	protected function render($tpl, $app = false, $baseFile = 'base')
 	{
+		$this->smarty()->addTemplateDir($this->_tplPath);
 		if (array_key_exists($this->_renderType, $this->_contentTypes))
 		{
 			Header::setContentType($this->_contentTypes[$this->_renderType]);
 		}
 		$file = $tpl .'.'. $this->_renderType . '.tpl';
-		$fullPath = $app ? $file : $this->_tplPath . '/' .$file; 
-		if ($app || file_exists($fullPath))
+		if ($baseFile != null)
 		{
-			if ($baseFile != null)
-			{
-				$baseFile = $baseFile.'.'.$this->_renderType.'.tpl';
-				$this->smarty()->display('extends:base.html.tpl|'.$fullPath);
-			}
-			else
-			{
-				$this->smarty()->display($fullPath);
-			}
-			return;
+			$baseFile = $baseFile.'.'.$this->_renderType.'.tpl';
+			$this->smarty()->display('extends:'.$baseFile.'|'.$file);
 		}
-		throw new TemplateNotFoundException($file);
+		else
+		{
+			$this->smarty()->display($file);
+		}
 	}
 
 	public function __get($key)

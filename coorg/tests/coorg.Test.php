@@ -186,8 +186,11 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 	{
 		CoOrg::process('alpha/withaside/triggerSomethingBad/p2');
 		
-		$this->assertEquals('Can not overwrite template variable!', CoOrgSmarty::$vars['exception']->getMessage());
-		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);
+		$this->assertEquals('some Value', CoOrgSmarty::$vars['myActionVar']); // As set by controller
+		$this->assertEquals('extends:base.html.tpl|show.html.tpl', CoOrgSmarty::$renderedTemplate);
+
+		$this->assertContains('From controller:some Value:', CoOrgSmarty::$renderedOutput);
+		$this->assertContains('From aside:lets rock\'n roll', CoOrgSmarty::$renderedOutput);
 	}
 	
 	public function testI18nManual()

@@ -71,7 +71,7 @@ class ControllerTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(Header::$errorCode, '500 Internal Server Error');
 		$this->assertEquals('alpha/bogus', CoOrgSmarty::$vars['request']);
 		$this->assertEquals('http://www.test.info/some/part/of/the/site', CoOrgSmarty::$vars['referer']);
-		$this->assertEquals('Template bogus.html.tpl not found', CoOrgSmarty::$vars['exception']->getMessage());
+		$this->assertEquals('Unable to load template extends \'base.html.tpl|bogus.html.tpl\'', CoOrgSmarty::$vars['exception']->getMessage());
 		
 		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);
 	}
