@@ -26,6 +26,12 @@
 	
 	<Acl 
 		groupID="__dvorak"
+		keyID="admin-layout"
+		allowed="1"
+	/>
+	
+	<Acl 
+		groupID="__dvorak"
 		keyID="admin-language"
 		allowed="1"
 	/>

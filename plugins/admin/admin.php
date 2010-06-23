@@ -50,7 +50,24 @@ class i18nAdminModule extends AdminModule
 	}
 }
 
+class LayoutAdminModule extends AdminModule
+{
+	public function __construct()
+	{
+		$this->name = t('Layout');
+		$this->url = CoOrg::createURL(array('admin/layout'));
+		$this->priority = 2;
+		$this->image = CoOrg::staticFile('images/layout.png', 'admin');
+	}
+	
+	public function isAllowed($user)
+	{
+		return Acl::isAllowed($user->username, 'admin-layout');
+	}
+}
+
 Admin::registerModule('ToSiteAdminModule');
 Admin::registerModule('i18nAdminModule');
+Admin::registerModule('LayoutAdminModule');
 
 ?>

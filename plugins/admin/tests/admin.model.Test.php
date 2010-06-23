@@ -81,12 +81,13 @@ class AdminTest extends CoOrgModelTest
 		$s->save();
 		$modules = Admin::modules();
 		
-		$this->assertEquals(5, count($modules));
+		$this->assertEquals(6, count($modules));
 		$this->assertEquals('AA BB CC P1', $modules[0]->name);
 		$this->assertEquals('Languages', $modules[1]->name);
 		$this->assertEquals('AA BB CC', $modules[2]->name);
 		$this->assertEquals('BB BB CC', $modules[3]->name);
-		$this->assertEquals('Visit Site', $modules[4]->name);
+		$this->assertEquals('Layout', $modules[4]->name);
+		$this->assertEquals('Visit Site', $modules[5]->name);
 	}
 	
 	public function testModelsNoAdmin()

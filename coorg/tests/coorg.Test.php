@@ -173,7 +173,9 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 	
 	public function testAsideWithParams()
 	{
-		CoOrg::config()->set('aside/main', array('home/alpha' => array('beta' => 'gamma')));
+		CoOrg::config()->set('aside/main', array(
+			array('widgetID' => 'home/alpha',
+			      'beta' => 'gamma')));
 		CoOrg::process('alpha/withaside/p1/p2');
 		
 		$this->assertEquals('alpha/withaside', HomeAlphaAside::$request);

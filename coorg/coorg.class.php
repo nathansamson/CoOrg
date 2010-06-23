@@ -286,7 +286,8 @@ class CoOrg {
 		}
 	}
 	
-	public static function aside($name, $smarty)
+	public static function aside($name, $smarty, $preview = false,
+	                             $edit = false, $widgetID = null)
 	{
 		$items = self::$_config->get('aside/'.$name);
 		if ($items == null) return '';
@@ -295,7 +296,8 @@ class CoOrg {
 		{
 			if (is_array($item))
 			{
-				$widget = $key;
+				$widget = $item['widgetID'];
+				unset($item['widgetID']);
 				$widgetParams = $item;
 			}
 			else
@@ -309,11 +311,34 @@ class CoOrg {
 			
 			$className = ucfirst($p[0]).ucfirst($p[1]).'Aside';
 			$i = new $className($smarty, dirname(self::$_asides[$p[0]][$p[1]]).'/../views/');
-			$r = self::$_requestParameters;
-			if ($r == null) $r = array();
-			array_unshift($r, self::$_request);
-			array_unshift($r, $widgetParams);
-			$s .= call_user_func_array(array($i, 'run'), $r);
+			
+			if (!$preview)
+			{
+				$r = self::$_requestParameters;
+				if ($r == null) $r = array();
+				array_unshift($r, self::$_request);
+				array_unshift($r, $widgetParams);
+				$s .= call_user_func_array(array($i, 'run'), $r);
+			}
+			else
+			{
+				$i->widgetID = $key;
+				$i->panelID = $name;
+				if ($key > 0) $i->widgetUp = $key - 1;
+				if ($key < count($items) - 1) $i->widgetDown = $key + 1;
+				if ($i instanceof AsideConfigurableController)
+				{
+					$i->widgetConfigure = true;
+				}
+				if (!$edit)
+				{
+					$s .= $i->preview($widgetParams);
+				}
+				else
+				{
+					$s .= $i->configure($widgetParams);
+				}
+			}
 		}
 		
 		return $s;
@@ -474,10 +499,16 @@ class CoOrg {
 					
 					foreach ($functionParams as $fParam)
 					{
+						if ($fParam->getName() == '_')
+						{
+							$params[$fParam->getPosition()] = $inputParams;
+							break;
+						}
 						if (array_key_exists($fParam->getName(), $inputParams))
 						{
 							$params[$fParam->getPosition()] =
 							                  $inputParams[$fParam->getName()];
+							unset($inputParams[$fParam->getName()]);
 						}
 						else if ($fParam->isDefaultValueAvailable())
 						{

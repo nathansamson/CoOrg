@@ -21,6 +21,9 @@ class HomeAlphaAside extends AsideController
 		return $this->render('alpha');
 	}
 	
+	public function preview($widgetParams)
+	{
+	}
 }
 
 ?>

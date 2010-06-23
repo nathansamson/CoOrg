@@ -1,0 +1,23 @@
+#layout-preview ol.menu {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+#layout-preview ol.menu li {
+	display: inline;
+}
+
+#layout-preview ol.menu li {
+	border-right: dotted 1px #999;
+	padding: 0 4px;
+	margin-right: 4px;
+}
+
+#layout-preview ol.menu li:last-child {
+	border-right: none;
+}
+
+#layout-preview ol.menu li a {
+	text-decoration: none;
+}

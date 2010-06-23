@@ -317,6 +317,7 @@ aside input {
 	background-color: transparent;
 	padding: 0;
 	border: none;
+	vertical-align: top;
 }
 
 .normal-post-url button:hover {
@@ -333,7 +334,7 @@ a img {
 	vertical-align: middle;
 }
 
-.page-actions {
+.page-actions, .section-actions {
 	float: right;
 }
 

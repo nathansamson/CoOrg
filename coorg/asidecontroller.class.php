@@ -32,11 +32,16 @@ abstract class AsideController
 	}
 	
 	abstract function run($widgetParams, $request);
+	abstract function preview($widgetParams);
 	
 	protected function render($tpl)
 	{
-		$tpl = $this->_smarty->createTemplate($this->_viewsPath.$tpl.'.html.tpl', $this->_data);
-		return $tpl->fetch();
+		return $this->doRender($tpl);
+	}
+	
+	protected function renderPreview($tpl)
+	{
+		return $this->doRender($tpl, 'layout-preview.html.tpl');
 	}
 
 	final public function __set($var, $value)
@@ -46,6 +51,29 @@ abstract class AsideController
 			$this->_data = $this->_smarty->createData($this->_smarty);
 		}
 		$this->_data->assign($var, $value);
+	}
+	
+	protected function doRender($tpl, $base = null)
+	{
+		if ($base)
+		{
+			$tpl = $this->_smarty->createTemplate('extends:'.$base.'|'.$this->_viewsPath.$tpl.'.html.tpl', $this->_data);
+		}
+		else
+		{
+			$tpl = $this->_smarty->createTemplate($this->_viewsPath.$tpl.'.html.tpl', $this->_data);
+		}
+		return $tpl->fetch();
+	}
+}
+
+abstract class AsideConfigurableController extends AsideController
+{	
+	abstract function configure($widgetParams);
+	
+	protected function renderConfigure($tpl)
+	{
+		return $this->doRender($tpl, 'layout-configure.html.tpl');
 	}
 }
 

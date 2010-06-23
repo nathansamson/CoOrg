@@ -6,6 +6,11 @@ class UserLoginAside extends AsideController
 	{
 		return $this->render('aside/login');
 	}
+	
+	public function preview($widgetParams)
+	{
+		return $this->renderPreview('aside/login-preview');
+	}
 }
 
 ?>
