@@ -36,6 +36,8 @@ require_once 'coorg/mail.interface.php';
 
 
 class CoOrg {
+	const PANEL_ORIENT_HORIZONTAL = 1;
+	const PANEL_ORIENT_VERTICAL = 2;
 
 	private static $_controllers = array();
 	private static $_models = array();
@@ -301,11 +303,20 @@ class CoOrg {
 	{
 		if ($name)
 		{
+			if ($name == 'main')
+			{
+				$orient = CoOrg::PANEL_ORIENT_VERTICAL;
+			}
+			else
+			{
+				$orient = CoOrg::PANEL_ORIENT_HORIZONTAL;
+			}
 			$items = self::$_config->get('aside/'.$name);
 			if ($items == null) return '';
 		}
 		else
 		{
+			$orient = CoOrg::PANEL_ORIENT_VERTICAL;
 			$preview = true;
 			$items = array();
 			foreach (self::$_asides as $plugin => $pWidgets)
@@ -342,6 +353,7 @@ class CoOrg {
 				$r = self::$_requestParameters;
 				if ($r == null) $r = array();
 				array_unshift($r, self::$_request);
+				array_unshift($r, $orient);
 				array_unshift($r, $widgetParams);
 				$s .= call_user_func_array(array($i, 'run'), $r);
 			}
@@ -364,11 +376,11 @@ class CoOrg {
 				}
 				if (!($edit && $key == $widgetID))
 				{
-					$s .= $i->preview($widgetParams);
+					$s .= $i->preview($widgetParams, $orient);
 				}
 				else
 				{
-					$s .= $i->configure($widgetParams);
+					$s .= $i->configure($widgetParams, $orient);
 				}
 			}
 		}

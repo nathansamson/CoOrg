@@ -2,7 +2,7 @@
 
 class BlogShareAside extends AsideController
 {
-	public function run($widgetParams, 
+	public function run($widgetParams, $orient,
 	                    $request, $year = null, $month = null, 
 	                              $day = null, $id = null)
 	{
@@ -12,7 +12,7 @@ class BlogShareAside extends AsideController
 		}
 	}
 	
-	public function preview($widgetParams)
+	public function preview($widgetParams, $orient)
 	{
 		return null;
 	}

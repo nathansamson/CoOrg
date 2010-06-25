@@ -31,8 +31,8 @@ abstract class AsideController
 		$this->_viewsPath = $viewsPath;
 	}
 	
-	abstract function run($widgetParams, $request);
-	abstract function preview($widgetParams);
+	abstract function run($widgetParams, $orient, $request);
+	abstract function preview($widgetParams, $orient);
 	
 	protected function render($tpl)
 	{
@@ -69,7 +69,7 @@ abstract class AsideController
 
 abstract class AsideConfigurableController extends AsideController
 {	
-	abstract function configure($widgetParams);
+	abstract function configure($widgetParams, $orient);
 	
 	protected function renderConfigure($tpl)
 	{

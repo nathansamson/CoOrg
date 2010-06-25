@@ -2,7 +2,7 @@
 
 class MenuMenuAside extends AsideConfigurableController
 {
-	public function run($widgetParams, $request)
+	public function run($widgetParams, $orient, $request)
 	{
 		$menu = Menu::get($widgetParams['menu']);
 		if ($menu != null)
@@ -16,12 +16,12 @@ class MenuMenuAside extends AsideConfigurableController
 		}
 	}
 	
-	public function preview($widgetParams)
+	public function preview($widgetParams, $orient)
 	{
 		return $this->renderPreview('aside/menu-preview');
 	}
 	
-	public function configure($widgetParams)
+	public function configure($widgetParams, $orient)
 	{
 		$this->menu = $widgetParams['menu'];
 		$menus = Menu::all();

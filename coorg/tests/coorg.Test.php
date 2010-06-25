@@ -164,6 +164,7 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		CoOrg::process('alpha/withaside/p1/p2');
 		
 		$this->assertEquals('alpha/withaside', HomeAlphaAside::$request);
+		$this->assertEquals(CoOrg::PANEL_ORIENT_VERTICAL, HomeAlphaAside::$orient);
 		$this->assertEquals('p2', HomeAlphaAside::$p2);
 		$this->assertEquals(array(), HomeAlphaAside::$widgetParams);
 		$this->assertFalse(array_key_exists('asideVar',  CoOrgSmarty::$vars));
