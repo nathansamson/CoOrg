@@ -16,6 +16,8 @@ if (array_key_exists('COORG_CONFIGFILE', $_SERVER))
 {
 	$configFile = $_SERVER['COORG_CONFIGFILE'];
 }
+copy($configFile, 'config/temp.config.tests.php');
+$configFile = 'config/temp.config.tests.php';
 define('COORG_TEST_CONFIG', $configFile);
 
 $config = new Config($configFile);
