@@ -31,6 +31,34 @@ class AdminLayoutController extends Controller
 		$this->render('layout/index');
 	}
 	
+	public function save($panelID, $widgetName)
+	{
+		$panel = CoOrg::config()->get('aside/'.$panelID);
+		
+		$widget = CoOrg::getWidgetInstance($widgetName);
+		if ($widget instanceof AsideConfigurableController)
+		{
+			$configure = true;
+			$panel[] = array('widgetID' => $widgetName);
+		}
+		else
+		{
+			$configure = false;
+			$panel[] = $widgetName;
+		}
+		CoOrg::config()->set('aside/'.$panelID, $panel);
+		CoOrg::config()->save();
+		
+		if ($configure)
+		{
+			$this->redirect('admin/layout/edit', $panelID, count($panel)-1);
+		}
+		else
+		{
+			$this->redirect('admin/layout');
+		}
+	}
+	
 	/**
 	 * @before find $panelID $widgetID
 	*/

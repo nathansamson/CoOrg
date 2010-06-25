@@ -9,6 +9,14 @@ class UserLoginAside extends AsideController
 	
 	public function preview($widgetParams)
 	{
+		if ($widgetParams === null)
+		{
+			$this->ID = 'asideMockPreview';
+		}
+		else
+		{
+			$this->ID = 'asidePreview';
+		}
 		return $this->renderPreview('aside/login-preview');
 	}
 }

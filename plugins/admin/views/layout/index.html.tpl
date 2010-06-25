@@ -5,8 +5,11 @@
 {/block}
 
 {block name=content}
+	<div class="page-actions">
+		{a request="#widget-list" coorgStock="list-add"}{'Add a widget'}{/a}
+	</div>
 	<h1>{'Layout'|_}</h1>
-	<div id="layout-preview">
+	<div id="layout-preview" class="preview">
 		<div class="header block">
 			<h1>{'Site header'|_}</h1>
 		</div>
@@ -14,13 +17,13 @@
 			<div class="navigation-left block">
 				{aside name="navigation-left" preview edit=($editPanelID=="navigation-left") editWidgetID=$editWidgetID}
 			</div><div class="navigation-right block">
-				{aside name="navigation-right" preview}
+				{aside name="navigation-right" preview edit=($editPanelID=="navigation-right") editWidgetID=$editWidgetID}
 			</div>
 			<br />
 		</div>
 		<div class="content">
 			<div class="main-left block">
-				{aside name="main" preview}
+				{aside name="main" preview edit=($editPanelID=="main") editWidgetID=$editWidgetID}
 			</div><div class="main block">
 				<h1>{'Site Page'|_}</h1>
 				<p>
@@ -29,5 +32,10 @@
 			<br />
 		</div>
 		<br />
+	</div>
+	
+	<h2>{'Available widgets'}</h2>
+	<div class="preview" id="widget-list">
+		{aside preview}
 	</div>
 {/block}

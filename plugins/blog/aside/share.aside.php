@@ -11,6 +11,11 @@ class BlogShareAside extends AsideController
 			//return '<br />'.$id . '<- Share it!';
 		}
 	}
+	
+	public function preview($widgetParams)
+	{
+		return null;
+	}
 }
 
 ?>

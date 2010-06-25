@@ -286,11 +286,36 @@ class CoOrg {
 		}
 	}
 	
+	public static function getWidgetInstance($widgetName)
+	{
+		$p = explode('/', $widgetName, 2);
+			
+		include_once(self::$_asides[$p[0]][$p[1]]);
+			
+		$className = ucfirst($p[0]).ucfirst($p[1]).'Aside';
+		return new $className(null, null);
+	}
+	
 	public static function aside($name, $smarty, $preview = false,
 	                             $edit = false, $widgetID = null)
 	{
-		$items = self::$_config->get('aside/'.$name);
-		if ($items == null) return '';
+		if ($name)
+		{
+			$items = self::$_config->get('aside/'.$name);
+			if ($items == null) return '';
+		}
+		else
+		{
+			$preview = true;
+			$items = array();
+			foreach (self::$_asides as $plugin => $pWidgets)
+			{
+				foreach ($pWidgets as $pName => $pWidget)
+				{
+					$items[] = $plugin.'/'.$pName;
+				}
+			}
+		}
 		$s = '';
 		foreach ($items as $key=>$item)
 		{
@@ -303,7 +328,7 @@ class CoOrg {
 			else
 			{
 				$widget = $item;
-				$widgetParams = array();
+				$widgetParams = $name ? array() : null;
 			}
 			$p = explode('/', $widget, 2);
 			
@@ -324,13 +349,20 @@ class CoOrg {
 			{
 				$i->widgetID = $key;
 				$i->panelID = $name;
-				if ($key > 0) $i->widgetUp = $key - 1;
-				if ($key < count($items) - 1) $i->widgetDown = $key + 1;
-				if ($i instanceof AsideConfigurableController)
+				if ($name && $key > 0) $i->widgetUp = $key - 1;
+				if ($name && $key < count($items) - 1) $i->widgetDown = $key + 1;
+				if ($name && $i instanceof AsideConfigurableController)
 				{
 					$i->widgetConfigure = true;
 				}
-				if (!$edit)
+				if (!$name)
+				{
+					$i->widgetName = $widget;
+					$i->panels = array('main' => 'Main',
+					                   'navigation-left' => 'Navigation (Left)',
+					                   'navigation-right' => 'Navigation (Right)');
+				}
+				if (!($edit && $key == $widgetID))
 				{
 					$s .= $i->preview($widgetParams);
 				}
@@ -398,7 +430,8 @@ class CoOrg {
 		$stocks = array(
 			'edit' => array('img' => 'images/icons/edit.png', 'alt' => t('Edit'), 'title' => t('Edit')),
 			'delete' => array('img' => 'images/icons/edit-delete.png', 'alt' => t('Delete'), 'title' => t('Delete')),
-			'list-remove' => array('img' => 'images/icons/list-remove.png', 'alt' => t('Remove'), 'title' => t('Remove'))
+			'list-remove' => array('img' => 'images/icons/list-remove.png', 'alt' => t('Remove'), 'title' => t('Remove')),
+			'list-add' => array('img' => 'images/icons/list-add.png', 'alt' => t('Add'), 'title' => t('Add'))
 		);
 		
 		return $stocks[$stock];

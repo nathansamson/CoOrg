@@ -28,11 +28,20 @@ function smarty_block_a($params, $contents, $smarty)
 		unset($params['coorgTitle']);
 		$l = @$params['coorgLanguage'];
 		unset($params['coorgLanguage']);
-		$urlParams = array($params['request']);
-		unset($params['request']);
-		$urlParams = array_merge($urlParams, array_values($params));
+		$request = $params['request'];
+		if ($request[0] != '#')
+		{
+			$urlParams = array($request);
+			unset($params['request']);
+			$urlParams = array_merge($urlParams, array_values($params));
+			$url = CoOrg::createURL($urlParams, $l ? $l : null);
+		}
+		else
+		{
+			$url = $request;
+		}
 		
-		$a = '<a href="'.htmlspecialchars(CoOrg::createURL($urlParams, $l ? $l : null)).'"'.
+		$a = '<a href="'.htmlspecialchars($url).'"'.
 		         ($title ? ' title="'.$title.'"' : '').'>';
 		if ($stock)
 		{
@@ -43,6 +52,10 @@ function smarty_block_a($params, $contents, $smarty)
 			if ($stockInfo['text'])
 			{
 				$a .= $stockInfo['text'];
+			}
+			else if ($contents)
+			{
+				$a .= $contents;
 			}
 		}
 		else

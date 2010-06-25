@@ -52,12 +52,12 @@ class LayoutAdminControllerTest extends CoOrgControllerTest
 	public function testEdit()
 	{
 		$this->login('dvorak');
-		$this->request('admin/layout/edit/main/0');
+		$this->request('admin/layout/edit/navigation-left/0');
 		$this->assertRendered('layout/index');
 		$this->assertVarIs('editWidgetID', 0);
-		$this->assertVarIs('editPanelID', 'main');
+		$this->assertVarIs('editPanelID', 'navigation-left');
 		$widget = CoOrgSmarty::$vars['editWidget'];
-		$this->assertSame('user/login', $widget);
+		$this->assertSame(array('widgetID' => 'menu/menu', 'menu' => 'someMenu'), $widget);
 	}
 	
 	public function testEditNotFound()
@@ -150,6 +150,43 @@ class LayoutAdminControllerTest extends CoOrgControllerTest
 			array('panelID' => 'navigation-left',
 			      'widgetID' => '0',
 			      'to' => '1'));
+		$this->assertRedirected('');
+		$this->assertFlashError('You don\'t have the rights to view this page');
+	}
+	
+	public function testSaveConfigurable()
+	{
+		$this->login('dvorak');
+		$this->request('admin/layout/save',
+			array('panelID' => 'navigation-right',
+			      'widgetName' => 'menu/menu'));
+
+		$config = CoOrg::config();
+		$this->assertEquals(array(array('widgetID' => 'menu/menu')),
+						    $config->get('aside/navigation-right'));
+		$this->assertRedirected('admin/layout/edit/navigation-right/0');
+	}
+	
+	public function testSaveNonConfigurable()
+	{
+		$this->login('dvorak');
+		$this->request('admin/layout/save',
+			array('panelID' => 'navigation-left',
+			      'widgetName' => 'blog/archive'));
+
+		$config = CoOrg::config();
+		$this->assertEquals(array(array('widgetID' => 'menu/menu', 'menu' => 'someMenu'), 
+		                          'blog/archive'),
+						    $config->get('aside/navigation-left'));
+		$this->assertRedirected('admin/layout');
+	}
+	
+	public function testSaveNotAllowed()
+	{
+		$this->login('azerty');
+		$this->request('admin/layout/save',
+			array('panelID' => 'navigation-right',
+			      'widgetName' => 'menu/menu'));
 		$this->assertRedirected('');
 		$this->assertFlashError('You don\'t have the rights to view this page');
 	}

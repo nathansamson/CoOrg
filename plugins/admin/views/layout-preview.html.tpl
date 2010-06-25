@@ -22,12 +22,25 @@
 			        coorgStock="edit"}{/a}
 			{/if}
 		
+			{if !$panels}
 			{button request="admin/layout/delete"
 			        param_panelID=$panelID
 			        param_widgetID=$widgetID
 			        coorgStock="list-remove"}{/button}
+			{/if}
 		</div>
 		<h1>{block name="widget-title"}Menu{/block}</h1>
+		{if $panels}
+			<div class="add">
+			{form request="admin/layout/save" nobreaks id=$widgetName}
+				{input value=$widgetName name="widgetName"}
+				
+				{input type=select label="" options=$panels name="panelID"}
+				
+				{input type="submit" stock="list-add" label=""}
+			{/form}
+			</div>
+		{/if}
 	</header>
 	<div>
 	{block name="widget-preview"}

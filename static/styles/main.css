@@ -249,6 +249,11 @@ select {
 	padding: 3px;
 }
 
+label.select {
+	display: inline;
+	margin-right: 10px;
+}
+
 input.title {
 	font-size: 160%;
 	width: 100%;
@@ -326,16 +331,24 @@ aside input {
 }
 
 .normal-post-url button img {
+	vertical-align: top;
+}
+
+button {
 	vertical-align: middle;
 }
 
 a img {
 	border: none;
-	vertical-align: middle;
+	vertical-align: top;
 }
 
 .page-actions, .section-actions {
 	float: right;
+}
+
+.page-actions a {
+	text-decoration: none;
 }
 
 .twowaypager .next {
