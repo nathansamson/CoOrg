@@ -13,16 +13,16 @@
 		<div class="header block">
 			<h1>{'Site header'|_}</h1>
 		</div>
-		<div class="navigation">
+		<nav class="navigation horizontal">
 			<div class="navigation-left block">
 				{aside name="navigation-left" preview edit=($editPanelID=="navigation-left") editWidgetID=$editWidgetID}
 			</div><div class="navigation-right block">
 				{aside name="navigation-right" preview edit=($editPanelID=="navigation-right") editWidgetID=$editWidgetID}
 			</div>
 			<br />
-		</div>
+		</nav>
 		<div class="content">
-			<div class="main-left block">
+			<div class="main-left block vertical">
 				{aside name="main" preview edit=($editPanelID=="main") editWidgetID=$editWidgetID}
 			</div><div class="main block">
 				<h1>{'Site Page'|_}</h1>
@@ -35,7 +35,7 @@
 	</div>
 	
 	<h2>{'Available widgets'}</h2>
-	<div class="preview" id="widget-list">
+	<div class="preview vertical" id="widget-list">
 		{aside preview}
 	</div>
 {/block}

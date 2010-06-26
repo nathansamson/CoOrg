@@ -1,23 +1,57 @@
-#layout-preview ol.menu {
+nav a, .vertical .menu a 
+{
+	color: black;
+	text-decoration: none;
+}
+
+nav a:hover {
+	color: #555;
+}
+
+nav .current a, .vertical .menu .current a {
+	font-weight: bold;
+}
+
+nav ol
+{
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+}
+
+nav ol li
+{
+	padding: 0px 10px;
+	border-right: dotted 1px #666666;
+}
+
+nav ol li:last-child
+{
+	border-right: none;
+}
+
+nav ol li
+{
+	display: inline;
+}
+
+.vertical .menu {
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
 }
 
-#layout-preview ol.menu li {
-	display: inline;
+.vertical .menu a {
+	display: block;
+	background-color: #F9A328;
+	padding: 5px 10px;
+	margin: 6px 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
 }
 
-#layout-preview ol.menu li {
-	border-right: dotted 1px #999;
-	padding: 0 4px;
-	margin-right: 4px;
-}
-
-#layout-preview ol.menu li:last-child {
-	border-right: none;
-}
-
-#layout-preview ol.menu li a {
-	text-decoration: none;
+.vertical .menu a:hover {
+	color: black !important;
+	background-color: #FCBA5C;
 }
