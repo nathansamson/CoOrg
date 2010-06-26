@@ -19,42 +19,39 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class OneRelation implements IRelationPart
+class MockCommentHasMockRelation extends One2Many
 {
-	public $toClass;
-	public $name;
-	public $localKeys;
-	public $foreignKeys;
-
-	public function attributes()
+	protected function info()
 	{
-		return array();	
-	}
-	
-	public function variants()
-	{
-		if (is_array($this->foreignKeys))
-		{
-			return array();
-		}
-		$class = $this->toClass.'Variant';
-		$args = array();
-		if (!class_exists($class))
-		{
-			$class = 'GenericModelVariant';
-			$args = array($this->toClass, $this->foreignKeys);
-		}
-	
-		return array($this->name =>
-		          array('class' => $class,
-		                'property' => $this->localKeys,
-		                'args' => $args));
-	}
-	
-	public function collections()
-	{
-		return array();
+		return array(
+			'from' => 'MeCommentMockComment',
+			'to' => 'MeCommentMock',
+			'local' => 'mockID',
+			'localAs' => 'mock',
+			'foreign' => 'ID',
+			'foreignAs' => 'comments'
+		);
 	}
 }
+
+Model::registerRelation(new MockCommentHasMockRelation);
+
+class CommentHasAuthor extends One2Many
+{
+	protected function info()
+	{
+		return array(
+			'from' => 'Comment',
+			'to' => 'User',
+			'local' => 'authorID',
+			'localAs' => 'author',
+			'foreign' => 'username',
+			'foreignAs' => ''
+		);
+	}
+}
+
+Model::registerRelation(new CommentHasAuthor);
+
 
 ?>

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2010 Nathan Samson <nathansamson at gmail dot com>
  *
@@ -19,41 +18,18 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class OneRelation implements IRelationPart
+/**
+ * @property primary autoincrement; ID Integer('ID');
+ * @property authorID String('AuthorID', 24);
+ * @property timePosted DateTime('Date posted');
+ * @property title String(t('Title'), 128);
+ * @property comment String(t('Comment')); required
+*/
+abstract class Comment extends DBModel
 {
-	public $toClass;
-	public $name;
-	public $localKeys;
-	public $foreignKeys;
-
-	public function attributes()
+	public function __construct()
 	{
-		return array();	
-	}
-	
-	public function variants()
-	{
-		if (is_array($this->foreignKeys))
-		{
-			return array();
-		}
-		$class = $this->toClass.'Variant';
-		$args = array();
-		if (!class_exists($class))
-		{
-			$class = 'GenericModelVariant';
-			$args = array($this->toClass, $this->foreignKeys);
-		}
-	
-		return array($this->name =>
-		          array('class' => $class,
-		                'property' => $this->localKeys,
-		                'args' => $args));
-	}
-	
-	public function collections()
-	{
-		return array();
+		parent::__construct();
 	}
 }
 

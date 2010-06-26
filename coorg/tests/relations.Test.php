@@ -19,7 +19,7 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class ContainmentHasContainer extends One2Many
+class ContainerHasContainments extends One2Many
 {
 	protected function info()
 	{
@@ -30,6 +30,22 @@ class ContainmentHasContainer extends One2Many
 			'local' => 'containerID',
 			'foreign' => 'ID',
 			'foreignAs' => 'containments'
+		);
+	}
+}
+Model::registerRelation(new ContainerHasContainments);
+
+class ContainmentHasContainer extends One2Many
+{
+	protected function info()
+	{
+		return array(
+			'from' => 'SomeContainment',
+			'to' => 'SomeContainer',
+			'localAs' => 'theContainer',
+			'local' => 'containerID',
+			'foreign' => 'ID',
+			'foreignAs' => ''
 		);
 	}
 }
@@ -188,6 +204,24 @@ class One2ManyTest extends CoOrgModelTest
 		$isas = $container->isas;
 		$this->assertEquals(1, count($isas));
 		$this->assertEquals('email', $isas[0]->email);
+	}
+	
+	public function testEmptyNamedCollection()
+	{
+		$container = SomeContainer::get('three');
+		$a = '';
+		try
+		{
+			$container->$a;
+			$this->fail('Fail');
+		}
+		catch (Exception $e)
+		{
+			if ($e instanceof PHPUnit_Framework_AssertionFailedError)
+			{
+				throw $e;
+			}
+		}
 	}
 }
 

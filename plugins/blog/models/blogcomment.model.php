@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2010 Nathan Samson <nathansamson at gmail dot com>
  *
@@ -19,42 +18,11 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class OneRelation implements IRelationPart
+/**
+ * @property blogID String('Blog ID', 256); required
+ * @property blogDatePosted Date('Date'); required
+ * @property blogLanguage String('Language', 6); required 
+*/
+class BlogComment extends Comment
 {
-	public $toClass;
-	public $name;
-	public $localKeys;
-	public $foreignKeys;
-
-	public function attributes()
-	{
-		return array();	
-	}
-	
-	public function variants()
-	{
-		if (is_array($this->foreignKeys))
-		{
-			return array();
-		}
-		$class = $this->toClass.'Variant';
-		$args = array();
-		if (!class_exists($class))
-		{
-			$class = 'GenericModelVariant';
-			$args = array($this->toClass, $this->foreignKeys);
-		}
-	
-		return array($this->name =>
-		          array('class' => $class,
-		                'property' => $this->localKeys,
-		                'args' => $args));
-	}
-	
-	public function collections()
-	{
-		return array();
-	}
 }
-
-?>

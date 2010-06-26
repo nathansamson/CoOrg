@@ -66,6 +66,7 @@ class CoOrg {
 		self::$_appdir = $appdir;
 		self::$_config = $config;
 		spl_autoload_register(array('CoOrg', 'loadModel'));
+		self::loadPluginInfo('relations');
 	}
 	
 	public static function clear()
@@ -142,7 +143,6 @@ class CoOrg {
 			list($controllerClass, $action, $params, $request, $parentClasses) = 
 	                      self::findController($controllerName, $requestParams,
 	                                           $params, $post);
-			self::loadPluginInfo('relations');
 			$controllerClass->coorgRequest = $requestWithoutPrefix;
 			$coorgUrl = self::config()->get('path').$prefix.$requestWithoutPrefix;
 			self::normalizeRequest($coorgUrl);

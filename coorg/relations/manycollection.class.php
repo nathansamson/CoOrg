@@ -25,15 +25,23 @@ class ManyCollection implements ArrayAccess, Iterator, Countable
 	private $_current;
 	private $_instance;
 	private $_from;
-	private $_localKey;
-	private $_foreignKey;
+	private $_localKeys;
+	private $_foreignKeys;
 	
-	private function __construct($instance, $from, $localKey, $foreignKey)
+	private function __construct($instance, $from, $localKeys, $foreignKeys)
 	{
 		$this->_instance = $instance;
 		$this->_from = $from;
-		$this->_localKey = $localKey;
-		$this->_foreignKey = $foreignKey;
+		if (! is_array($localKeys))
+		{
+			$this->_localKeys = array($localKeys);
+			$this->_foreignKeys = array($foreignKeys);
+		}
+		else
+		{
+			$this->_localKeys = $localKeys;
+			$this->_foreignKeys = $foreignKeys;
+		}
 	}
 	
 	public static function instance($args, $instance)
@@ -48,10 +56,20 @@ class ManyCollection implements ArrayAccess, Iterator, Countable
 		$join = get_parent_class($this->_from);
 		$selectFrom = $this->_from;
 		if ($join != 'DBModel') $selectFrom .= ' NATURAL JOIN '. $join;
-		$q = DB::prepare('SELECT * FROM '.$selectFrom .' WHERE '.
-		                   $this->_foreignKey . '=:local');
-		$key = $this->_localKey;
-		$q->execute(array(':local' => $this->_instance->$key));
+		
+		$args = array();
+		$wheres = array();
+		foreach ($this->_localKeys as $key=>$local)
+		{
+			$foreign = $this->_foreignKeys[$key];
+			$wheres[] = $foreign . '=:'.$local;
+			$localDB = $local.'_db';
+			$args[':'.$local] = $this->_instance->$localDB;
+		}
+		$where = implode(' AND ', $wheres);
+		
+		$q = DB::prepare('SELECT * FROM '.$selectFrom .' WHERE '.$where);
+		$q->execute($args);
 		$this->_list = array();
 		$this->rewind();
 		foreach ($q->fetchAll() as $row)
@@ -78,9 +96,11 @@ class ManyCollection implements ArrayAccess, Iterator, Countable
 	{
 		if ($offset === null)
 		{
-			$foreignKey = $this->_foreignKey;
-			$localKey = $this->_localKey;
-			$value->$foreignKey = $this->_instance->$localKey;
+			foreach ($this->_localKeys as $key=>$local)
+			{
+				$foreign = $this->_foreignKeys[$key];
+				$value->$foreign = $this->_instance->$local;
+			}
 			$value->save();
 			$this->_list[] = $value;
 			return;

@@ -258,6 +258,31 @@ class BlogTest extends CoOrgModelTest
 		$untranslated2 = $blog->untranslated();
 		$this->assertEquals($untranslated, $untranslated2);
 	}
+	
+	public function testGetComments()
+	{
+		$blog = Blog::getBlog('2010', '04', '10', 'xyzer', 'en');
+		$comments = $blog->comments;
+		$this->assertEquals(1, count($comments));
+		$this->assertEquals('My comment @ xyzer', $comments[0]->comment);
+		$this->assertEquals('Re: XYZER', $comments[0]->title);
+	}
+	
+	public function testAddBlogComment()
+	{
+		$blog = Blog::getBlog('2010', '04', '10', 'xyzer', 'en');
+		$comment = new BlogComment;
+		$comment->title = 'RE: XYZ';
+		$comment->author = User::getUserByName('nathan');
+		$comment->comment = 'Some Comment';
+		$blog->comments[] = $comment;
+		
+		$blog = Blog::getBlog('2010', '04', '10', 'xyzer', 'en');
+		$comments = $blog->comments;
+		$this->assertEquals(2, count($comments));
+		$this->assertEquals('My comment @ xyzer', $comments[0]->comment);
+		$this->assertEquals('Re: XYZER', $comments[0]->title);
+	}
 }
 
 ?>

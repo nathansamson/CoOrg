@@ -130,4 +130,30 @@
 	    parentID="some-blog"
 	    parentLanguage="de"
 	  />
+	  
+	  <Comment
+	  	ID="1"
+	  	title="Re: XYZER"
+	  	comment="My comment @ xyzer"
+	  />
+	  
+	 <BlogComment
+	 	ID="1"
+	 	blogID="xyzer"
+	 	blogDatePosted="2010-04-10"
+	 	blogLanguage="en"
+	 />
+	 
+	  <Comment
+	  	ID="2"
+	  	title="Re: XYZ"
+	  	comment="My comment @ XYZ (en)"
+	  />
+	  
+	 <BlogComment
+	 	ID="2"
+	 	blogID="xyz"
+	 	blogDatePosted="2010-04-11"
+	 	blogLanguage="en"
+	 />
 </dataset>
