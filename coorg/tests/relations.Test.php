@@ -35,6 +35,22 @@ class ContainmentHasContainer extends One2Many
 }
 Model::registerRelation(new ContainmentHasContainer);
 
+class IsAMockHasContainer extends One2Many
+{
+	protected function info()
+	{
+		return array(
+			'from' => 'IsAMockModel',
+			'to' => 'SomeContainer',
+			'localAs' => 'container',
+			'local' => 'containerID',
+			'foreign' => 'ID',
+			'foreignAs' => 'isas'
+		);
+	}
+}
+Model::registerRelation(new IsAMockHasContainer);
+
 /**
  * @property primary; ID String('ID', 32); required
  * @property content String('Text'); required
@@ -163,6 +179,15 @@ class One2ManyTest extends CoOrgModelTest
 		catch (Exception $e)
 		{
 		}
+	}
+	
+	public function testIsaCollection()
+	{
+		// This tests if base class is correctly initialized in collections
+		$container = SomeContainer::get('three');
+		$isas = $container->isas;
+		$this->assertEquals(1, count($isas));
+		$this->assertEquals('email', $isas[0]->email);
 	}
 }
 

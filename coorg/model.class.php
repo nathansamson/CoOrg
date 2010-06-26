@@ -30,6 +30,7 @@ class Model
 	protected static $_modelInfo = array();
 	protected static $_relations = array();
 
+	private $_classedProperties = array();
 	private $_properties = array();
 	private $_variants = array();
 	private $_extensions = array();
@@ -43,31 +44,40 @@ class Model
 			self::$_modelInfo[$class] = self::parseProperties($class);
 		}
 
-		foreach (self::$_modelInfo[$class]['properties'] as $name=>$propertyInfo)
+		foreach (self::$_modelInfo[$class]['classes'] as $aClass)
 		{
-			$info = $propertyInfo;
-			$info['property'] = clone $propertyInfo['property'];
-			$this->_properties[$name] = $info;
+			$this->_classedProperties[$aClass] = array();
+			foreach (self::$_modelInfo[$aClass]['properties'] as $name=>$propertyInfo)
+			{
+				$info = $propertyInfo;
+				$info['property'] = clone $propertyInfo['property'];
+				$this->_classedProperties[$aClass][$name] = $info;
+				$this->_properties[$name] = $info;
+			}
 		}
+		
 		foreach (self::$_modelInfo[$class]['extensions'] as $name => $extension)
 		{
 			$ext  = clone $extension;
 			$ext->connect($this);
 			$this->_extensions[$name] = $ext;
 		}
-		foreach (self::$_modelInfo[$class]['variants'] as $name => $variantInfo)
+		foreach (self::$_modelInfo[$class]['classes'] as $aClass)
 		{
-			$property = $this->_properties[$variantInfo['property']]['property'];
-			$variantClass = $variantInfo['class'];
-			$var =  $variantClass::instance($property, $variantInfo['args']);
-			$property->attachVariant($var);
-			$this->_variants[$name] = array('propertyName' => $variantInfo['property'] ,
-			                                'variant' => $var);
-		}
-		foreach (self::$_modelInfo[$class]['collections'] as $name => $collectionInfo)
-		{
-			$collClass = $collectionInfo['class'];
-			$this->_collections[$name] = $collClass::instance($collectionInfo, $this);
+			foreach (self::$_modelInfo[$aClass]['variants'] as $name => $variantInfo)
+			{
+				$property = $this->_properties[$variantInfo['property']]['property'];
+				$variantClass = $variantInfo['class'];
+				$var =  $variantClass::instance($property, $variantInfo['args']);
+				$property->attachVariant($var);
+				$this->_variants[$name] = array('propertyName' => $variantInfo['property'] ,
+					                            'variant' => $var);
+			}
+			foreach (self::$_modelInfo[$aClass]['collections'] as $name => $collectionInfo)
+			{
+				$collClass = $collectionInfo['class'];
+				$this->_collections[$name] = $collClass::instance($collectionInfo, $this);
+			}
 		}
 	}
 	
@@ -199,14 +209,30 @@ class Model
 		if ($error) throw new ValidationException($this);
 	}
 	
-	protected function dbproperties()
+	protected function dbproperties($class)
 	{
-		return array_filter($this->_properties, array('Model', 'filterDB'));
+		if ($class != null)
+		{
+			$props = $this->_classedProperties[$class];
+			$props = array_merge($props, $this->primaries($class));
+		}
+		else
+		{
+			$props = $this->_properties;
+		}
+		return array_filter($props, array('Model', 'filterDB'));
+		
 	}
 	
-	protected function primaries()
+	protected function primaries($class)
 	{
-		return array_filter($this->_properties, array('Model', 'filterPrimary'));
+		$classes = self::$_modelInfo[$class]['classes'];
+		$pri = array();
+		foreach ($classes as $class)
+		{
+			$pri = array_merge($pri, array_filter($this->_classedProperties[$class], array('Model', 'filterPrimary')));
+		}
+		return $pri;
 	}
 	
 	protected function properties()
@@ -219,10 +245,10 @@ class Model
 		return $this->_extensions;
 	}
 	
-	protected function autoincrements()
+	protected function autoincrements($class)
 	{
 		$ais = array();
-		foreach ($this->_properties as $k=>$p)
+		foreach ($this->_classedProperties[$class] as $k=>$p)
 		{
 			if ($p['auto-increment'])
 			{
@@ -239,7 +265,24 @@ class Model
 		$variants = array();
 		$relations = array();
 		$collections = array();
+		
+		$parentClass = get_parent_class($class);
+		if ($parentClass != 'Model' && $parentClass != 'DBModel')
+		{
+			if (!array_key_exists($parentClass, self::$_modelInfo))
+			{
+				self::$_modelInfo[$parentClass] = self::parseProperties($parentClass);
+			}
+			$parents = self::$_modelInfo[$parentClass]['classes'];
+			$parents[] = $class;
+		}
+		else
+		{
+			$parents = array($class);
+		}
+		
 		$reflClass = new ReflectionClass($class);
+		
 		$docComment = $reflClass->getDocComment();
 	
 		$lines = explode("\n", $docComment);
@@ -351,7 +394,8 @@ class Model
 		return array('properties' => $propertyInfo,
 		             'extensions' => $extensions,
 		             'variants' => $variants,
-		             'collections' => $collections);
+		             'collections' => $collections,
+		             'classes' => $parents);
 	}
 
 	static public function filterDB($f)
@@ -420,121 +464,118 @@ class DBModel extends Model
 
 	protected function update()
 	{
-		$qs = 'UPDATE ' . $this->tableName() . ' SET ';
-		$sets = array();
-		$properties = array();
-		foreach ($this->dbproperties() as $k => $p)
+		foreach (self::$_modelInfo[get_class($this)]['classes'] as $class)
 		{
-			if ($p['property']->changed())
+			$qs = 'UPDATE ' . $class . ' SET ';
+			$sets = array();
+			$properties = array();
+			foreach ($this->dbproperties($class) as $k => $p)
 			{
-				if ($p['property']->db() !== null)
+				if ($p['property']->changed())
 				{
-					$properties[] = $k;
-					$sets[] = $k .'=:' . $k; 
-				}
-				else
-				{
-					$sets[] = $k . ' = NULL';
+					if ($p['property']->db() !== null)
+					{
+						$properties[] = $k;
+						$sets[] = $k .'=:' . $k; 
+					}
+					else
+					{
+						$sets[] = $k . ' = NULL';
+					}
 				}
 			}
-		}
-		if ($sets == array())
-		{
-			return; // Nothing to do.
-		}
-		$qs .= implode(', ', $sets);
+			if ($sets == array())
+			{
+				continue; // Nothing to do.
+			}
+			$qs .= implode(', ', $sets);
 		
-		$qs .= ' WHERE ';
+			$qs .= ' WHERE ';
 		
-		$pwheres = array();
-		foreach ($this->primaries() as $pk => $pp)
-		{
-			$pwheres[] = $pk . '=:p'.$pk;
-		}
-		$qs .= implode(' AND ', $pwheres);
+			$pwheres = array();
+			foreach ($this->primaries($class) as $pk => $pp)
+			{
+				$pwheres[] = $pk . '=:p'.$pk;
+			}
+			$qs .= implode(' AND ', $pwheres);
 		
-		$q = DB::prepare($qs);
-		foreach ($properties as $k)
-		{
-			$db = $k.'_db';
-			$q->bindValue(':'.$k, $this->$db);
+			$q = DB::prepare($qs);
+			foreach ($properties as $k)
+			{
+				$db = $k.'_db';
+				$q->bindValue(':'.$k, $this->$db);
+			}
+			foreach ($this->primaries($class) as $pk => $pp)
+			{
+				$q->bindValue(':p'.$pk, $pp['property']->old());
+			}
+			$q->execute();
 		}
-		foreach ($this->primaries() as $pk => $pp)
-		{
-			$q->bindValue(':p'.$pk, $pp['property']->old());
-		}
-		$q->execute();
 	}
 
 	protected function insert()
 	{
-		$properties = array();
-		
-		foreach ($this->dbproperties() as $k => $p)
+		foreach (self::$_modelInfo[get_class($this)]['classes'] as $class)
 		{
-			$db = $k.'_db';
-			if ($this->$db !== null)
+			$properties = array();
+		
+			foreach ($this->dbproperties($class) as $k => $p)
 			{
-				$properties[] = $k;
+				$db = $k.'_db';
+				if ($this->$db !== null)
+				{
+					$properties[] = $k;
+				}
 			}
-		}
-	
-		$qs = 'INSERT INTO ' . $this->tableName() . ' (';
-		$qs .= implode(',', $properties) . ')';
-		$qs .= ' VALUES(:'.implode(',:', $properties). ')';
+			
+			$qs = 'INSERT INTO ' . $class . ' (';
+			$qs .= implode(',', $properties) . ')';
+			$qs .= ' VALUES(:'.implode(',:', $properties). ')';
 		
-		$q = DB::prepare($qs);
-		foreach ($properties as $k=>$p)
-		{
-			$db = $p.'_db';
-			$q->bindValue(':'.$p, $this->$db);
-		}
-		$q->execute();
-		foreach ($this->autoincrements() as $k => $p)
-		{
-			$this->$k = DB::lastInsertID($this->tableName());
+			$q = DB::prepare($qs);
+			foreach ($properties as $k=>$p)
+			{
+				$db = $p.'_db';
+				$q->bindValue(':'.$p, $this->$db);
+			}
+			$q->execute();
+			foreach ($this->autoincrements($class) as $k => $p)
+			{
+				$this->$k = DB::lastInsertID($class);
+			}
 		}
 	}
 	
 	public function delete()
 	{
-		$qs = 'DELETE FROM ' . $this->tableName() . ' WHERE ';
-		
-		$pwheres = array();
-		foreach ($this->primaries() as $pk => $pp)
+		foreach (self::$_modelInfo[get_class($this)]['classes'] as $class)
 		{
-			$pwheres[] = $pk . '=:p'.$pk;
-		}
-		$qs .= implode(' AND ', $pwheres);
+			$qs = 'DELETE FROM ' . $class . ' WHERE ';
 		
-		$q = DB::prepare($qs);
-		foreach ($this->primaries() as $pk => $pp)
-		{
-			$q->bindValue(':p'.$pk, $pp['property']->old());
+			$pwheres = array();
+			foreach ($this->primaries($class) as $pk => $pp)
+			{
+				$pwheres[] = $pk . '=:p'.$pk;
+			}
+			$qs .= implode(' AND ', $pwheres);
+		
+			$q = DB::prepare($qs);
+			foreach ($this->primaries($class) as $pk => $pp)
+			{
+				$q->bindValue(':p'.$pk, $pp['property']->old());
+			}
+			$q->execute();
 		}
-		$q->execute();
 		foreach ($this->extensions() as $ext)
 		{
 			$ext->afterDelete();
 		}
 	}
 	
-	protected function tableName()
-	{
-		if (strpos(get_class($this), 'Model') !== false)
-		{
-			return substr(get_class($this), 0, -strlen('Model'));
-		}
-		else
-		{
-			return get_class($this);
-		}
-	}
-	
 	protected function setSaved()
 	{
 		$this->_saved = true;
-		foreach ($this->dbproperties() as $p)
+		foreach ($this->dbproperties(null) as $p)
 		{
 			$p['property']->setUnchanged();
 		}
@@ -560,11 +601,14 @@ class DBModel extends Model
 	{
 		if ($row == null) return null;
 		$instance = new $model;
-		foreach (self::$_modelInfo[$model]['properties'] as $pName => $pInfo)
+		foreach (self::$_modelInfo[$model]['classes'] as $class)
 		{
-			if (!$pInfo['writeonly'])
+			foreach (self::$_modelInfo[$class]['properties'] as $pName => $pInfo)
 			{
-				$instance->$pName = $row[$pName];
+				if (!$pInfo['writeonly'])
+				{
+					$instance->$pName = $row[$pName];
+				}
 			}
 		}
 		$instance->setSaved();

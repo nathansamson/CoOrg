@@ -1,5 +1,14 @@
 <dataset>
-	<Mock />
+	<MockModel
+		name="base-mock"
+		email="email"
+		rot13name="???"
+	/>
+	
+	<IsAMockModel
+		name="base-mock"
+		isaExtension="Some Ext"
+	/>
 	
 	<Photos
 		photobook="A"

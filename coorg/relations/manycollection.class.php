@@ -45,7 +45,10 @@ class ManyCollection implements ArrayAccess, Iterator, Countable
 	public function activate()
 	{
 		if ($this->_list !== null) {return false;}
-		$q = DB::prepare('SELECT * FROM '.$this->_from .' WHERE '.
+		$join = get_parent_class($this->_from);
+		$selectFrom = $this->_from;
+		if ($join != 'DBModel') $selectFrom .= ' NATURAL JOIN '. $join;
+		$q = DB::prepare('SELECT * FROM '.$selectFrom .' WHERE '.
 		                   $this->_foreignKey . '=:local');
 		$key = $this->_localKey;
 		$q->execute(array(':local' => $this->_instance->$key));

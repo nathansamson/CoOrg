@@ -22,6 +22,11 @@ class GenericPDO extends PDO
 {
 	protected $_transformer = null;
 
+	public function query($query)
+	{
+		return parent::query($query);
+	}
+
 	public function prepare($queryString)
 	{
 		$q = parent::prepare(self::transformQuery($queryString));

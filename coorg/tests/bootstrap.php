@@ -13,10 +13,13 @@ DB::open('sqlite::memory:');
 
 function prepare()
 {
-	$q = DB::prepare('DROP TABLE IF EXISTS Mock');
+	$q = DB::prepare('DROP TABLE IF EXISTS IsAMockModel');
 	$q->execute();
 
-	$q = DB::prepare('CREATE TABLE Mock(
+	$q = DB::prepare('DROP TABLE IF EXISTS MockModel');
+	$q->execute();
+
+	$q = DB::prepare('CREATE TABLE MockModel(
 	 name VARCHAR(256) PRIMARY KEY,
 	 description VARCHAR(65000),
 	 email VARCHAR(256) NOT NULL,
@@ -48,6 +51,14 @@ function prepare()
 	$q = DB::prepare('CREATE TABLE SomeContainment(
 	 name VARCHAR(64) PRIMARY KEY,
 	 containerID VARCHAR(32),
+	 FOREIGN KEY (containerID) REFERENCES SomeContainer(ID))');
+	$q->execute();
+	
+	$q = DB::prepare('CREATE TABLE IsAMockModel(
+	 name VARCHAR(256),
+	 isaExtension VARCHAR(32),
+	 containerID VARCHAR(32),
+	 FOREIGN KEY (name) REFERENCES MockModel(name) ON DELETE CASCADE,
 	 FOREIGN KEY (containerID) REFERENCES SomeContainer(ID))');
 	$q->execute();
 }

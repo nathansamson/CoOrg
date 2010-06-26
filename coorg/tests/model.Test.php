@@ -76,7 +76,7 @@ class MockModel extends DBModel
 	
 	public static function getByName($name)
 	{
-		$q = DB::prepare('SELECT * FROM Mock WHERE name=:name');
+		$q = DB::prepare('SELECT * FROM MockModel WHERE name=:name');
 		$q->execute(array(':name' => $name));
 		
 		if ($row = $q->fetch())
@@ -98,6 +98,22 @@ class MockModel extends DBModel
 	protected function beforeUpdate()
 	{
 		$this->rot13name = str_rot13($this->name);
+	}
+}
+
+/**
+ * @property isaExtension String('Some String', 32); required
+ * @property containerID String('ContainerID"', 32);
+*/
+class IsAMockModel extends MockModel
+{
+	public static function get($name)
+	{
+		$q = DB::prepare('SELECT * FROM IsAMockModel 
+		                      NATURAL JOIN MockModel
+		                  WHERE name=:name');
+		$q->execute(array(':name' => $name));
+		return self::fetch($q->fetch(), 'IsAMockModel');
 	}
 }
 
@@ -302,6 +318,50 @@ class ModelTest extends CoOrgModelTest
 		$n->rot13 = 'abczyx';
 		$this->assertEquals('abczyx', $n->rot13);
 		$this->assertEquals('nopmlk', $n->name);
+	}
+	
+	public function testCreateISA()
+	{
+		$isa = new IsAMockModel;
+		$isa->name = 'Some ISA Name';
+		$isa->shadowProperty = 'shadow';
+		$isa->email = 'isa@isa.com';
+		$isa->isaExtension = 'Ext';
+		$isa->save();
+		
+		$base = MockModel::getByName('Some ISA Name');
+		$this->assertEquals('isa@isa.com', $base->email);
+		
+		$risa = IsAMockModel::get('Some ISA Name');
+		$this->assertEquals('isa@isa.com', $risa->email);
+		$this->assertEquals('Ext', $risa->isaExtension);
+		$this->assertEquals(str_rot13('Some ISA Name'), $risa->rot13);
+	}
+	
+	public function testUpdateISA()
+	{
+		$isa = IsAMockModel::get('base-mock');
+		$isa->isaExtension = 'Updated Ext';
+		$isa->email = 'updated@isa.com';
+		$isa->description = 'Update';
+		$isa->save();
+		
+		$risa = IsAMockModel::get('base-mock');
+		$this->assertEquals('Updated Ext', $risa->isaExtension);
+		$this->assertEquals('updated@isa.com', $risa->email);
+		$this->assertEquals('Update', $risa->description);
+	}
+	
+	public function testDeleteISA()
+	{
+		$isa = IsAMockModel::get('base-mock');
+		$isa->delete();
+		
+		$risa = IsAMockModel::get('base-mock');
+		$this->assertNull($risa);
+		
+		$rbase = MockModel::getByName('base-mock');
+		$this->assertNull($rbase);
 	}
 }
 
