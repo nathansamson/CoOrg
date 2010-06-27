@@ -283,6 +283,88 @@ class BlogTest extends CoOrgModelTest
 		$this->assertEquals('My comment @ xyzer', $comments[0]->comment);
 		$this->assertEquals('Re: XYZER', $comments[0]->title);
 	}
+	
+	public function testAllowComments()
+	{
+		$blog = Blog::getBlog('2010', '04', '10', 'some-blog', 'en');
+		$this->assertFalse($blog->allowComments()); // Expired
+		
+		$blog = Blog::getBlog('2010', '04', '10', 'translated-blog', 'nl');
+		$this->assertFalse($blog->allowComments()); // Never allowed
+		
+		$blog = Blog::getBlog('2010', '04', '10', 'some-other-blog', 'en');
+		$this->assertTrue($blog->allowComments()); // Expires in a time when (hopefully) PHP does not exists anymore
+		
+		$blog = Blog::getBlog('2010', '04', '9', 'blog-post', 'en');
+		$this->assertTrue($blog->allowComments()); // Never expires
+	}
+	
+	public function testSetCommentExpirationDate()
+	{
+		$blog = new Blog;
+		$blog->title = 'My New Blog Title';
+		$blog->authorID = 'nathan';
+		$blog->text = '...';
+		$blog->language = 'en';
+		$blog->commentsAllowed = true;
+		$blog->commentsOpenFor = 14; // 2 weeks
+		$blog->save();
+		
+		$blog = Blog::getBlog($blog->year, $blog->month, $blog->day, $blog->ID, 'en');
+		$this->assertTrue($blog->allowComments());
+		$this->assertLessThan(5, abs($blog->commentsCloseDate - 60 * 60 * 24 * 14 - time()));
+		
+		$blog = new Blog;
+		$blog->title = 'My New Blog Title With Unlimited comments';
+		$blog->authorID = 'nathan';
+		$blog->text = '...';
+		$blog->language = 'en';
+		$blog->commentsAllowed = true;
+		$blog->commentsOpenFor = 0; //Unlimited
+		$blog->save();
+		$blog = Blog::getBlog($blog->year, $blog->month, $blog->day, $blog->ID, 'en');
+		$this->assertTrue($blog->allowComments());
+		$this->assertNull($blog->commentsCloseDate);
+	}
+	
+	public function testUpdateCommentExpirationDate()
+	{
+		$blog = Blog::getBlog('2010', '04', '10', 'some-other-blog', 'en');
+		$blog->text = 'Update';
+		$closeDate = $blog->commentsCloseDate;
+		$blog->save(); // No change
+		
+		$blog = Blog::getBlog('2010', '04', '10', 'some-other-blog', 'en');
+		$this->assertEquals($closeDate, $blog->commentsCloseDate);
+		
+		$blog->commentsOpenFor = 0; // Unlimited
+		$blog->save();
+		$blog = Blog::getBlog('2010', '04', '10', 'some-other-blog', 'en');
+		$this->assertNull($blog->commentsCloseDate);
+		
+		$blog->commentsOpenFor = 14;
+		$blog->save();
+		$blog = Blog::getBlog('2010', '04', '10', 'some-other-blog', 'en');
+		$this->assertEquals(mktime('09', '20', '20', '4', '24', '2010'), $blog->commentsCloseDate);
+	}
+	
+	public function testEnableCommentsTestExpirationDate()
+	{
+		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
+		$this->assertFalse($blog->allowComments());
+		$blog->text = 'Update';
+		$blog->commentsOpenFor = 14;
+		$blog->commentsAllowed = true;
+		$blog->save();
+		
+		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
+		$this->assertFalse($blog->allowComments());
+		$blog->commentsOpenFor = 356*30; // ~30 year
+		$blog->save();
+		
+		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
+		$this->assertTrue($blog->allowComments());
+	}
 }
 
 ?>
