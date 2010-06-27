@@ -22,15 +22,6 @@ class BlogControllerTest extends CoOrgControllerTest
 {
 	const dataset = 'blog.dataset.xml';
 
-	public function setUp()
-	{
-		parent::setUp();
-		if (UserSession::get())
-		{
-			UserSession::get()->delete();
-		}
-	}
-
 	public function testIndex()
 	{
 		$this->request('blog');

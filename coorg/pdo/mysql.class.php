@@ -29,7 +29,7 @@ class MySQLQueryTransformer implements ISQLTransformer
 		
 		/* Work around limitations of MySQL and InnoDB... */
 		$q = preg_replace('/VARCHAR\(([0-9]*)\) UNIQUE/', 'VARCHAR($1) COLLATE latin1_general_cs UNIQUE', $q);
-		$q = preg_replace('/ID VARCHAR\(([0-9]*)\)/', 'ID VARCHAR($1) COLLATE latin1_general_cs', $q);
+		$q = preg_replace('/ID VARCHAR\(([0-9]{3,})\)/', 'ID VARCHAR($1) COLLATE latin1_general_cs', $q);
 		
 		return $q;
 	}

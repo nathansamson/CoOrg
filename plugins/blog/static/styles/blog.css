@@ -1,0 +1,19 @@
+article.comment h1 {
+	font-size: 0.9em;
+}
+
+article.comment h2 {
+	font-size: 0.8em;
+}
+
+article.comment header {
+	border-bottom: 2px #999 solid;
+}
+
+article.comment {
+	background-color: #CCC;
+	padding: 10px;
+	border-bottom: none;
+	margin: 5px 0;
+	-moz-border-radius: 10px 0;
+}

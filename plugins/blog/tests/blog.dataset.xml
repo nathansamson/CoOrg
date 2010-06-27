@@ -141,6 +141,7 @@
 	  	ID="1"
 	  	title="Re: XYZER"
 	  	comment="My comment @ xyzer"
+	  	authorID="nele"
 	  />
 	  
 	 <BlogComment
@@ -154,6 +155,7 @@
 	  	ID="2"
 	  	title="Re: XYZ"
 	  	comment="My comment @ XYZ (en)"
+	  	authorID="nathan"
 	  />
 	  
 	 <BlogComment

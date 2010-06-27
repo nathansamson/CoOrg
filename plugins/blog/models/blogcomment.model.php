@@ -25,4 +25,12 @@
 */
 class BlogComment extends Comment
 {
+	public static function get($ID)
+	{
+		$q = DB::prepare('SELECT * FROM BlogComment NATURAL JOIN
+		                  Comment WHERE ID=:ID');
+		$q->execute(array(':ID' => $ID));
+		
+		return self::fetch($q->fetch(), 'BlogComment');
+	}
 }

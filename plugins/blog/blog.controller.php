@@ -88,17 +88,35 @@ class BlogController extends Controller
 	*/
 	public function edit($year, $month, $day, $id, $language = null)
 	{
+		$this->openFor = array(
+			'0' => t('Unlimited'),
+			'7' => t('One week'),
+			'14' => t('a forthnight'),
+			'30' => t('One month'),
+			'365' => t('One year')
+		);
 		$this->blog = $this->_blog;
+		if ($this->_blog->commentsCloseDate === null)
+		{
+			$this->currentOpenFor = 0;
+		}
+		else
+		{
+			$this->currentOpenFor = (int)(($this->_blog->commentsCloseDate - $this->_blog->timePosted)/(60*60*24));
+		}
 		$this->render('edit');
 	}
 	
 	/**
 	 * @before get $year $month $day $id $language true
 	*/
-	public function update($year, $month, $day, $id, $title, $text, $language)
+	public function update($year, $month, $day, $id, $title, $text, $language,
+	                       $commentsAllowed = false, $commentsOpenFor = null)
 	{
 		$this->_blog->title = $title;
 		$this->_blog->text = $text;
+		$this->_blog->commentsAllowed = $commentsAllowed;
+		$this->_blog->commentsOpenFor = $commentsOpenFor;
 		try
 		{
 			$this->_blog->save();
@@ -117,6 +135,14 @@ class BlogController extends Controller
 		{
 			$this->error(t('Your blog item is not saved'));
 			$this->blog = $this->_blog;
+			if ($this->_blog->commentsCloseDate === null)
+			{
+				$this->currentOpenFor = 0;
+			}
+			else
+			{
+				$this->currentOpenFor = (int)(($this->_blog->commentsCloseDate - $this->_blog->timePosted)/(60*60*24));
+			}
 			$this->render('edit');
 		}
 	}

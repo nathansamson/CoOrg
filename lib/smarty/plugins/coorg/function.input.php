@@ -121,7 +121,7 @@ function smarty_function_input($params, $smarty)
 			$class = $params['class'];
 		}
 		
-		if ($type != 'textarea' && $type != 'select')
+		if ($type != 'textarea' && $type != 'select' && $type != 'checkbox')
 		{
 			$input = '<input type="'.$type.'" value="'.$value.'" name="'.$name.'" '. 'id="'.$id.'"'.
 	               ($required ? ' required="required"' : '').
@@ -157,6 +157,15 @@ function smarty_function_input($params, $smarty)
 	    	                         ($rows ? ' rows='.$rows : '').
 	    	                         ($editor ? ' class="'.$editor.'-editor"' : '').
 	    	               '>'.$value.'</textarea>';
+	    }
+	    else if ($type == 'checkbox')
+	    {
+	    	$input = '<input type="'.$type.'" name="'.$name.'" '. 'id="'.$id.'"'.
+	               ($required ? ' required="required"' : '').
+	               ($disabled ? ' disabled="disabled"' : '').
+	               ($value ? ' checked="checked"' : '').
+	               ($class ? ' class="'.$class.'"' : '').
+	        '/><br />';
 	    }
 	    else
 	    {
