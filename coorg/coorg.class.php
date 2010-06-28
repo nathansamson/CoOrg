@@ -31,6 +31,7 @@ require_once 'coorg/sortable.class.php';
 require_once 'coorg/relations/genericmodel.variant.php';
 require_once 'coorg/relations/relation.interface.php';
 require_once 'coorg/relations/relationpart.interface.php';
+require_once 'coorg/relations/one2one.class.php';
 require_once 'coorg/relations/one2many.class.php';
 require_once 'coorg/relations/manycollection.class.php';
 require_once 'coorg/relations/onerelation.class.php';

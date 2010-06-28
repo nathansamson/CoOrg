@@ -1,0 +1,23 @@
+<dataset>
+	<Foo
+		ID="someFoo"
+		foofoo="More Foo"
+	/>
+	
+	<Foo
+		ID="fooWithBar"
+		barID="barWithFoo"
+		foofoo="Some Foo"
+	/>
+	
+	<Bar
+		ID="barWithFoo"
+		fooID="fooWithBar"
+		barbar="Some Bar"
+	/>
+	
+	<Bar
+		ID="someBar"
+		barbar="More Bar"
+	/>
+</dataset>

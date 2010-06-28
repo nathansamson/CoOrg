@@ -24,6 +24,8 @@ require_once 'coorg/properties/email.class.php';
 require_once 'coorg/properties/integer.class.php';
 require_once 'coorg/properties/date.class.php';
 require_once 'coorg/properties/bool.class.php';
+require_once 'coorg/properties/enum.class.php';
+require_once 'coorg/properties/url.class.php';
 
 class Model
 {
