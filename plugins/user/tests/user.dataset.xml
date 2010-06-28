@@ -18,6 +18,13 @@
 		email="qwerty"
 	/>
 	
+	<User
+		username="no-profile"
+		email="no-profile"
+	/>
+	
+	<UserProfile />
+	
 	<UserGroup />
 	
 	<UserGroupMember 
