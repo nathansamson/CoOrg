@@ -25,6 +25,7 @@ class ManyRelation implements IRelationPart
 	public $name;
 	public $foreignKeys;
 	public $localKeys;
+	public $orderBy = null;
 
 	public function attributes()
 	{
@@ -38,11 +39,23 @@ class ManyRelation implements IRelationPart
 	
 	public function collections()
 	{
-		return array($this->name => 
+		if ($this->orderBy == null)
+		{
+			return array($this->name => 
 						array('class' => 'ManyCollection',
 						      'from' => $this->toClass,
 						      'foreign' => $this->foreignKeys,
 						      'local' => $this->localKeys));
+		}
+		else
+		{
+			return array($this->name => 
+						array('class' => 'OrderedManyCollection',
+						      'from' => $this->toClass,
+						      'foreign' => $this->foreignKeys,
+						      'local' => $this->localKeys,
+						      'orderBy' => $this->orderBy));
+		}
 	}
 }
 

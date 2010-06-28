@@ -29,7 +29,8 @@ class MockCommentHasMockRelation extends One2Many
 			'local' => 'mockID',
 			'localAs' => 'mock',
 			'foreign' => 'ID',
-			'foreignAs' => 'comments'
+			'foreignAs' => 'comments',
+			'orderBy' => 'timePosted'
 		);
 	}
 }

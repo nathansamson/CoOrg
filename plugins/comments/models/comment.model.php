@@ -31,6 +31,11 @@ abstract class Comment extends DBModel
 	{
 		parent::__construct();
 	}
+	
+	public function beforeInsert()
+	{
+		$this->timePosted = time();
+	}
 }
 
 ?>

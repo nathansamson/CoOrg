@@ -18,30 +18,35 @@
 		ID="1"
 		title="First Comment"
 		comment="Some Comment"
+		timePosted="2010-04-28 13:20:15"
 	/>
 	
 	<Comment
 		ID="2"
 		title="Second Comment"
 		comment="Some Comment"
+		timePosted="2010-04-28 15:20:15"
 	/>
 	
 	<Comment
 		ID="3"
-		title="First Comment"
+		title="Third Comment in DB, second in real"
 		comment="Some Comment"
+		timePosted="2010-04-28 14:20:15"
 	/>
 	
 	<Comment
 		ID="4"
-		title="First Comment"
+		title="Fourth Comment"
 		comment="Some Comment"
+		timePosted="2010-04-28 16:20:15"
 	/>
 	
 	<Comment
 		ID="5"
-		title="First Comment"
+		title="5th Comment"
 		comment="Some Comment"
+		timePosted="2010-04-28 17:20:15"
 	/>
 	
 	<MeCommentMockComment

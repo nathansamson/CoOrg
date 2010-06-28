@@ -28,7 +28,7 @@ class ManyCollection implements ArrayAccess, Iterator, Countable
 	private $_localKeys;
 	private $_foreignKeys;
 	
-	private function __construct($instance, $from, $localKeys, $foreignKeys)
+	protected function __construct($instance, $from, $localKeys, $foreignKeys)
 	{
 		$this->_instance = $instance;
 		$this->_from = $from;
@@ -53,22 +53,9 @@ class ManyCollection implements ArrayAccess, Iterator, Countable
 	public function activate()
 	{
 		if ($this->_list !== null) {return false;}
-		$join = get_parent_class($this->_from);
-		$selectFrom = $this->_from;
-		if ($join != 'DBModel') $selectFrom .= ' NATURAL JOIN '. $join;
 		
-		$args = array();
-		$wheres = array();
-		foreach ($this->_localKeys as $key=>$local)
-		{
-			$foreign = $this->_foreignKeys[$key];
-			$wheres[] = $foreign . '=:'.$local;
-			$localDB = $local.'_db';
-			$args[':'.$local] = $this->_instance->$localDB;
-		}
-		$where = implode(' AND ', $wheres);
-		
-		$q = DB::prepare('SELECT * FROM '.$selectFrom .' WHERE '.$where);
+		list ($qs, $args) = $this->getSQLQuery();
+		$q = DB::prepare($qs);
 		$q->execute($args);
 		$this->_list = array();
 		$this->rewind();
@@ -148,6 +135,52 @@ class ManyCollection implements ArrayAccess, Iterator, Countable
 	public function valid()
 	{
 		return $this->_current < $this->count();
+	}
+	
+	protected function getSQLQuery()
+	{
+		$join = get_parent_class($this->_from);
+		$selectFrom = $this->_from;
+		if ($join != 'DBModel') $selectFrom .= ' NATURAL JOIN '. $join;
+		
+		$args = array();
+		$wheres = array();
+		foreach ($this->_localKeys as $key=>$local)
+		{
+			$foreign = $this->_foreignKeys[$key];
+			$wheres[] = $foreign . '=:'.$local;
+			$localDB = $local.'_db';
+			$args[':'.$local] = $this->_instance->$localDB;
+		}
+		$where = implode(' AND ', $wheres);
+		
+		$q = 'SELECT * FROM '.$selectFrom .' WHERE '.$where;
+		return array($q, $args);
+	}
+}
+
+class OrderedManyCollection extends ManyCollection
+{
+	private $_orderBy;
+
+	protected function __construct($instance, $from, $localKeys, $foreignKeys,
+	                               $orderBy)
+	{
+		parent::__construct($instance, $from, $localKeys, $foreignKeys);
+		$this->_orderBy = $orderBy;
+	}
+
+	public static function instance($args, $instance)
+	{
+		return new OrderedManyCollection($instance, $args['from'], $args['local'], 
+		                          $args['foreign'], $args['orderBy']);
+	}
+	
+	protected function getSQLQuery()
+	{
+		list($qs, $args) = parent::getSQLQuery();
+		$qs .= ' ORDER BY ' . $this->_orderBy;
+		return array($qs, $args);
 	}
 }
 

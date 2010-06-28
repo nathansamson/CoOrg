@@ -77,6 +77,7 @@ class CommentModelTest extends CoOrgModelTest
 		$this->assertEquals('Some Comment', $rComment->comment);
 		$this->assertEquals('me-mock', $rComment->mockID);
 		$this->assertEquals('me-mock', $rComment->mock->ID);
+		$this->assertLessThan(1, abs($comment->timePosted - time()));
 	}
 	
 	public function testAppendComment()
@@ -94,7 +95,10 @@ class CommentModelTest extends CoOrgModelTest
 		$mock = MeCommentMock::get('other-mock');
 		$comments = $mock->comments;
 		$this->assertEquals(4, count($comments));
-		$this->assertEquals('Second Comment', $comments[0]->title);
+		$this->assertEquals('Third Comment in DB, second in real', $comments[0]->title);
+		$this->assertEquals('Second Comment', $comments[1]->title);
+		$this->assertEquals('Fourth Comment', $comments[2]->title);
+		$this->assertEquals('5th Comment', $comments[3]->title);
 	}
 }
 

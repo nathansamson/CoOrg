@@ -40,6 +40,10 @@ abstract class One2Many implements IRelation
 			$r->name = $info['foreignAs'];
 			$r->localKeys= $info['foreign'];
 			$r->foreignKeys = $info['local'];
+			if (array_key_exists('orderBy', $info))
+			{
+				$r->orderBy = $info['orderBy'];
+			}
 			return $r;
 		}
 		return null;
