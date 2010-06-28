@@ -54,6 +54,14 @@ class UserProfileTest extends CoOrgModelTest
 		$this->assertEquals('http://somesite.in.the.wild/some/link', $userP->website);
 		$this->assertEquals('A user without profile (not anymore)', $userP->biography);
 	}
+	
+	public function testUserDeletesProfile()
+	{
+		$user = User::getUserByName('qwerty');
+		$user->delete();
+		
+		$this->assertNull(UserProfile::get('qwerty'));
+	}
 }
 
 

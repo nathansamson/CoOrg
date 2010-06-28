@@ -42,7 +42,7 @@ function user_install_db()
 				website VARCHAR(1024),
 				intrests VARCHAR(1024),
 				biography TEXT,
-				FOREIGN KEY (username) REFERENCES User(username)
+				FOREIGN KEY (username) REFERENCES User(username) ON DELETE CASCADE
 			)';
 
 	$s = DB::prepare($q);

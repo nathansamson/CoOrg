@@ -23,8 +23,6 @@
 		email="no-profile"
 	/>
 	
-	<UserProfile />
-	
 	<UserGroup />
 	
 	<UserGroupMember 
@@ -59,5 +57,12 @@
 		groupID="__azerty"
 		keyID="someOtherUsers"
 		allowed="1"
+	/>
+	
+	<UserProfile
+		username="azerty"
+		birthDate="1989-04-28"
+		firstName="Nathan"
+		lastName="Samson"
 	/>
 </dataset>

@@ -120,6 +120,17 @@ function smarty_function_input($params, $smarty)
 		{
 			$class = $params['class'];
 		}
+		if (array_key_exists('size', $params))
+		{
+			if ($params['size'] == 'wide')
+			{
+				$size = '40';
+			}
+			else if ($params['size'] == 'full-wide')
+			{
+				$size = '60';
+			}
+		}
 		
 		if ($type != 'textarea' && $type != 'select' && $type != 'checkbox')
 		{
@@ -127,6 +138,7 @@ function smarty_function_input($params, $smarty)
 	               ($required ? ' required="required"' : '').
 	               ($disabled ? ' disabled="disabled"' : '').
 	               ($class ? ' class="'.$class.'"' : '').
+	               ($size ? ' size="'.$size.'"' : '').
 	        '/><br />';
 	    }
 	    else if ($type == 'textarea')
@@ -144,6 +156,16 @@ function smarty_function_input($params, $smarty)
 	    		{
 	    			$cols = 60;
 	    			$rows = 25;
+	    		}
+	    		else if ($params['size'] == 'wide')
+	    		{
+	    			$cols = 60;
+	    			$rows = 10;
+	    		}
+	    		else if($params['size'] == 'small-wide')
+	    		{
+	    			$cols = 60;
+	    			$rows = 4;
 	    		}
 	    	}
 	    	$editor = null;
