@@ -18,6 +18,14 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+class SomeEnumProperty extends PropertyEnum
+{
+	public function __construct($name)
+	{
+		parent::__construct($name, array('A', 'B', 'C', 'D'));
+	}
+}
+
 class PropertiesTest extends PHPUnit_Framework_TestCase
 {
 	public function testString()
@@ -678,6 +686,45 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 		
 		$b->set('true');
 		$this->assertTrue($b->validate('abba'));
+	}
+	
+	public function testEnum()
+	{
+		$e = new SomeEnumProperty('X');
+		$this->assertTrue($e->validate('.'));
+		$e->set('A');
+		$this->assertEquals('A', $e->get());
+		$this->assertEquals('A', $e->db());
+		$this->assertTrue($e->validate(''));
+		$e->set('K');
+		$this->assertFalse($e->validate(''));
+		$this->assertEquals('Not a valid choice for X', $e->errors());
+	}
+	
+	public function testRequiredEnum()
+	{
+		$e = new SomeEnumProperty('X');
+		$e->required();
+		$this->assertFalse($e->validate('.'));
+		$this->assertEquals('X is required', $e->errors());
+	}
+	
+	public function testURL()
+	{
+		$u = new PropertyURL('URL');
+		$this->assertTrue($u->validate(''));
+		$this->assertNull($u->get());
+		$u->set('google.be/http');
+		$this->assertEquals('http://google.be/http', $u->get());
+		
+		$u->set('google.be');
+		$this->assertEquals('http://google.be', $u->get());
+		
+		$u->set('http://google.be/some/link');
+		$this->assertEquals('http://google.be/some/link', $u->get());
+		
+		$u->set('https://google.be/some/link');
+		$this->assertEquals('https://google.be/some/link', $u->get());
 	}
 }
 
