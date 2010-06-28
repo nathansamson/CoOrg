@@ -35,6 +35,9 @@ class UserController extends Controller
 		try
 		{
 			$key = $user->save();
+			$profile = new UserProfile;
+			$profile->user = $user;
+			$profile->save();
 			$mail = $this->mail();
 			$mail->username = $username;
 			$mail->activationURL = CoOrg::createFullURL(array('user/activate', $username, $key));
