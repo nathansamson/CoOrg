@@ -49,6 +49,27 @@ class BlogTest extends CoOrgModelTest
 		$this->assertNull($blog->timeEdited);
 	}
 	
+	public function testInsertDoubleNormalizedTitles()
+	{
+		$blog = new Blog;
+		$blog->title = 'Some Title';
+		$blog->text = 'Text';
+		$blog->language = 'en';
+		$blog->authorID = 'Nathan';
+		
+		$blog2 = new Blog;
+		$blog2->title = $blog->title;
+		$blog2->text = 'Text';
+		$blog2->language = $blog->language;
+		$blog2->authorID = 'Nathan';
+		
+		$blog->save();
+		$blog2->save();
+		
+		// Same day, same title, same language, no title conflict
+		$this->assertNotEquals($blog->ID, $blog2->ID);
+	}
+	
 	public function testTitleMissing()
 	{
 		$blog = new Blog('', 'Nathan', 'My Blog contents.', 'en');

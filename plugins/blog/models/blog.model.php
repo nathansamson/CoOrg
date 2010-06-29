@@ -29,6 +29,7 @@
  * @property timeEdited DateTime('Edited');
  * @property parentID String('Title', 256);
  * @property parentLanguage String('Parent Language', 6);
+ * @extends Normalize title ID datePosted language
 */
 class Blog extends DBModel
 {
@@ -212,14 +213,8 @@ class Blog extends DBModel
 		return $archive;
 	}
 	
-	protected function normalizeTitle($title)
-	{
-		return str_replace(' ', '-', strtolower($title));
-	}
-	
 	protected function beforeInsert()
 	{
-		$this->ID = $this->normalizeTitle($this->title);
 		if ($this->datePosted_db == null)
 			$this->datePosted = time();
 		$this->timePosted = time();

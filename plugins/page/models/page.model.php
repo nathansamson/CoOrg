@@ -29,6 +29,7 @@
  * @property content String(t('Content')); required
  * @property writeonly; originalLanguage String('', 6);
  * @property writeonly; originalID String('', 256);
+ * @extends Normalize title ID language
 */
 class Page extends DBModel
 {
@@ -40,7 +41,6 @@ class Page extends DBModel
 	public function beforeInsert()
 	{
 		$this->created = date('Y-m-d');
-		$this->ID = self::normalizeTitle($this->title, $this->language);
 	}
 	
 	public function afterInsert()
@@ -162,17 +162,5 @@ class Page extends DBModel
 				}
 			}
 		}
-	}
-	
-	private static function normalizeTitle($title, $language)
-	{
-		$basenorm = strtolower(str_replace(' ', '-', $title));
-		$norm = $basenorm;
-		$i = 1;
-		while (self::get($norm, $language)) {
-			$norm = $basenorm.$i;
-			$i++;
-		}
-		return $norm;
 	}
 }

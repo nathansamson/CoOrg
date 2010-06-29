@@ -29,6 +29,7 @@ require_once 'coorg/model.class.php';
 require_once 'coorg/i18n.class.php';
 require_once 'coorg/pager.class.php';
 require_once 'coorg/sortable.class.php';
+require_once 'coorg/normalize.class.php';
 require_once 'coorg/header.interface.php';
 require_once 'coorg/coorgsmarty.interface.php';
 require_once 'coorg/state.interface.php';
