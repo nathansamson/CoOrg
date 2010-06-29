@@ -21,7 +21,7 @@ $configFile = 'config/temp.config.tests.php';
 define('COORG_TEST_CONFIG', $configFile);
 
 $config = new Config($configFile);
-$config->set('enabled_plugins', array('admin', 'menu', 'user', 'blog', 'page'));
+$config->set('enabled_plugins', array('admin', 'menu', 'user', 'user-admin', 'blog', 'page'));
 $config->set('site/title', 'The Site');
 DB::open($config->get('dbdsn'), $config->get('dbuser'), $config->get('dbpass'));
 

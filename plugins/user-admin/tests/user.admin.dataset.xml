@@ -1,0 +1,41 @@
+<dataset>
+	<User 
+		username="dvorak"
+		email="dvorak"
+		passwordHashKey="meHash"
+		passwordHash="ca7f5e91fc77d825370b1807215b1aa7fb609f0a5bdf0c80a83f1989e3d9584a076e05d9365b9d449998b82a01f31ed9d02dfaa1b6832f4ea807259a89ccc18d"
+	/>
+	
+	<User 
+		username="azerty"
+		email="azerty"
+		passwordHashKey="meHash"
+		passwordHash="d515245d2f0bc0afc3d9a6563545c4f5496e577b17c5457d5b17ada5fcb623e8014556a57571ff967210b3d214291c1051b739cc2a1e52a15bd28d18097c787f"
+	/>
+	
+	<User
+		username="locked"
+		email="locked@locked.com"
+		lockKey="ssdsd"
+		passwordHashKey="meHash"
+		passwordHash="d515245d2f0bc0afc3d9a6563545c4f5496e577b17c5457d5b17ada5fcb623e8014556a57571ff967210b3d214291c1051b739cc2a1e52a15bd28d18097c787f"
+	/>
+	
+	<UserGroup />
+	
+	<UserGroupMember 
+		groupID="__dvorak"
+		userID="dvorak"
+	/>
+	
+	<UserGroupMember 
+		groupID="__azerty"
+		userID="azerty"
+	/>
+	
+	<Acl 
+		groupID="__dvorak"
+		keyID="admin-user"
+		allowed="1"
+	/>
+</dataset>

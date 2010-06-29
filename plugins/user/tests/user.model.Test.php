@@ -31,6 +31,26 @@ class UserModelTest extends CoOrgModelTest
 		$this->assertFalse($nathan->isLocked());
 	}
 	
+	public function testUnlockForce()
+	{
+		$user = new User('Nathan', 'nathan@mail.be');
+		$user->password = 'azerty';
+		$user->passwordConfirmation = 'azerty';
+		$key = $user->save();
+		
+		$user = User::getUserByName('Nathan');
+		$user->unlockForce();
+		$this->assertFalse($user->isLocked());
+		
+		$nathan = User::getUserByName('Nathan');
+		$this->assertTrue($nathan->isLocked());
+		
+		$user->save();
+		
+		$nathan = User::getUserByName('Nathan');
+		$this->assertFalse($nathan->isLocked());
+	}
+	
 	public function testCreateCheckRequired()
 	{
 		$user = new User('Nathan', 'nathan@mail.be');
@@ -296,7 +316,53 @@ class UserModelTest extends CoOrgModelTest
 			$this->assertEquals('Passwords do not match', $user->passwordConfirmation_error);
 		}
 	}
-
+	
+	public function testForceUpdatePassword()
+	{
+		$user = new User('Nathan', 'nathan@mail.be');
+		$user->password = 'azerty';
+		$user->passwordConfirmation = 'azerty';
+		$user->save();
+	
+		$user->forceNewPassword = true; // useful for admins
+		$user->password = 'qwerty';
+		$user->passwordConfirmation = 'qwerty';
+		$user->save();
+		
+		$user = User::getUserByName('Nathan');
+		$this->assertTrue($user->checkPassword('qwerty'));
+	}
+	
+	public function testForceUpdatePasswordWrongConfirmation()
+	{
+		$user = new User('Nathan', 'nathan@mail.be');
+		$user->password = 'azerty';
+		$user->passwordConfirmation = 'azerty';
+		$user->save();
+	
+		$user->forceNewPassword = true; // useful for admins
+		$user->password = 'qwerty';
+		$user->passwordConfirmation = 'wrong...';
+		
+		try
+		{
+			$user->save();
+			$this->fail('Expected exception');
+		}
+		catch (ValidationException $e)
+		{
+			$this->assertEquals('Passwords do not match', $user->passwordConfirmation_error);
+		}
+	}
+	
+	public function testUsers()
+	{
+		$userPager = User::users();
+		$users = $userPager->execute(1, 3);
+		$this->assertEquals('azerty', $users[0]->username);
+		$this->assertEquals('dvorak', $users[1]->username);
+		$this->assertEquals('qwerty', $users[2]->username);
+	}
 }
 
 ?>

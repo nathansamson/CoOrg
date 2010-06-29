@@ -210,6 +210,11 @@ input, textarea, .editor, select {
 	margin-bottom: 10px;
 }
 
+input[readonly] {
+	background-color: #BBB;
+	color: #666;
+}
+
 select {
 	font-size: 10px;
 	padding: 3px;
@@ -255,6 +260,10 @@ input:focus, textarea:focus {
 	border: solid 1px #FCBA5C;
 }
 
+input[readonly]:focus {
+	border: solid 1px #666666;
+}
+
 input[type="submit"] {
 	border: dotted 1px #F9A328;
 	background-image: -moz-linear-gradient(#FCBA5C, #F9A328);
@@ -262,6 +271,11 @@ input[type="submit"] {
 
 input[type="submit"]:active {
 	background-image: -moz-linear-gradient(#F9A328, #FCBA5C);
+}
+
+fieldset {
+	margin-bottom: 10px;
+	border: solid 1px #555;
 }
 
 /* === ASIDE Forms === */

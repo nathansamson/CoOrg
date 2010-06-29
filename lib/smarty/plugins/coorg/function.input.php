@@ -63,11 +63,8 @@ function smarty_function_input($params, $smarty)
 	{
 		$type = 'hidden';
 	}
-	$disabled = false;
-	if (array_key_exists('disabled', $params))
-	{
-		$disabled = true;
-	}
+	$disabled = array_key_exists('disabled', $params);
+	$readonly = array_key_exists('readonly', $params);
 	
 	if ($type != 'submit')
 	{
@@ -141,6 +138,7 @@ function smarty_function_input($params, $smarty)
 	               ($required ? ' required="required"' : '').
 	               ($disabled ? ' disabled="disabled"' : '').
 	               ($class ? ' class="'.$class.'"' : '').
+	               ($readonly ? ' readonly="readonly"' : '').
 	        '/>'.$br;
 	    }
 	    else if ($type == 'textarea')
