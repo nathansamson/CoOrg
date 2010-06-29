@@ -25,7 +25,7 @@ class PageAdminModule
 		$this->name = t('Content');
 		$this->url = CoOrg::createURL(array('admin', 'page'));
 		$this->image = CoOrg::staticFile('images/page.png', 'page');
-		$this->priority = 1;
+		$this->priority = 2;
 	}
 	
 	public function isAllowed($user)

@@ -25,7 +25,7 @@ class MenuAdminModule
 		$this->name = t('Menu');
 		$this->url = CoOrg::createURL(array('admin', 'menu'));
 		$this->image = CoOrg::staticFile('images/menu.png', 'menu');
-		$this->priority = 1;
+		$this->priority = 2;
 	}
 	
 	public function isAllowed($user)

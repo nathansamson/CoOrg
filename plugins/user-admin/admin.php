@@ -25,7 +25,7 @@ class UserAdminModule
 		$this->name = t('Users');
 		$this->url = CoOrg::createURL(array('admin', 'user'));
 		$this->image = CoOrg::staticFile('images/user.png', 'user-admin');
-		$this->priority = 1;
+		$this->priority = 2;
 	}
 	
 	public function isAllowed($user)
