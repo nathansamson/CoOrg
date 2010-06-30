@@ -57,6 +57,8 @@ function prepare()
 	$q = DB::prepare('CREATE TABLE SomeContainment(
 	 name VARCHAR(64) PRIMARY KEY,
 	 containerID VARCHAR(32),
+	 published BOOL,
+	 sequence INTEGER,
 	 FOREIGN KEY (containerID) REFERENCES SomeContainer(ID))');
 	$q->execute();
 	

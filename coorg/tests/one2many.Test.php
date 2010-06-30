@@ -51,6 +51,41 @@ class ContainmentHasContainer extends One2Many
 }
 Model::registerRelation(new ContainmentHasContainer);
 
+class ContainmentHasOrderedContainer extends One2Many
+{
+	protected function info()
+	{
+		return array(
+			'from' => 'SomeContainment',
+			'to' => 'SomeContainer',
+			'localAs' => 'theContainer2',
+			'local' => 'containerID',
+			'foreign' => 'ID',
+			'foreignAs' => 'ocontainments',
+			'orderBy' => 'sequence'
+		);
+	}
+}
+Model::registerRelation(new ContainmentHasOrderedContainer);
+
+class ContainmentHasFilteredOrderedContainer extends One2Many
+{
+	protected function info()
+	{
+		return array(
+			'from' => 'SomeContainment',
+			'to' => 'SomeContainer',
+			'localAs' => 'theContainer3',
+			'local' => 'containerID',
+			'foreign' => 'ID',
+			'foreignAs' => 'focontainments',
+			'orderBy' => 'sequence',
+			'filter' => 'published'
+		);
+	}
+}
+Model::registerRelation(new ContainmentHasFilteredOrderedContainer);
+
 class IsAMockHasContainer extends One2Many
 {
 	protected function info()
@@ -90,6 +125,8 @@ class SomeContainer extends DBModel
 /**
  * @property primary; name String('Name', 64); required
  * @property containerID String('Container', 32); required
+ * @property published Bool('Published');
+ * @property sequence Integer('Sequence');
 */
 class SomeContainment extends DBModel
 {
@@ -222,6 +259,32 @@ class One2ManyTest extends CoOrgModelTest
 				throw $e;
 			}
 		}
+	}
+	
+	public function testOrderedCollection()
+	{
+		$container = SomeContainer::get('one');
+		$this->assertEquals('Last Containment of One', $container->ocontainments[0]->name);
+		$this->assertEquals('Another Containment of One', $container->ocontainments[1]->name);
+		$this->assertEquals('Containment of One', $container->ocontainments[2]->name);
+	}
+	
+	public function testOrderedFilteredCollection()
+	{
+		$container = SomeContainer::get('one');
+		$this->assertEquals(3, count($container->focontainments));
+		$this->assertEquals('Last Containment of One', $container->focontainments[0]->name);
+		$this->assertEquals('Another Containment of One', $container->focontainments[1]->name);
+		$this->assertEquals('Containment of One', $container->focontainments[2]->name);
+		
+		$published = $container->focontainments->filter('1');
+		$this->assertEquals(2, count($published));
+		$this->assertEquals('Last Containment of One', $published[0]->name);
+		$this->assertEquals('Another Containment of One', $published[1]->name);
+		
+		$unpublished = $container->focontainments->filter(0);
+		$this->assertEquals(1, count($unpublished));
+		$this->assertEquals('Containment of One', $unpublished[0]->name);
 	}
 }
 

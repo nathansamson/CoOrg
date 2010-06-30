@@ -23,10 +23,10 @@ class ManyCollection implements ArrayAccess, Iterator, Countable
 {
 	private $_list = null;
 	private $_current;
-	private $_instance;
-	private $_from;
-	private $_localKeys;
-	private $_foreignKeys;
+	protected $_instance;
+	protected $_from;
+	protected $_localKeys;
+	protected $_foreignKeys;
 	
 	protected function __construct($instance, $from, $localKeys, $foreignKeys)
 	{
@@ -161,7 +161,7 @@ class ManyCollection implements ArrayAccess, Iterator, Countable
 
 class OrderedManyCollection extends ManyCollection
 {
-	private $_orderBy;
+	protected $_orderBy;
 
 	protected function __construct($instance, $from, $localKeys, $foreignKeys,
 	                               $orderBy)
@@ -179,8 +179,66 @@ class OrderedManyCollection extends ManyCollection
 	protected function getSQLQuery()
 	{
 		list($qs, $args) = parent::getSQLQuery();
-		$qs .= ' ORDER BY ' . $this->_orderBy;
+		if ($this->_orderBy)
+		{
+			$qs .= ' ORDER BY ' . $this->_orderBy;
+		}
 		return array($qs, $args);
+	}
+}
+
+class FilteredCollection extends ManyCollection
+{
+	protected $_filter;
+	protected $_filterValue;
+	protected $_orderBy;
+
+	public function __construct($instance, $from, $localKeys, $foreignKeys,
+	                               $orderBy, $filter, $filterValue)
+	{
+		parent::__construct($instance, $from, $localKeys, $foreignKeys);
+		$this->_filter = $filter;
+		$this->_filterValue = $filterValue;
+		$this->_orderBy = $orderBy;
+	}
+	
+	protected function getSQLQuery()
+	{
+		list($qs, $args) = parent::getSQLQuery();
+		$qs .= ' AND ' . $this->_filter . '=:_filter';
+		$args[':_filter'] = $this->_filterValue;
+		if ($this->_orderBy)
+		{
+			$qs .= ' ORDER BY ' . $this->_orderBy;
+		}
+		return array($qs, $args);
+	}
+}
+
+class FilterCollection extends OrderedManyCollection
+{
+	private $_filter;
+
+	protected function __construct($instance, $from, $localKeys, $foreignKeys,
+	                               $orderBy, $filter)
+	{
+		parent::__construct($instance, $from, $localKeys, $foreignKeys, $orderBy);
+		$this->_filter = $filter;
+	}
+
+	public static function instance($args, $instance)
+	{
+		return new FilterCollection($instance, $args['from'], $args['local'], 
+		                          $args['foreign'], $args['orderBy'], $args['filter']);
+	}
+	
+	public function filter($value)
+	{
+		$f = new FilteredCollection($this->_instance, $this->_from,
+		            $this->_localKeys, $this->_foreignKeys, $this->_orderBy,
+		            $this->_filter, $value);
+		$f->activate();
+		return $f;
 	}
 }
 

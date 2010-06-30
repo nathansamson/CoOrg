@@ -44,6 +44,10 @@ abstract class One2Many implements IRelation
 			{
 				$r->orderBy = $info['orderBy'];
 			}
+			if (array_key_exists('filter', $info))
+			{
+				$r->filter = $info['filter'];
+			}
 			return $r;
 		}
 		return null;
