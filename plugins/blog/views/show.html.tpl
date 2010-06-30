@@ -38,7 +38,7 @@
 				{/if}
 				<h1>{$comment->title}</h1>
 				<h2>
-					{'By %name on %date'|_:$comment->author->username:($comment->timePosted|date_format:'Y-m-d H:i:s')}
+					{'By %name on %date'|_:($comment->author->username|linkyfy:'user/profile/show':$comment->author->username):($comment->timePosted|date_format:'Y-m-d H:i:s')}
 				</h2>
 			</header>
 			{$comment->comment|format:'none'}
