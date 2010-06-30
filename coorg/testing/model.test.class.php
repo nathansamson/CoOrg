@@ -25,6 +25,7 @@ abstract class CoOrgModelTest extends PHPUnit_Extensions_Database_TestCase
 {
 	private $_dataset = '';
 	private static $_classes = array();
+	private static $_oldDataset = null;
 
 	public function __construct()
 	{
@@ -44,44 +45,35 @@ abstract class CoOrgModelTest extends PHPUnit_Extensions_Database_TestCase
 	
 	protected function getSetUpOperation()
 	{
-		if (DB::acceptTransactions())
+		if (self::$_oldDataset == null)
 		{
+			return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT(true);
+		}
+		else if (self::$_oldDataset != $this->_dataset)
+		{
+			$truncate = PHPUnit_Extensions_Database_Operation_Factory::TRUNCATE(true);
+			$truncate->execute($this->getConnection(),
+			                   $this->createFlatXMLDataSet(self::$_oldDataset));
+			
 			return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT(true);
 		}
 		else
 		{
-			return new PHPUnit_Extensions_Database_Operation_Null();
+			return PHPUnit_Extensions_Database_Operation_Factory::NONE();
 		}
 	}
 	
 	public function setUp()
 	{
-		if (DB::acceptTransactions())
-		{
-			if (!array_key_exists(get_class($this), self::$_classes))
-			{
-				// Clean insert
-				parent::setUp();
-				self::$_classes[get_class($this)] = true;
-			}
-			DB::beginTransaction();
-		}
-		else
-		{
-			parent::setUp();
-		}
+		parent::setUp();
+		DB::beginTransaction();
 	}
 	
 	public function tearDown()
 	{
-		if (DB::acceptTransactions())
-		{
-			DB::rollback();
-		}
-		else
-		{
-			parent::tearDown();
-		}
+		DB::rollback();
+		parent::tearDown();
+		self::$_oldDataset = $this->_dataset;
 	}
 }
 
