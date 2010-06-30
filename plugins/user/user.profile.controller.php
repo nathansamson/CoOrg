@@ -58,9 +58,18 @@ class UserProfileController extends Controller
 		$profile->intrests = $intrests;
 		$profile->biography = $biography;
 		$profile->website = $website;
-		$profile->save();
 		
-		$this->notice(t('Profile updated'));
-		$this->redirect('user/profile/show', $profile->username);
+		try
+		{
+			$profile->save();
+			$this->notice(t('Profile updated'));
+			$this->redirect('user/profile/show', $profile->username);
+		}
+		catch (ValidationException $e)
+		{
+			$this->error(t('Profile not updated'));
+			$this->profile = $profile;
+			$this->render('profile/edit');
+		}
 	}
 }

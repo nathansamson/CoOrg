@@ -76,6 +76,21 @@ class UserProfileControllerTest extends CoOrgControllerTest
 		$this->assertEquals('My Bio', $profile->biography);
 	}
 	
+	public function testUpdateFailure()
+	{
+		$this->login('azerty');
+		
+		$this->request('user/profile/update', array(
+			'firstName' => 'Keyboard',
+			'lastName' => 'layout',
+			'birthDate' => '04-28', /* Ceci ne pas une date */
+			'biography' => 'My Bio'));
+
+		$this->assertRendered('edit');
+		$this->assertFlashError('Profile not updated');
+		$this->assertVarSet('profile');
+	}
+	
 	public function testUpdateNotLoggedIn()
 	{
 		$this->request('user/profile/update', array(
