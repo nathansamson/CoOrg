@@ -71,7 +71,7 @@ class AdminMenuController extends Controller
 		$this->adminlanguage = $adminLanguage;
 		$this->providerActionCombos = Menu::providerActionCombos($adminLanguage);
 		$newEntry = new MenuEntry;
-		$newEntry->menu = $name;
+		$newEntry->menuID = $name;
 		$newEntry->language = $adminLanguage;
 		$this->newEntry = $newEntry;
 		$this->render('edit');

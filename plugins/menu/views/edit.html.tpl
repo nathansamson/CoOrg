@@ -11,7 +11,7 @@
 	
 	<h2>{'Entries'|_}</h2>
 	<ol class="adminmenu">
-		{foreach $menu->entries({$adminlanguage}) as $entry}
+		{foreach $menu->entries->filter({$adminlanguage}) as $entry}
 			<li>
 				{$entry->title|escape}
 				<div class="actions">
@@ -44,7 +44,7 @@
 		<h2>{'Add entry'|_}</h2>
 	
 		{form request='admin/menu/entry/save' instance=$newEntry}
-			{input for=menu}
+			{input for=menuID}
 			{input for=language}
 		
 			{input for=title label="Title" required}

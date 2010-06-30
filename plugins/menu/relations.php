@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2010 Nathan Samson <nathansamson at gmail dot com>
  *
@@ -18,37 +19,21 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function menu_install_db()
+class MenuHasEntries extends One2Many
 {
-	$s = DB::prepare('CREATE TABLE Menu (
-		name VARCHAR(32) PRIMARY KEY,
-		description VARCHAR(256)
-	 )');
-	 $s->execute();
-	 
-	 $s = DB::prepare('CREATE TABLE MenuEntry (
-	 	ID INTEGER PRIMARY KEY AUTOINCREMENT,
-	 	menuID VARCHAR(32),
-	 	language VARCHAR(6),
-		sequence INTEGER,
-	 	url VARCHAR(1024),
-	 	title VARCHAR(64),
-	 	submenu VARCHAR(32),
-	 	provider VARCHAR(64),
-	 	action VARCHAR(64),
-	 	data VARCHAR(128),
-	 	FOREIGN KEY (menuID) REFERENCES Menu(name) ON UPDATE CASCADE ON DELETE CASCADE,
-	 	FOREIGN KEY (submenu) REFERENCES Menu(name)
-	  )');
-	 $s->execute();
+	protected function info()
+	{
+		return array(
+			'from' => 'MenuEntry',
+			'to' => 'Menu',
+			'local' => 'menuID',
+			'localAs' => 'menu',
+			'foreign' => 'name',
+			'foreignAs' => 'entries',
+			'filter' => 'language',
+			'orderBy' => 'sequence'
+		);
+	}
 }
 
-function menu_delete_db()
-{
-	$s = DB::prepare('DROP TABLE IF EXISTS MenuEntry');
-	$s->execute();
-	$s = DB::prepare('DROP TABLE IF EXISTS Menu');
-	$s->execute();
-}
-
-?>
+Model::registerRelation(new MenuHasEntries);

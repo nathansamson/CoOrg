@@ -26,7 +26,7 @@ class MenuEntryModelTest extends CoOrgModelTest
 	{
 		CoOrg::config()->set('urlPrefix', ':language');
 		$entry = new MenuEntry;
-		$entry->menu = 'main';
+		$entry->menuID = 'main';
 		$entry->title = 'Latst blogs';
 		$entry->language = 'en';
 		$entry->entryID = 'BlogMenuEntryProvider/latest';
@@ -36,7 +36,7 @@ class MenuEntryModelTest extends CoOrgModelTest
 		$this->assertEquals('en/blog', $entry->url);
 		
 		$entry = new MenuEntry;
-		$entry->menu = 'main';
+		$entry->menuID = 'main';
 		$entry->title = 'Blog no 7';
 		$entry->language = 'en';
 		$entry->entryID = 'BlogMenuEntryProvider/show/2010-05-04/blog-no-7';
@@ -52,7 +52,7 @@ class MenuEntryModelTest extends CoOrgModelTest
 		$this->assertEquals(4, $retrievedEntry->sequence);
 		
 		$menu = Menu::get('main');
-		$entries = $menu->entries('en');
+		$entries = $menu->entries->filter('en');
 		$this->assertEquals(5, count($entries));
 		$this->assertEquals(3, $entries[3]->sequence);
 		$this->assertEquals('en/blog', $entries[3]->url);
@@ -60,19 +60,20 @@ class MenuEntryModelTest extends CoOrgModelTest
 		$this->assertEquals('en/blog/show/2010/05/04/blog-no-7', $entries[4]->url);
 		
 		$entry = new MenuEntry;
-		$entry->menu = 'main';
+		$entry->menu= $menu;
 		$entry->title = 'External link';
 		$entry->language = 'en';
 		$entry->data = 'external.url.com';
 		$entry->entryID = 'URLMenuEntryProvider';
 		$entry->save();
 		$this->assertEquals('http://external.url.com', $entry->url);
+		$this->assertEquals('main', $entry->menuID);
 	}
 	
 	public function testCreateForOtherLanguage()
 	{
 		$entry = new MenuEntry;
-		$entry->menu = 'main';
+		$entry->menuID = 'main';
 		$entry->title = 'Blog no 7';
 		$entry->language = 'nl';
 		$entry->entryID = 'BlogMenuEntryProvider/show/2010-05-04/blog-no-7';
@@ -85,7 +86,7 @@ class MenuEntryModelTest extends CoOrgModelTest
 		CoOrg::config()->set('urlPrefix', ':language');
 		CoOrg::setDefaultLanguage('nl');
 		$entry = new MenuEntry;
-		$entry->menu = 'main';
+		$entry->menuID = 'main';
 		$entry->title = 'Blog no 7';
 		$entry->language = 'nl';
 		$entry->entryID = 'BlogMenuEntryProvider/show/2010-05-04/blog-no-7';
@@ -98,7 +99,7 @@ class MenuEntryModelTest extends CoOrgModelTest
 		CoOrg::config()->set('urlPrefix', ':language');
 		CoOrg::setDefaultLanguage('nl');
 		$entry = new MenuEntry;
-		$entry->menu = 'main';
+		$entry->menuID = 'main';
 		$entry->title = 'Blog no 7';
 		$entry->language = 'en';
 		$entry->entryID = 'BlogMenuEntryProvider/show/2010-05-04/blog-no-7';
@@ -109,7 +110,7 @@ class MenuEntryModelTest extends CoOrgModelTest
 	public function testCreateProviderDoesNotExist()
 	{
 		$entry = new MenuEntry;
-		$entry->menu = 'main';
+		$entry->menuID = 'main';
 		$entry->language = 'en';
 		$entry->title = 'metitle';
 		$entry->entryID = 'NoProvider/action';
@@ -128,14 +129,14 @@ class MenuEntryModelTest extends CoOrgModelTest
 	{
 		$menu = Menu::get('main');
 		$this->assertNotNull($menu);
-		$nlEntries = $menu->entries('nl');
-		$entries = $menu->entries('en');
+		$nlEntries = $menu->entries->filter('nl');
+		$entries = $menu->entries->filter('en');
 		
 		$entries[0]->sequence = 2; // Move to the last place.
 		$entries[0]->save();
 		
-		$this->assertEquals($nlEntries, $menu->entries('nl'));
-		$entries = $menu->entries('en');
+		$this->assertEquals($nlEntries, $menu->entries->filter('nl'));
+		$entries = $menu->entries->filter('en');
 		
 		$this->assertEquals(':some/otherthing/p/', $entries[0]->url);
 		$this->assertEquals(0, $entries[0]->sequence);
@@ -149,7 +150,7 @@ class MenuEntryModelTest extends CoOrgModelTest
 		$entries[0]->sequence = 1; // Move on to the back
 		$entries[0]->save();
 		
-		$entries = $menu->entries('en');
+		$entries = $menu->entries->filter('en');
 		$this->assertEquals(':some/lastthing/p/', $entries[0]->url);
 		$this->assertEquals(0, $entries[0]->sequence);
 		
@@ -159,18 +160,18 @@ class MenuEntryModelTest extends CoOrgModelTest
 		$this->assertEquals(':some/thing/p/', $entries[2]->url);
 		$this->assertEquals(2, $entries[2]->sequence);
 		
-		$this->assertEquals($nlEntries, $menu->entries('nl'));
+		$this->assertEquals($nlEntries, $menu->entries->filter('nl'));
 	}
 
 	public function testUpdate()
 	{
 		$menu = Menu::get('main');
 		$this->assertNotNull($menu);
-		$e = $menu->entries('en');
+		$e = $menu->entries->filter('en');
 		$e[0]->url = ':/other/url';
 		$e[0]->save();
 		
-		$e = $menu->entries('en');
+		$e = $menu->entries->filter('en');
 		$this->assertEquals(':/other/url', $e[0]->url);
 	}
 	
@@ -178,17 +179,17 @@ class MenuEntryModelTest extends CoOrgModelTest
 	{
 		$menu = Menu::get('main');
 		$this->assertNotNull($menu);
-		$e = $menu->entries('en');
+		$e = $menu->entries->filter('en');
 		$e[1]->delete();
 		
-		$entries = $menu->entries('en');
+		$entries = $menu->entries->filter('en');
 		$this->assertEquals(':some/thing/p/', $entries[0]->url);
 		$this->assertEquals(0, $entries[0]->sequence);
 		
 		$this->assertEquals(':some/lastthing/p/', $entries[1]->url);
 		$this->assertEquals(1, $entries[1]->sequence);
 		
-		$this->assertEquals(2, count($menu->entries('nl')));
+		$this->assertEquals(2, count($menu->entries->filter('nl')));
 	}
 	
 	public function testUrlProvider()

@@ -4,7 +4,7 @@
 		description="The main menu"
 	/>
 	<MenuEntry
-		menu="main"
+		menuID="main"
 		language="en"
 		sequence="0"
 		title="Something"
@@ -14,7 +14,7 @@
 	/>
 	
 	<MenuEntry
-		menu="main"
+		menuID="main"
 		language="en"
 		sequence="1"
 		title="otherthing"
@@ -24,7 +24,7 @@
 	/>
 	
 	<MenuEntry
-		menu="main"
+		menuID="main"
 		language="en"
 		sequence="2"
 		title="lastthing"
@@ -35,7 +35,7 @@
 	
 	
 	<MenuEntry
-		menu="main"
+		menuID="main"
 		language="nl"
 		sequence="0"
 		title="Iets"
@@ -45,7 +45,7 @@
 	/>
 	
 	<MenuEntry
-		menu="main"
+		menuID="main"
 		language="nl"
 		sequence="1"
 		title="Iets anders"

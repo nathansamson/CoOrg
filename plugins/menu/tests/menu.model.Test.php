@@ -108,7 +108,7 @@ class MenuTest extends CoOrgModelTest
 		$menu->save();
 		
 		$menu = Menu::get('Some Name');
-		$this->assertEquals(3, count($menu->entries('en')));
+		$this->assertEquals(3, count($menu->entries->filter('en')));
 	}
 	
 	public function testRemoveEntriesAfterDelete()
@@ -121,7 +121,7 @@ class MenuTest extends CoOrgModelTest
 		$menu->name = 'main';
 		$menu->save();
 		
-		$this->assertEquals(0, count($menu->entries('en')));
+		$this->assertEquals(0, count($menu->entries->filter('en')));
 	}
 	
 	public function testUpdateMenu()
