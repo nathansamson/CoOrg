@@ -28,7 +28,11 @@ class BlogTest extends CoOrgModelTest
 		$month = date('m');
 		$day = date('d');
 	
-		$blog = new Blog('My Title', 'Nathan', 'My Blog contents.', 'en');
+		$blog = new Blog;
+		$blog->title = 'My Title';
+		$blog->author = User::getUserByName('nathan');
+		$blog->text = 'My Blog contents.';
+		$blog->language = 'en';
 		$time = time();
 		$blog->save();
 		
@@ -39,7 +43,7 @@ class BlogTest extends CoOrgModelTest
 
 		$this->assertNotNull($blog);
 		$this->assertEquals('My Title', $blog->title);
-		$this->assertEquals('Nathan', $blog->authorID);
+		$this->assertEquals('nathan', $blog->authorID);
 		$this->assertEquals('My Blog contents.', $blog->text);
 		$this->assertEquals('en', $blog->language);
 		$this->assertTrue(abs($time - $blog->timePosted) <= 2);

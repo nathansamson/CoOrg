@@ -36,3 +36,20 @@ class BlogHasComments extends One2Many
 
 Model::registerRelation(new BlogHasComments);
 
+class BlogHasAuthor extends One2Many
+{
+	protected function info()
+	{
+		return array(
+			'from' => 'Blog',
+			'to' => 'User',
+			'local' => 'authorID',
+			'localAs' => 'author',
+			'foreign' => 'username',
+			'foreignAs' => ''
+		);
+	}
+}
+
+Model::registerRelation(new BlogHasAuthor);
+
