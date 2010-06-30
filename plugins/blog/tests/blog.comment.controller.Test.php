@@ -75,6 +75,44 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 	
 	public function testSaveAnonymous()
 	{
+		$this->request('blog/comment/save', array(
+			'blogID' => 'some-other-blog',
+			'blogDate' => '2010-04-10',
+			'blogLanguage' => 'en',
+			'comment' => 'My very first comment',
+			'name' => 'My Anon',
+			'email' => 'myemail@email.com'));
+		
+		$blog = Blog::getBlog('2010', '04', '10', 'some-other-blog', 'en');
+		$comment = $blog->comments[0];
+		$this->assertNull($comment->author);
+		$this->assertNotNull($comment->anonAuthor);
+		$this->assertEquals('My Anon', $comment->anonAuthor->name);
+		$this->assertEquals('myemail@email.com', $comment->anonAuthor->email);
+		$this->assertEquals('0.0.0.0', $comment->anonAuthor->IP);
+		$this->assertEquals('RE: Some Other Blog', $comment->title);
+		$this->assertEquals('My very first comment', $comment->comment);
+	}
+	
+	public function testSaveAnonymousFailure()
+	{
+		$this->request('blog/comment/save', array(
+			'blogID' => 'some-other-blog',
+			'blogDate' => '2010-04-10',
+			'blogLanguage' => 'en',
+			'comment' => 'My very first comment',
+			'name' => 'My Anon',
+			'email' => 'myemail'));
+		
+		$this->assertRendered('show');
+		$this->assertVarSet('blog');
+		$this->assertVarSet('blogComment');
+		$c = CoOrgSmarty::$vars['blogComment'];
+		$this->assertEquals('My very first comment', $c->comment);
+		$this->assertVarSet('anonProfile');
+		$p = CoOrgSmarty::$vars['anonProfile'];
+		$this->assertEquals('My Anon', $p->name);
+		$this->assertFlashError('Your comment was not posted');
 	}
 	
 	public function testEdit()
@@ -116,10 +154,29 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 	
 	public function testEditAdnonymous()
 	{
+		$this->login('nathan');
+		$this->request('blog/comment/edit/3');
+		
+		$this->assertRendered('show');
+		$this->assertVarSet('blog');
+		$this->assertVarSet('blogComment');
+		$this->assertVarSet('blogCommentEdit');
+		$c = CoOrgSmarty::$vars['blogCommentEdit'];
+		$blog = CoOrgSmarty::$vars['blog'];
+		$this->assertVarSet('anonProfileEdit');
+		$p = CoOrgSmarty::$vars['anonProfileEdit'];
+		$this->assertEquals(1, $p->ID);
+		$this->assertEquals(3, $c->ID);
+		$this->assertEquals('xyz', $blog->ID);
 	}
 	
 	public function testEditAdnonymousNotAllowed()
 	{
+		$this->login('nele');
+		$this->request('blog/comment/edit/2');
+		
+		$this->assertFlashError(t('You are not allowed to edit this comment'));
+		$this->assertRedirected('blog/show/2010/4/11/xyz');
 	}
 	
 	public function testUpdate()
@@ -180,10 +237,62 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 	
 	public function testUpdateAdnonymous()
 	{
+		$this->login('nathan');
+		$this->request('blog/comment/update', array(
+		               'ID' => 3,
+		               'comment' => 'My comment @ XYZ (en)',
+		               'name' => 'New Name',
+		               'email' => 'email@email.com',
+		               'website' => 'safe.com'
+		               ));
+		
+		$this->assertFlashNotice('Updated comment');
+		$this->assertRedirected('blog/show/2010/4/11/xyz');
+		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
+		$comment = $blog->comments[1];
+		$this->assertEquals('My comment @ XYZ (en)', $comment->comment);
+		$this->assertEquals('email@email.com', $comment->anonAuthor->email);
+		$this->assertEquals('New Name', $comment->anonAuthor->name);
+	}
+	
+	public function testUpdateAdnonymousFailure()
+	{
+		$this->login('nathan');
+		$this->request('blog/comment/update', array(
+		               'ID' => 3,
+		               'comment' => 'My comment @ XYZ (en)',
+		               'name' => 'New Name',
+		               'email' => 'email',
+		               'website' => 'safe.com'
+		               ));
+		
+		$this->assertRendered('show');
+		$this->assertVarSet('blog');
+		$this->assertVarSet('blogComment');
+		$this->assertVarSet('blogCommentEdit');
+		$c = CoOrgSmarty::$vars['blogCommentEdit'];
+		$blog = CoOrgSmarty::$vars['blog'];
+		$this->assertEquals(3, $c->ID);
+		$this->assertEquals('xyz', $blog->ID);
+		$this->assertFlashError('Could not save comment');
+		$this->assertVarSet('anonProfileEdit');
+		$p = CoOrgSmarty::$vars['anonProfileEdit'];
+		$this->assertEquals(1, $p->ID);
 	}
 	
 	public function testUpdateAdnonymousNotAllowed()
 	{
+		$this->login('nele');
+		$this->request('blog/comment/update', array(
+		               'ID' => 3,
+		               'comment' => 'My comment @ XYZ (en)',
+		               'name' => 'New Name',
+		               'email' => 'email@email.com',
+		               'website' => 'safe.com'
+		               ));
+
+		$this->assertFlashError(t('You are not allowed to edit this comment'));
+		$this->assertRedirected('blog/show/2010/4/11/xyz');
 	}
 	
 	public function testDelete()
@@ -211,20 +320,41 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 	public function testDeleteNotAllowed()
 	{
 		$this->login('nele');
+		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
+		$this->assertEquals(2, count($blog->comments));
 		$this->request('blog/comment/delete', array('ID' => 2));
 		
 		$this->assertFlashError('You are not allowed to delete this comment');
 		$this->assertRedirected('blog/show/2010/4/11/xyz');
 		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
-		$this->assertEquals(1, count($blog->comments));
+		$this->assertEquals(2, count($blog->comments));
 	}
 	
 	public function testDeleteAnonymous()
 	{
+		$this->login('nathan');
+		$this->request('blog/comment/delete', array('ID' => 3));
+		
+		$this->assertFlashNotice('Deleted comment');
+		$this->assertRedirected('blog/show/2010/4/11/xyz');
+		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
+		$this->assertEquals(1, count($blog->comments));
+		
+		$profile = AnonProfile::get(1);
+		$this->assertNull($profile);
 	}
 	
 	public function testDeleteAnonymousNotAllowed()
 	{
+		$this->login('nele');
+		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
+		$this->assertEquals(2, count($blog->comments));
+		$this->request('blog/comment/delete', array('ID' => 3));
+		
+		$this->assertFlashError('You are not allowed to delete this comment');
+		$this->assertRedirected('blog/show/2010/4/11/xyz');
+		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
+		$this->assertEquals(2, count($blog->comments));
 	}
 	
 	private function login($u)

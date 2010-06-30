@@ -21,6 +21,7 @@
 /**
  * @property primary autoincrement; ID Integer('ID');
  * @property authorID String('AuthorID', 24);
+ * @property anonAuthorID Integer('Anon Author ID');
  * @property timePosted DateTime('Date posted');
  * @property title String(t('Title'), 128);
  * @property comment String(t('Comment')); required

@@ -20,13 +20,24 @@
 
 function comments_install_db($test = false)
 {	 
+	  $s = DB::prepare('CREATE TABLE AnonProfile (
+	 	ID INTEGER PRIMARY KEY AUTOINCREMENT,
+	 	name VARCHAR(32),
+	 	email VARCHAR(256),
+	 	website VARCHAR(1024),
+	 	IP VARCHAR(39)
+	  )');
+	 $s->execute();
+
 	 $s = DB::prepare('CREATE TABLE Comment (
 	 	ID INTEGER PRIMARY KEY AUTOINCREMENT,
 	 	authorID VARCHAR(24),
+	 	anonAuthorID INTEGER,
 	 	timePosted DATETIME,
 	 	title VARCHAR(128),
 	 	comment TEXT,
-	 	FOREIGN KEY (authorID) REFERENCES User(username)
+	 	FOREIGN KEY (authorID) REFERENCES User(username),
+	 	FOREIGN KEY (anonAuthorID) REFERENCES AnonProfile(ID)
 	  )');
 	 $s->execute();
 	 
@@ -53,6 +64,9 @@ function comments_delete_db($test = false)
 	$s->execute();
 
 	$s = DB::prepare('DROP TABLE IF EXISTS MeCommentMock');
+	$s->execute();
+
+	$s = DB::prepare('DROP TABLE IF EXISTS AnonProfile');
 	$s->execute();
 
 	$s = DB::prepare('DROP TABLE IF EXISTS Comment');

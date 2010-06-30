@@ -18,22 +18,27 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function smarty_modifier_linkyfy($text, $request)
+/**
+ * @property primary autoincrement; ID Integer('ID');
+ * @property name String(t('Name'), 32); required
+ * @property email Email(t('Email')); required
+ * @property website URL(t('Website'));
+ * @property IP String('IP', 39); required
+*/
+class AnonProfile extends DBModel
 {
-	$args = func_get_args();
-	array_shift($args);
-	if ($request != 'e')
+	public function __construct()
 	{
-		$url = call_user_func(array('CoOrg', 'createURL'), $args);
+		parent::__construct();
 	}
-	else
+
+	public function get($ID)
 	{
-		$url = htmlspecialchars($args[1]);
-		$target = '_blank';
+		$q = DB::prepare('Select * FROM AnonProfile WHERE ID=:ID');
+		$q->execute(array(':ID' => $ID));
+		
+		return self::fetch($q->fetch(), 'AnonProfile');
 	}
-	return '<a href="'.$url.'"'.
-	    ($target ? ' target="'.$target.'"' : '').
-	    '>'.$text.'</a>';
 }
 
 ?>

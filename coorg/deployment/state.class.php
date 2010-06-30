@@ -74,6 +74,11 @@ class Session implements ISession
 		session_destroy();
 	}
 	
+	public static function IP()
+	{
+		return $_SERVER['REMOTE_ADDR'];
+	}
+	
 	private static function start()
 	{
 		if (!self::$_started)

@@ -208,6 +208,21 @@ class Model
 				$error = true;
 			}
 		}
+		foreach ($this->_variants as $variant)
+		{
+			$i = $variant['variant']->get();
+			if ($i != null && $type == 'insert' && $i instanceof DBModel && !$i->inDB())
+			{
+				try
+				{
+					$i->validate('insert');
+				}
+				catch (ValidationException $e)
+				{
+					$error = true;
+				}
+			}
+		}
 		if ($error) throw new ValidationException($this);
 	}
 	
@@ -258,6 +273,11 @@ class Model
 			}
 		}
 		return $ais;
+	}
+	
+	protected function variants()
+	{
+		return $this->_variants;
 	}
 
 	static private function parseProperties($class)
@@ -435,6 +455,7 @@ class Model
 class DBModel extends Model
 {
 	protected $_saved = false;
+	protected $_inDB = false;
 
 	public function save()
 	{
@@ -457,11 +478,26 @@ class DBModel extends Model
 				$ext->beforeInsert();
 			}
 			$this->validate('insert');
+			foreach ($this->variants() as $name=>$variant)
+			{
+				$i = $variant['variant']->get();
+				if ($i != null && $i instanceof DBModel && !$i->inDB())
+				{
+					$i->save();
+					$variant['variant']->set($i);
+				}
+			}
 			$r = $this->insert();
+			$this->_inDB = true;
 			$this->afterInsert();
 		}
 		$this->setSaved();
 		return $r;
+	}
+
+	public function inDB()
+	{
+		return $this->_inDB;
 	}
 
 	protected function update()
@@ -572,6 +608,7 @@ class DBModel extends Model
 		{
 			$ext->afterDelete();
 		}
+		$this->_inDB = false;
 	}
 	
 	protected function setSaved()
@@ -614,6 +651,7 @@ class DBModel extends Model
 			}
 		}
 		$instance->setSaved();
+		$instance->_inDB = true;
 		return $instance;
 	}
 }

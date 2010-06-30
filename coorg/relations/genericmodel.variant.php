@@ -51,7 +51,15 @@ class GenericModelVariant implements IPropertyVariant
 	
 	public function update()
 	{
-		$this->_i = false;
+		$key = $this->_k;
+		if ($this->_i && $this->_p->get() != $this->_i->$key)
+		{
+			$this->_i = false;
+		}
+		else if (!$this->_i)
+		{
+			$this->_i = false;
+		}
 	}
 	
 	public static function instance(IProperty $p, $args)

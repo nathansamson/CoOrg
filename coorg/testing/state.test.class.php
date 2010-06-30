@@ -66,6 +66,11 @@ class Session implements ISession
 	{
 		self::$_keys = array();
 	}
+	
+	public static function IP()
+	{
+		return '0.0.0.0';
+	}
 }
 
 ?>

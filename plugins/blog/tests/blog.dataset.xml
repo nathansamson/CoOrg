@@ -1,4 +1,12 @@
 <dataset>
+	<AnonProfile
+	 	ID="1"
+	 	name="Some A User"
+	 	email="anon@anon.org"
+	 	website="http://google.be"
+	 	IP="127.0.0.1"
+	 />
+
 	<Language
 		language="en"
 		name="English"
@@ -160,6 +168,20 @@
 	  
 	 <BlogComment
 	 	ID="2"
+	 	blogID="xyz"
+	 	blogDatePosted="2010-04-11"
+	 	blogLanguage="en"
+	 />
+	 
+	 <Comment
+	  	ID="3"
+	  	title="Re: XYZ"
+	  	comment="My comment @ XYZ (en)"
+	  	anonAuthorID="1"
+	  />
+	  
+	 <BlogComment
+	 	ID="3"
 	 	blogID="xyz"
 	 	blogDatePosted="2010-04-11"
 	 	blogLanguage="en"

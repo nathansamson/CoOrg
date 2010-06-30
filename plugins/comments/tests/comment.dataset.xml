@@ -73,4 +73,9 @@
 		ID="5"
 		mockID="other-mock"
 	/>
+	
+	<User
+		username="some-user"
+		email="some-user"
+	/>
 </dataset>

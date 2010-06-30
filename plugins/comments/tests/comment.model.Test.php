@@ -68,6 +68,7 @@ class CommentModelTest extends CoOrgModelTest
 		$comment->mock = MeCommentMock::get('me-mock');
 		$comment->title = 'Some Title';
 		$comment->comment = 'Some Comment';
+		$comment->author = User::getUserByName('some-user');
 		$comment->save();
 		
 		$this->assertEquals('me-mock', $comment->mockID);
@@ -99,6 +100,76 @@ class CommentModelTest extends CoOrgModelTest
 		$this->assertEquals('Second Comment', $comments[1]->title);
 		$this->assertEquals('Fourth Comment', $comments[2]->title);
 		$this->assertEquals('5th Comment', $comments[3]->title);
+	}
+	
+	public function testAnonProfile()
+	{
+		$anon = new AnonProfile;
+		$anon->name = 'My Anon Name';
+		$anon->email = 'someemail@mail.com';
+		$anon->IP = '127.0.0.1'; // Evil hacker...
+	
+		$mock = MeCommentMock::get('me-mock');
+		$comment = new MeCommentMockComment;
+		$comment->mock = $mock;
+		$comment->title = 'Some Title';
+		$comment->comment = 'Some Comment';
+		$comment->anonAuthor = $anon;
+		$comment->save();
+		
+		$comment = $mock->comments[count($mock->comments)-1];
+		$this->assertNull($comment->author);
+		$this->assertEquals('Some Title', $comment->title);
+		$this->assertNotNull($comment->anonAuthor);
+		$this->assertEquals('My Anon Name', $comment->anonAuthor->name);
+	}
+	
+	public function testAnonProfileFailure()
+	{
+		$anon = new AnonProfile;
+		$anon->name = 'My Anon Name';
+		$anon->email = 'someemail';
+		$anon->IP = '127.0.0.1'; // Evil hacker...
+	
+		$mock = MeCommentMock::get('me-mock');
+		$comment = new MeCommentMockComment;
+		$comment->mock = $mock;
+		$comment->title = 'Some Title';
+		$comment->comment = 'Some Comment';
+		$comment->anonAuthor = $anon;
+		try
+		{
+			$comment->save();
+			$this->fail('Exception expected');
+		}
+		catch (ValidationException $e)
+		{
+			$this->assertEquals('Email is not a valid emailadress', $anon->email_error);
+		}
+	}
+	
+	public function testAnonProfileCommentFailure()
+	{
+		$anon = new AnonProfile;
+		$anon->name = 'My Anon Name';
+		$anon->email = 'someemail';
+		$anon->IP = '127.0.0.1'; // Evil hacker...
+	
+		$mock = MeCommentMock::get('me-mock');
+		$comment = new MeCommentMockComment;
+		$comment->mock = $mock;
+		$comment->title = 'Some Title';
+		$comment->anonAuthor = $anon;
+		try
+		{
+			$comment->save();
+			$this->fail('Exception expected');
+		}
+		catch (ValidationException $e)
+		{
+			$this->assertEquals('Comment is required', $comment->comment_error);
+			$this->assertNull($anon->ID);
+		}
 	}
 }
 

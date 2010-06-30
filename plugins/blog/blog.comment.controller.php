@@ -26,14 +26,28 @@ class BlogCommentController extends Controller
 	/**
 	 * @before findBlog $blogID $blogDate $blogLanguage
 	*/
-	public function save($blogID, $blogDate, $blogLanguage, $comment)
+	public function save($blogID, $blogDate, $blogLanguage, $comment,
+	                     $name, $email, $website)
 	{
 		if ($this->_blog->allowComments())
 		{
 			$blogComment = new BlogComment;
 			$blogComment->title = 'RE: ' . $this->_blog->title;
 			$blogComment->comment = $comment;
-			$blogComment->author = UserSession::get()->user();
+			$anon = null;
+			if (UserSession::get())
+			{
+				$blogComment->author = UserSession::get()->user();
+			}
+			else
+			{
+				$anon = new AnonProfile;
+				$anon->name = $name;
+				$anon->email = $email;
+				$anon->website = $website;
+				$anon->IP = Session::IP();
+				$blogComment->anonAuthor = $anon;
+			}
 			try
 			{
 				$this->_blog->comments[] = $blogComment;
@@ -49,6 +63,10 @@ class BlogCommentController extends Controller
 				$this->error(t('Your comment was not posted'));
 				$this->blogComment = $blogComment;
 				$this->blog = $this->_blog;
+				if ($anon)
+				{
+					$this->anonProfile = $anon;
+				}
 				$this->render('show');
 			}
 		}
@@ -73,6 +91,10 @@ class BlogCommentController extends Controller
 			$this->blog = $this->_blog;
 			$this->blogCommentEdit = $this->_comment;
 			$this->blogComment = new BlogComment;
+			if ($anon = $this->_comment->anonAuthor)
+			{
+				$this->anonProfileEdit = $anon;
+			}
 			$this->render('show');
 		}
 		else
@@ -89,13 +111,23 @@ class BlogCommentController extends Controller
 	/**
 	 * @before findComment $ID
 	*/
-	public function update($ID, $comment)
+	public function update($ID, $comment, $name, $email, $website)
 	{
 		if ($this->hasCommentAccess())
 		{
 			$this->_comment->comment = $comment;
+			if ($p = $this->_comment->anonAuthor)
+			{
+				$p->name = $name;
+				$p->email = $email;
+				$p->website = $website;
+			}
 			try
 			{
+				if ($p)
+				{
+					$p->save();
+				}
 				$this->_comment->save();
 				
 				$this->notice(t('Updated comment'));
@@ -109,6 +141,10 @@ class BlogCommentController extends Controller
 			{
 				$this->error(t('Could not save comment'));
 				$this->blog = $this->_blog;
+				if ($p)
+				{
+					$this->anonProfileEdit = $p;
+				}
 				$this->blogCommentEdit = $this->_comment;
 				$this->blogComment = new BlogComment;
 				$this->render('show');
@@ -133,6 +169,10 @@ class BlogCommentController extends Controller
 		if ($this->hasCommentAccess())
 		{
 			$this->_comment->delete();
+			if ($p = $this->_comment->anonAuthor)
+			{
+				$p->delete();
+			}
 			
 			$this->notice(t('Deleted comment'));
 			$this->redirect('blog/show',

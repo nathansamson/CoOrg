@@ -54,5 +54,23 @@ class CommentHasAuthor extends One2Many
 
 Model::registerRelation(new CommentHasAuthor);
 
+class CommentHasAnonAuthor extends One2Many
+{
+	protected function info()
+	{
+		return array(
+			'from' => 'Comment',
+			'to' => 'AnonProfile',
+			'local' => 'anonAuthorID',
+			'localAs' => 'anonAuthor',
+			'foreign' => 'ID',
+			'foreignAs' => ''
+		);
+	}
+}
+
+Model::registerRelation(new CommentHasAnonAuthor);
+
+
 
 ?>

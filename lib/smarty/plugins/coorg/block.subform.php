@@ -18,22 +18,19 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function smarty_modifier_linkyfy($text, $request)
+function smarty_block_subform($params, $content, $smarty)
 {
-	$args = func_get_args();
-	array_shift($args);
-	if ($request != 'e')
+	$form = $smarty->_coorg_form;
+	if ($content == null)
 	{
-		$url = call_user_func(array('CoOrg', 'createURL'), $args);
+		$form->nestedInstances[] = $form->instance;
+		$form->instance = $params['instance'];
 	}
 	else
 	{
-		$url = htmlspecialchars($args[1]);
-		$target = '_blank';
+		$form->instance = array_pop($form->nestedInstances);
+		return $content;
 	}
-	return '<a href="'.$url.'"'.
-	    ($target ? ' target="'.$target.'"' : '').
-	    '>'.$text.'</a>';
 }
 
 ?>

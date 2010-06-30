@@ -35,6 +35,8 @@ interface ISession
 	static function delete($key);
 	
 	static function destroy();
+	
+	static function IP();
 }
 
 ?>

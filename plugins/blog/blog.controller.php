@@ -80,6 +80,10 @@ class BlogController extends Controller
 	public function show($year, $month, $day, $id, $language = null)
 	{
 		$this->blog = $this->_blog;
+		if (!UserSession::get())
+		{
+			$this->anonProfile = new AnonProfile;
+		}
 		$this->render('show');
 	}
 	
