@@ -86,7 +86,7 @@ class UserProfileControllerTest extends CoOrgControllerTest
 			'birthDate' => '04-28', /* Ceci ne pas une date */
 			'biography' => 'My Bio'));
 
-		$this->assertRendered('edit');
+		$this->assertRendered('profile/edit');
 		$this->assertFlashError('Profile not updated');
 		$this->assertVarSet('profile');
 	}

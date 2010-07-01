@@ -30,6 +30,8 @@ interface ICoOrgSmarty
 	public function display($tpl);
 	public function fetch($tpl);
 	
+	public function stylesheet($style);
+	
 	public function saveState();
 }
 

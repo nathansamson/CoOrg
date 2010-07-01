@@ -26,6 +26,7 @@
  * @property writeonly; password String(t('Password')); required only('insert')
  * @property writeonly; passwordConfirmation String(t('Password confirmation')); required only('insert')
  * @property writeonly; oldPassword String(t('Password')); required only('updatePassword')
+ * @property writeonly; forceNewPassword Bool(''); required only('forceNewPassword')
  * @property protected; passwordHash String('Password hash', 128); required
  * @property protected; passwordHashKey String('Pasword hash key', 64); required
  * @property protected; lockKey String('Reigstration lock key', 64); required only('insert')
@@ -42,6 +43,12 @@ class User extends DBModel
 	public function isLocked()
 	{
 		return $this->lockKey != null;
+	}
+	
+	public function unlockForce()
+	{
+		$this->lockKey = null;
+		// Do not automatically save here because it will change other keys to
 	}
 	
 	public function unlock($key)
@@ -99,6 +106,11 @@ class User extends DBModel
 		return self::getUserByName($user);
 	}
 	
+	public static function users()
+	{
+		return new UserPager('SELECT * FROM User ORDER BY username');
+	}
+	
 	protected function validate($for)
 	{
 		parent::validate($for);
@@ -143,21 +155,28 @@ class User extends DBModel
 				$this->email_error = t('%n is already taken');
 				$error = true;
 			}
-			if ($this->password != null)
+			if ($this->password != null && !$this->forceNewPassword)
 			{
 				$this->validate('updatePassword');
+			}
+			else if ($this->password != null)
+			{
+				$this->validate('forceNewPassword');
 			}
 			if ($error)
 			{
 				throw new ValidationException($this);
 			}
 		}
-		else if ($for == 'updatePassword')
+		else if ($for == 'updatePassword' || $for == 'forceNewPassword')
 		{
-			if (!$this->checkPassword($this->oldPassword))
+			if ($for == 'updatePassword')
 			{
-				$this->oldPassword_error = t('Password is wrong');
-				throw new ValidationException($this);
+				if (!$this->checkPassword($this->oldPassword))
+				{
+					$this->oldPassword_error = t('Password is wrong');
+					throw new ValidationException($this);
+				}
 			}
 			if ($this->password != $this->passwordConfirmation)
 			{

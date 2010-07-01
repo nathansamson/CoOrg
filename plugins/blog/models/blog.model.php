@@ -35,6 +35,7 @@
  * @variant year year datePosted
  * @variant month month datePosted
  * @variant day day datePosted
+ * @extends Normalize title ID datePosted language
 */
 class Blog extends DBModel
 {
@@ -185,14 +186,54 @@ class Blog extends DBModel
 		return $pager;
 	}
 	
-	protected function normalizeTitle($title)
+	public static function getArchive($language, $year, $month = null)
 	{
-		return str_replace(' ', '-', strtolower($title));
+		while (strlen($year) != 4) $year ='0'.$year;
+		if ($month) while (strlen($month) != 2) $month ='0'.$month;
+		
+		$q = DB::prepare('SELECT * FROM Blog WHERE
+		                    language = :l AND
+		                    YEAR(datePosted) = :year'.
+		                    ($month ? ' AND MONTH(datePosted) = :month' : '').
+		                    ' ORDER BY timePosted DESC');
+		
+		
+		$params = array(':l' => $language, ':year' => $year);
+		if ($month) $params[':month'] = $month;
+		
+		$q->execute($params);
+		$a = array();
+		foreach ($q->fetchAll() as $row)
+		{
+			$a[] = Blog::fetch($row, 'Blog');
+		}
+		return $a;
+	}
+	
+	public static function getArchives($language)
+	{
+		$q = DB::prepare('SELECT YEAR(datePosted) AS year,
+		                         MONTH(datePosted) AS month,
+		                         COUNT(*) as count  FROM Blog
+		         WHERE language=:lang
+		         GROUP BY year, month
+		         ORDER BY year DESC, month DESC');
+		$q->execute(array(':lang' => $language));
+		
+		$archive = array();
+		foreach ($q->fetchAll() as $row)
+		{
+			$monthInfo = new stdClass;
+			$monthInfo->year = $row['year'];
+			$monthInfo->month = $row['month'];
+			$monthInfo->posts = $row['count'];
+			$archive[] = $monthInfo;
+		}
+		return $archive;
 	}
 	
 	protected function beforeInsert()
 	{
-		$this->ID = $this->normalizeTitle($this->title);
 		if ($this->datePosted_db == null)
 			$this->datePosted = time();
 		$this->timePosted = time();
@@ -244,7 +285,7 @@ class Blog extends DBModel
 		}
 		else
 		{
-			$q = DB::prepare('SELECT * FROM BLOG
+			$q = DB::prepare('SELECT * FROM Blog
 			                    WHERE datePosted = :postDate
 			                    AND (parentID=:ID OR ID=:ID)
 			                    AND language =:language');

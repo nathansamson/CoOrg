@@ -80,9 +80,10 @@ class Config
 		{
 			$s = 'array(';
 			$elements = array();
-			foreach ($value as $element)
+			foreach ($value as $key => $element)
 			{
-				$elements[] = $this->normalize($element);
+				$elements[] = $this->normalize($key) .' => '. 
+				              $this->normalize($element);
 			}
 			$s .= implode(',', $elements);
 			$s .= ')';
@@ -92,7 +93,11 @@ class Config
 		{
 			return ($value ? 'true' : 'false');
 		}
-		else if ($value == null)
+		else if (is_int($value) || is_float($value))
+		{
+			return $value;
+		}
+		else if ($value === null)
 		{
 			return 'null';
 		}

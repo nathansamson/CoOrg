@@ -23,7 +23,7 @@ abstract class AsideController
 
 	private $_viewsPath;
 	private $_smarty;
-	private $_variablesSetByMe = array();
+	private $_data = null;
 	
 	public function __construct($smarty, $viewsPath)
 	{
@@ -31,29 +31,49 @@ abstract class AsideController
 		$this->_viewsPath = $viewsPath;
 	}
 	
-	abstract function run($widgetParams, $request);
+	abstract function run($widgetParams, $orient, $request);
+	abstract function preview($widgetParams, $orient);
 	
 	protected function render($tpl)
 	{
-		$s = $this->_smarty->fetch($this->_viewsPath.$tpl.'.html.tpl');
-		foreach ($this->_variablesSetByMe as $var)
-		{
-			$this->_smarty->clearAssign($var);
-		}
-		return $s;
+		return $this->doRender($tpl);
+	}
+	
+	protected function renderPreview($tpl)
+	{
+		return $this->doRender($tpl, 'layout-preview.html.tpl');
 	}
 
 	final public function __set($var, $value)
 	{
-		if ($this->_smarty->getVariable($var) instanceof Undefined_Smarty_Variable)
+		if ($this->_data == null)
 		{
-			$this->_variablesSetByMe[] = $var;
-			$this->_smarty->assign($var, $value);
+			$this->_data = $this->_smarty->createData($this->_smarty);
+		}
+		$this->_data->assign($var, $value);
+	}
+	
+	protected function doRender($tpl, $base = null)
+	{
+		if ($base)
+		{
+			$tpl = $this->_smarty->createTemplate('extends:'.$base.'|'.$this->_viewsPath.$tpl.'.html.tpl', $this->_data);
 		}
 		else
 		{
-			throw new Exception('Can not overwrite template variable!');
+			$tpl = $this->_smarty->createTemplate($this->_viewsPath.$tpl.'.html.tpl', $this->_data);
 		}
+		return $tpl->fetch();
+	}
+}
+
+abstract class AsideConfigurableController extends AsideController
+{	
+	abstract function configure($widgetParams, $orient);
+	
+	protected function renderConfigure($tpl)
+	{
+		return $this->doRender($tpl, 'layout-configure.html.tpl');
 	}
 }
 

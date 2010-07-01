@@ -27,6 +27,7 @@ function smarty_block_form($params, $content, $smarty)
 		$form->instance = $params['instance'];
 		$form->formID = array_key_exists('id', $params) ? $params['id'] : null;
 		$form->nestedInstances = array();
+		$form->nobreaks = array_key_exists('nobreaks', $params);
 		
 		$smarty->_coorg_form = $form;
 		return;

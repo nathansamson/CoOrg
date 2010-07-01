@@ -20,7 +20,26 @@
 
 function smarty_function_aside($params, $smarty)
 {
-	return CoOrg::aside($params['name'], $smarty);
+	if (array_key_exists('name', $params))
+	{
+		if (!array_key_exists('preview', $params))
+		{
+			return CoOrg::aside($params['name'], $smarty);
+		}
+		else
+		{
+			if (array_key_exists('edit', $params) && $params['edit'])
+			{
+				$edit = true;
+				$widgetID = $params['editWidgetID'];
+			}	
+			return CoOrg::aside($params['name'], $smarty, true, $edit, $widgetID);
+		}
+	}
+	else
+	{
+		return CoOrg::aside(null, $smarty);
+	}
 }
 
 ?>

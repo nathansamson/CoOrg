@@ -2,6 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
+require_once 'coorg/testing/domainexists.test.php';
 require_once 'coorg/coorg.class.php';
 require_once 'coorg/testing/model.test.class.php';
 require_once 'coorg/testing/coorg.test.class.php';

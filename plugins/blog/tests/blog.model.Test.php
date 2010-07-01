@@ -53,6 +53,27 @@ class BlogTest extends CoOrgModelTest
 		$this->assertSame((int)$day, $blog->day);
 	}
 	
+	public function testInsertDoubleNormalizedTitles()
+	{
+		$blog = new Blog;
+		$blog->title = 'Some Title';
+		$blog->text = 'Text';
+		$blog->language = 'en';
+		$blog->authorID = 'Nathan';
+		
+		$blog2 = new Blog;
+		$blog2->title = $blog->title;
+		$blog2->text = 'Text';
+		$blog2->language = $blog->language;
+		$blog2->authorID = 'Nathan';
+		
+		$blog->save();
+		$blog2->save();
+		
+		// Same day, same title, same language, no title conflict
+		$this->assertNotEquals($blog->ID, $blog2->ID);
+	}
+	
 	public function testTitleMissing()
 	{
 		$blog = new Blog('', 'Nathan', 'My Blog contents.', 'en');
@@ -362,6 +383,53 @@ class BlogTest extends CoOrgModelTest
 		
 		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
 		$this->assertTrue($blog->allowComments());
+	}
+
+	public function testArchives()
+	{
+		$archive = Blog::getArchives('br');
+		
+		$this->assertEquals(7, count($archive));
+		$this->assertEquals('2009', $archive[0]->year);
+		$this->assertEquals('06', $archive[0]->month);
+		$this->assertEquals(1, $archive[0]->posts);
+		
+		$this->assertEquals('2009', $archive[1]->year);
+		$this->assertEquals('03', $archive[1]->month);
+		$this->assertEquals(3, $archive[1]->posts);
+		
+		$this->assertEquals('2009', $archive[2]->year);
+		$this->assertEquals('01', $archive[2]->month);
+		$this->assertEquals(2, $archive[2]->posts);
+		
+		$this->assertEquals('2008', $archive[3]->year);
+		$this->assertEquals('12', $archive[3]->month);
+		$this->assertEquals(1, $archive[3]->posts);
+		
+		$this->assertEquals('2008', $archive[4]->year);
+		$this->assertEquals('08', $archive[4]->month);
+		$this->assertEquals(1, $archive[4]->posts);
+		
+		$this->assertEquals('2008', $archive[5]->year);
+		$this->assertEquals('06', $archive[5]->month);
+		$this->assertEquals(2, $archive[5]->posts);
+		
+		$this->assertEquals('2008', $archive[6]->year);
+		$this->assertEquals('05', $archive[6]->month);
+		$this->assertEquals(1, $archive[6]->posts);
+	}
+	
+	public function testArchive()
+	{
+		$archive = Blog::getArchive('br', 2009, 1);
+		$this->assertEquals(2, count($archive));
+		$this->assertEquals('b', $archive[0]->ID);
+		$this->assertEquals('a', $archive[1]->ID);
+		
+		$archive = Blog::getArchive('br', 2009);
+		$this->assertEquals(6, count($archive));
+		$this->assertEquals('abba', $archive[0]->ID);
+		$this->assertEquals('ccdd', $archive[1]->ID);
 	}
 }
 

@@ -79,7 +79,7 @@ class CoOrgControllerTest extends CoOrgModelTest
 		$tpl = str_replace('/', '\/', $tpl);
 		if ($baseFile)
 		{
-			$match = preg_match('/^extends:'.$baseFile.'.'.$type.'.tpl\|(.*)'.$tpl.'.'.$type.'.tpl$/', CoOrgSmarty::$renderedTemplate) == 1;
+			$match = preg_match('/^extends:'.$baseFile.'.'.$type.'.tpl\|'.$tpl.'.'.$type.'.tpl$/', CoOrgSmarty::$renderedTemplate) == 1;
 		}
 		else
 		{

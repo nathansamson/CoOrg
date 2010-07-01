@@ -21,6 +21,12 @@
 class ConfigTest extends PHPUnit_Framework_TestCase
 {
 
+	public function setUp()
+	{
+		copy('coorg/tests/configs/save.test.php.original',
+		     'coorg/tests/configs/save.test.php');
+	}
+
 	public function testGetSet()
 	{
 		$config = new Config('coorg/tests/configs/config.test.php');
@@ -36,9 +42,6 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 	
 	public function testSave()
 	{
-		copy('coorg/tests/configs/save.test.php.original',
-		     'coorg/tests/configs/save.test.php');
-		
 		$config = new Config('coorg/tests/configs/save.test.php');
 		$config->set('myChangedKey', 'mySavedValue');
 		$config->save();
@@ -50,10 +53,6 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 	
 	public function testSaveArray()
 	{
-		copy('coorg/tests/configs/save.test.php.original',
-		     'coorg/tests/configs/save.test.php');
-		
-		
 		$config = new Config('coorg/tests/configs/save.test.php');
 		$config->set('myArrayValue', array('Google', array('A', 'B')));
 		$config->save();
@@ -65,10 +64,6 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 	
 	public function testSaveSpecialChars()
 	{
-		copy('coorg/tests/configs/save.test.php.original',
-		     'coorg/tests/configs/save.test.php');
-		
-		
 		$config = new Config('coorg/tests/configs/save.test.php');
 		$config->set('myArrayValue', array("Google's best browser\n"));
 		$config->set('myStrangeValue', 'é & " \ () <?php shit; ?> \\\'');
@@ -79,6 +74,23 @@ class ConfigTest extends PHPUnit_Framework_TestCase
 		                      $config->get('myArrayValue'));
 		$this->assertEquals('é & " \ () <?php shit; ?> \\\'',
 		                      $config->get('myStrangeValue'));
+	}
+	
+	public function testSaveArrayKeys()
+	{
+		$advArray = array(
+			array('Google' => 'Most popular search company',
+			      'Microsoft' => 'Most popular OS creator'),
+			'Aloha' => 'Stupid protocol',
+			array('0'),
+			array('1')
+		);
+		$config = new Config('coorg/tests/configs/save.test.php');
+		$config->set('advancedArray', $advArray);
+		$config->save();
+		
+		$config = new Config('coorg/tests/configs/save.test.php');
+		$this->assertSame($advArray, $config->get('advancedArray'));
 	}
 	
 	/**

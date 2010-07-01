@@ -20,6 +20,7 @@
 
 error_reporting(E_ALL);
 
+require_once 'static/resources.coorg.php';
 require_once 'coorg/controller.class.php';
 require_once 'coorg/asidecontroller.class.php';
 require_once 'coorg/config.class.php';
@@ -39,6 +40,7 @@ require_once 'coorg/relations/manymanycollection.class.php';
 require_once 'coorg/relations/onerelation.class.php';
 require_once 'coorg/relations/manyrelation.class.php';
 require_once 'coorg/relations/manymanyrelation.class.php';
+require_once 'coorg/normalize.class.php';
 require_once 'coorg/header.interface.php';
 require_once 'coorg/coorgsmarty.interface.php';
 require_once 'coorg/state.interface.php';
@@ -46,6 +48,8 @@ require_once 'coorg/mail.interface.php';
 
 
 class CoOrg {
+	const PANEL_ORIENT_HORIZONTAL = 1;
+	const PANEL_ORIENT_VERTICAL = 2;
 
 	private static $_controllers = array();
 	private static $_models = array();
@@ -58,6 +62,7 @@ class CoOrg {
 	private static $_appdir;
 	private static $_pluginDir;
 	private static $_config;
+	private static $_resources = array();
 	
 	private static $_request;
 	private static $_requestParameters;
@@ -246,43 +251,108 @@ class CoOrg {
 		return $url;
 	}
 	
-	public static function staticFile($file, $app = '__')
+	public static function staticFile($file, $app = null)
 	{
-		if ($app == '__')
+		$external = self::$_config->get('staticpath');	
+	
+		if ($app == null)
 		{
-			return self::$_config->get('path').'static/'.$file;
-		}
-		else
-		{
-			$pluginPath = self::$_config->get('path') . '/';
-			if (in_array($app, self::$_config->get('enabled_plugins')))
+			$version = self::$_resources['/'][$file];
+			
+			if ($external)
 			{
-				$pluginPath .= self::$_pluginDir.'/'.$app;
+				$path = $external.'_root/';
 			}
 			else
 			{
-				$pluginPath .= self::$_appdir.'/'.$app;
+				$path = self::$_config->get('path').'static/';
 			}
-			return $pluginPath. '/static/'.$file;
+			return $path.$file.'?v='.$version;
+		}
+		else
+		{
+			self::loadPluginInfo('resources.coorg', $app);
+			if (array_key_exists($file, self::$_resources[$app]))
+			{
+				$version = self::$_resources[$app][$file];
+			}
+			else
+			{
+				throw new Exception('No version specified for '.$file.'::'.$app);
+			}
+			
+			if ($external && self::$_config->get('staticpath/'.$app))
+			{
+				$pluginPath = $external.$app;
+			}
+			else
+			{
+				$pluginPath = self::$_config->get('path') . '/';
+				if (in_array($app, self::$_config->get('enabled_plugins')))
+				{
+					$pluginPath .= self::$_pluginDir.'/'.$app;
+				}
+				else
+				{
+					$pluginPath .= self::$_appdir.'/'.$app;
+				}
+			}
+			return $pluginPath. '/static/'.$file.'?v='.$version;
 		}
 	}
 	
-	public static function aside($name, $smarty)
+	public static function getWidgetInstance($widgetName)
 	{
-		$items = self::$_config->get('aside/'.$name);
-		if ($items == null) return '';
+		$p = explode('/', $widgetName, 2);
+			
+		include_once(self::$_asides[$p[0]][$p[1]]);
+			
+		$className = ucfirst($p[0]).ucfirst($p[1]).'Aside';
+		return new $className(null, null);
+	}
+	
+	public static function aside($name, $smarty, $preview = false,
+	                             $edit = false, $widgetID = null)
+	{
+		if ($name)
+		{
+			if ($name == 'main')
+			{
+				$orient = CoOrg::PANEL_ORIENT_VERTICAL;
+			}
+			else
+			{
+				$orient = CoOrg::PANEL_ORIENT_HORIZONTAL;
+			}
+			$items = self::$_config->get('aside/'.$name);
+			if ($items == null) return '';
+		}
+		else
+		{
+			$orient = CoOrg::PANEL_ORIENT_VERTICAL;
+			$preview = true;
+			$items = array();
+			foreach (self::$_asides as $plugin => $pWidgets)
+			{
+				foreach ($pWidgets as $pName => $pWidget)
+				{
+					$items[] = $plugin.'/'.$pName;
+				}
+			}
+		}
 		$s = '';
 		foreach ($items as $key=>$item)
 		{
 			if (is_array($item))
 			{
-				$widget = $key;
+				$widget = $item['widgetID'];
+				unset($item['widgetID']);
 				$widgetParams = $item;
 			}
 			else
 			{
 				$widget = $item;
-				$widgetParams = array();
+				$widgetParams = $name ? array() : null;
 			}
 			$p = explode('/', $widget, 2);
 			
@@ -290,11 +360,42 @@ class CoOrg {
 			
 			$className = ucfirst($p[0]).ucfirst($p[1]).'Aside';
 			$i = new $className($smarty, dirname(self::$_asides[$p[0]][$p[1]]).'/../views/');
-			$r = self::$_requestParameters;
-			if ($r == null) $r = array();
-			array_unshift($r, self::$_request);
-			array_unshift($r, $widgetParams);
-			$s .= call_user_func_array(array($i, 'run'), $r);
+			
+			if (!$preview)
+			{
+				$r = self::$_requestParameters;
+				if ($r == null) $r = array();
+				array_unshift($r, self::$_request);
+				array_unshift($r, $orient);
+				array_unshift($r, $widgetParams);
+				$s .= call_user_func_array(array($i, 'run'), $r);
+			}
+			else
+			{
+				$i->widgetID = $key;
+				$i->panelID = $name;
+				if ($name && $key > 0) $i->widgetUp = $key - 1;
+				if ($name && $key < count($items) - 1) $i->widgetDown = $key + 1;
+				if ($name && $i instanceof AsideConfigurableController)
+				{
+					$i->widgetConfigure = true;
+				}
+				if (!$name)
+				{
+					$i->widgetName = $widget;
+					$i->panels = array('main' => 'Main',
+					                   'navigation-left' => 'Navigation (Left)',
+					                   'navigation-right' => 'Navigation (Right)');
+				}
+				if (!($edit && $key == $widgetID))
+				{
+					$s .= $i->preview($widgetParams, $orient);
+				}
+				else
+				{
+					$s .= $i->configure($widgetParams, $orient);
+				}
+			}
 		}
 		
 		return $s;
@@ -328,13 +429,23 @@ class CoOrg {
 		return self::$_config;
 	}
 	
-	public static function loadPluginInfo($id)
+	public static function loadPluginInfo($id, $dir = null)
 	{
 		if (array_key_exists($id, self::$_extras))
 		{
-			foreach (self::$_extras[$id] as $file)
+			if ($dir == null)
 			{
-				include_once $file;
+				foreach (self::$_extras[$id] as $file)
+				{
+					include_once $file;
+				}
+			}
+			else
+			{
+				if (array_key_exists($dir, self::$_extras[$id]))
+				{
+					include_once (self::$_extras[$id][$dir]);
+				}
 			}
 		}
 	}
@@ -344,10 +455,16 @@ class CoOrg {
 		$stocks = array(
 			'edit' => array('img' => 'images/icons/edit.png', 'alt' => t('Edit'), 'title' => t('Edit')),
 			'delete' => array('img' => 'images/icons/edit-delete.png', 'alt' => t('Delete'), 'title' => t('Delete')),
-			'list-remove' => array('img' => 'images/icons/list-remove.png', 'alt' => t('Remove'), 'title' => t('Remove'))
+			'list-remove' => array('img' => 'images/icons/list-remove.png', 'alt' => t('Remove'), 'title' => t('Remove')),
+			'list-add' => array('img' => 'images/icons/list-add.png', 'alt' => t('Add'), 'title' => t('Add'))
 		);
 		
 		return $stocks[$stock];
+	}
+	
+	public static function resreg($app, $resource, $version)
+	{
+		self::$_resources[$app][$resource] = $version;
 	}
 	
 	/* == These functions are only used for testing purposes == */
@@ -440,10 +557,16 @@ class CoOrg {
 					
 					foreach ($functionParams as $fParam)
 					{
+						if ($fParam->getName() == '_')
+						{
+							$params[$fParam->getPosition()] = $inputParams;
+							break;
+						}
 						if (array_key_exists($fParam->getName(), $inputParams))
 						{
 							$params[$fParam->getPosition()] =
 							                  $inputParams[$fParam->getName()];
+							unset($inputParams[$fParam->getName()]);
 						}
 						else if ($fParam->isDefaultValueAvailable())
 						{
@@ -505,6 +628,12 @@ class CoOrg {
 			if ($restrict != null && !in_array($subdir, $restrict)) continue;
 			if (is_dir($dir))
 			{
+				if (!array_key_exists($subdir, self::$_resources))
+				{
+					// In testing we clear loadDir a few times, but we only include
+					// resources.coorg once for each run, so do not throw away this info
+					self::$_resources[$subdir] = array();
+				}
 				self::$_asides[$subdir] = array();
 				// Scan files in dir
 				foreach (scandir($dir) as $sfile)
@@ -545,11 +674,11 @@ class CoOrg {
 							$ID = substr($sfile, 0, -4);
 							if (array_key_exists($ID, self::$_extras))
 							{
-								self::$_extras[$ID][] = $file;
+								self::$_extras[$ID][$subdir] = $file;
 							}
 							else
 							{
-								self::$_extras[$ID] = array($file);
+								self::$_extras[$ID] = array($subdir => $file);
 							}
 						}
 					}

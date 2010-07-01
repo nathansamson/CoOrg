@@ -1,7 +1,7 @@
 {block name='title'}{'Translate blog'|_}{/block}
 
 {block name='content'}
-	<h1>{'Translate "%blog"'|_:$originalBlog->title}</h1>
+	<h1>{'Translate "%blog"'|_:$originalBlog->title|escape}</h1>
 	
 	<h2>{'Original'|_}</h2>
 	{$originalBlog->text|format:all}

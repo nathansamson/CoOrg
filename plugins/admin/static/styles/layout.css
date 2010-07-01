@@ -1,0 +1,144 @@
+#layout-preview {
+	width: 100%;
+	margin-top: 10px;
+}
+
+#layout-preview  .header {
+	width: 100%;
+	min-height: 30px;
+	background-color: #999;
+	text-align: center;
+	margin-bottom: 10px;
+}
+
+#layout-preview > .header h1 {
+	font-size: 30px;
+	color: #444;
+}
+
+#layout-preview  .block {
+	border: solid 1px #AAA;
+}
+
+#layout-preview .navigation-left {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	display: inline-block;
+	min-height: 25px;
+	width: 49.5%;
+	vertical-align: top;
+	margin-right: 1%;
+}
+
+#layout-preview .navigation-right {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	display: inline-block;
+	min-height: 25px;
+	width: 49.5%;
+	vertical-align: top;
+}
+
+#layout-preview .navigation {
+	margin-bottom: 10px;
+}
+
+#layout-preview .main-left {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	width: 39.5%;
+	min-height: 400px;
+	display: inline-block;
+	margin: 0;
+	margin-right: 1%;
+}
+
+#layout-preview .main {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	margin: 0;
+	vertical-align: top;
+	display: inline-block;
+	min-height: 400px;
+	width: 59.5%;
+	
+	background-color: #999;
+	text-align: center;
+	overflow: hidden;
+	padding: 0 8px;
+	color: #666;
+}
+
+#layout-preview .main h1 {
+	font-size: 40px;
+	color: #444;
+	margin-top: 30px;
+}
+
+#widget-list section.widget-preview {
+	margin-left: 0px;
+	width: 231px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+#widget-list section.widget-preview:nth-child(3n) {
+	margin-right: 0px;
+}
+
+.preview section.widget-preview h1 {
+	font-size: 14px;
+}
+
+.preview section.widget-preview {
+	margin: 10px;
+	border: solid 1px #999;
+	/*-moz-border-radius: 0 0 5px 5px;
+	-webkit-border-radius: 0 0 5px 5px;
+	border-radius: 0 0 5px 5px;*/
+}
+
+.preview section.widget-preview header {
+	display: block;
+	border-bottom: solid 2px #999;
+	margin-bottom: 2px;
+	background-color: #CCC;
+	padding: 2px;
+	margin: 0;
+}
+
+.preview section.widget-preview > div {
+	padding: 5px;
+	background-color: #DDD;
+}
+
+.preview section.widget-preview header h1 {
+	margin: 0;
+}
+
+.preview section header .add {
+	text-align: right;
+}
+
+.preview section header .add button {
+	border: solid 1px #999;
+	background-color: transparent;
+	padding: 0px;
+}
+
+.preview section header .add button:hover {
+	background-color: #777;
+}
+
+.preview section header .add select {
+	font-size: 10px;
+	margin: 0;
+}
+
+#layout-preview .configure {
+	border-top: solid 2px #999;
+}

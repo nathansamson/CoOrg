@@ -21,13 +21,13 @@
 				return "{$staticPath}"+file;
 			}
 		</script>
-	</head>
+	%%$$EXTRASTYLESHEETSCOMEHERE$$%%</head>
 	<body>
 		<header>
 			<h1><a href="{url request='/'}">{Coorg::config()->get('site/title')}</a></h1>
 			<h2>{Coorg::config()->get('site/subtitle')}</h2>
 			
-			<nav class="main-navigation">
+			<nav class="main-navigation horizontal">
 				<div class="navigation-left">
 					{aside name='navigation-left'}
 				</div>
@@ -39,7 +39,7 @@
 		</header>
 	
 		<div id="main">
-			<aside>{aside name='main'}</aside>
+			<aside class="vertical">{aside name='main'}</aside>
 	
 			<div id="content">
 				{foreach $notices as $notice}

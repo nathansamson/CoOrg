@@ -164,6 +164,7 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		CoOrg::process('alpha/withaside/p1/p2');
 		
 		$this->assertEquals('alpha/withaside', HomeAlphaAside::$request);
+		$this->assertEquals(CoOrg::PANEL_ORIENT_VERTICAL, HomeAlphaAside::$orient);
 		$this->assertEquals('p2', HomeAlphaAside::$p2);
 		$this->assertEquals(array(), HomeAlphaAside::$widgetParams);
 		$this->assertFalse(array_key_exists('asideVar',  CoOrgSmarty::$vars));
@@ -173,7 +174,9 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 	
 	public function testAsideWithParams()
 	{
-		CoOrg::config()->set('aside/main', array('home/alpha' => array('beta' => 'gamma')));
+		CoOrg::config()->set('aside/main', array(
+			array('widgetID' => 'home/alpha',
+			      'beta' => 'gamma')));
 		CoOrg::process('alpha/withaside/p1/p2');
 		
 		$this->assertEquals('alpha/withaside', HomeAlphaAside::$request);
@@ -186,8 +189,11 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 	{
 		CoOrg::process('alpha/withaside/triggerSomethingBad/p2');
 		
-		$this->assertEquals('Can not overwrite template variable!', CoOrgSmarty::$vars['exception']->getMessage());
-		$this->assertEquals('extends:base.html.tpl|systemerror.html.tpl', CoOrgSmarty::$renderedTemplate);
+		$this->assertEquals('some Value', CoOrgSmarty::$vars['myActionVar']); // As set by controller
+		$this->assertEquals('extends:base.html.tpl|show.html.tpl', CoOrgSmarty::$renderedTemplate);
+
+		$this->assertContains('From controller:some Value:', CoOrgSmarty::$renderedOutput);
+		$this->assertContains('From aside:lets rock\'n roll', CoOrgSmarty::$renderedOutput);
 	}
 	
 	public function testI18nManual()
@@ -304,7 +310,7 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 	{
 		$this->assertFalse(class_exists('AlphaInfo'));
 		$this->assertFalse(class_exists('BetaInfo'));
-		$this->assertFalse(class_exists('HomoInfo'));
+		$this->assertFalse(class_exists('HomeInfo'));
 	
 		CoOrg::loadPluginInfo('info');
 		
@@ -323,6 +329,45 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('a/b/c/d/parameterwith$3fand$2f',
 		                    CoOrg::createURL(array('a/b/c/d',
 		                                           'parameterwith?and/')));
+	}
+	
+	public function testLoadPluginInfoSpecific()
+	{
+		$this->assertFalse(class_exists('Alpha2Info'));
+		$this->assertFalse(class_exists('Home2Info'));
+		
+		CoOrg::loadPluginInfo('info2', 'home');
+		
+		$this->assertFalse(class_exists('Alpha2Info'));
+		$this->assertTrue(class_exists('Home2Info'));
+		
+		CoOrg::loadPluginInfo('info2', 'sub'); // Sub does not have an info2
+		CoOrg::loadPluginInfo('info2', 'home');
+	}
+	
+	public function testStaticFile()
+	{
+		$this->assertEquals('/coorg/tests/mocks/plugins/alpha/static/somefile.css?v=2010-10-03',
+		                    CoOrg::staticFile('somefile.css', 'alpha'));
+
+		$this->assertEquals('static/mockfile.css?v=A',
+		                    CoOrg::staticFile('mockfile.css'));
+	}
+	
+	public function testExternalStaticFile()
+	{
+		CoOrg::config()->set('staticpath', 'http://mystatic.somestatic.com/static/path/');
+		CoOrg::config()->set('staticpath/alpha', true);
+		CoOrg::config()->set('staticpath/home', false);
+		
+		$this->assertEquals('/coorg/tests/mocks/app/home/static/homefile.css?v=theversion',
+		                    CoOrg::staticFile('homefile.css', 'home'));
+		
+		$this->assertEquals('http://mystatic.somestatic.com/static/path/alpha/static/somefile.css?v=2010-10-03',
+		                    CoOrg::staticFile('somefile.css', 'alpha'));
+
+		$this->assertEquals('http://mystatic.somestatic.com/static/path/_root/mockfile.css?v=A',
+		                    CoOrg::staticFile('mockfile.css'));
 	}
 	
 	private function alternativeConfig($config)

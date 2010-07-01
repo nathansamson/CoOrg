@@ -40,7 +40,7 @@ class i18nAdminModule extends AdminModule
 	{
 		$this->name = t('Languages');
 		$this->url = CoOrg::createURL(array('admin/i18n'));
-		$this->priority = 1;
+		$this->priority = 2;
 		$this->image = CoOrg::staticFile('images/locale.png', 'admin');
 	}
 	
@@ -50,7 +50,41 @@ class i18nAdminModule extends AdminModule
 	}
 }
 
+class LayoutAdminModule extends AdminModule
+{
+	public function __construct()
+	{
+		$this->name = t('Layout');
+		$this->url = CoOrg::createURL(array('admin/layout'));
+		$this->priority = 2;
+		$this->image = CoOrg::staticFile('images/layout.png', 'admin');
+	}
+	
+	public function isAllowed($user)
+	{
+		return Acl::isAllowed($user->username, 'admin-layout');
+	}
+}
+
+class SiteAdminModule extends AdminModule
+{
+	public function __construct()
+	{
+		$this->name = t('General configuration');
+		$this->url = CoOrg::createURL(array('admin/system'));
+		$this->priority = 1;
+		$this->image = CoOrg::staticFile('images/system.png', 'admin');
+	}
+	
+	public function isAllowed($user)
+	{
+		return Acl::isAllowed($user->username, 'admin ');
+	}
+}
+
 Admin::registerModule('ToSiteAdminModule');
 Admin::registerModule('i18nAdminModule');
+Admin::registerModule('LayoutAdminModule');
+Admin::registerModule('SiteAdminModule');
 
 ?>

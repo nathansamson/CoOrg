@@ -27,6 +27,7 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 	public static $renderedTemplate;
 	public static $notices = array();
 	public static $errors = array();
+	public static $stylesheets = array();
 
 	public static function clearAll()
 	{
@@ -77,6 +78,11 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 	public function fakeRender($tpl)
 	{
 		self::$renderedTemplate = $tpl;
+	}
+	
+	public function stylesheet($style)
+	{
+		$this->stylesheets[] = $style;
 	}
 }
 

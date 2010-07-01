@@ -18,6 +18,14 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+if (!function_exists('domainExists'))
+{
+	function domainExists($domain)
+	{
+		return checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
+	}
+}
+
 class PropertyEmail extends Property implements IProperty
 {
 
@@ -99,7 +107,7 @@ class PropertyEmail extends Property implements IProperty
 						$isValid = false;
 					}
 				}
-				if ($isValid && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A")))
+				if ($isValid && !(domainExists($domain)))
 				{
 					// domain not found in DNS
 					$isValid = false;

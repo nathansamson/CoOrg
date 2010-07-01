@@ -51,61 +51,27 @@ footer a {
 
 /* === MENU === */
 
+nav {
+	display: block;
+}
+
 body > header nav
 {
 	padding: 5px;
 	background-color: #FCBA5C;
 	background-image: -moz-linear-gradient(#FCBA5C, #F9A328);
-	display: block;
 	margin-top: 10px;
 	height: 1.2em;
 }
 
-nav a
-{
-	color: black;
-	text-decoration: none;
-}
-
-nav a:hover {
-	color: #555;
-}
-
-nav .current a {
-	font-weight: bold;
-}
-
-nav ol
-{
-	display: inline-block;
-	padding: 0;
-	margin: 0;
-}
-
-nav ol li
-{
-	padding: 0px 10px;
-	border-right: dotted 1px #666666;
-}
-
-nav ol li:last-child
-{
-	border-right: none;
-}
-
-nav .navigation-left
+header nav .navigation-left
 {
 	float: left;
 }
 
-nav .navigation-right
+header nav .navigation-right
 {
 	float: right;
-}
-
-nav ol li
-{
-	display: inline;
 }
 
 #main
@@ -134,7 +100,7 @@ h1, h2, h1 a, h2 a
 	text-decoration: none;
 }
 
-.notice, .error
+.notice, .error, .warning
 {
 	padding: 10px;
 	border: dotted 1px #F9A328;
@@ -151,6 +117,11 @@ h1, h2, h1 a, h2 a
 .error
 {
 	background-color: #FC6B5D;
+}
+
+.warning
+{
+	background-color: #EFA32B;
 }
 
 #content p
@@ -244,9 +215,19 @@ input, textarea, .editor, select {
 	margin-bottom: 10px;
 }
 
+input[readonly] {
+	background-color: #BBB;
+	color: #666;
+}
+
 select {
 	font-size: 10px;
 	padding: 3px;
+}
+
+label.select {
+	display: inline;
+	margin-right: 10px;
 }
 
 input.title {
@@ -284,6 +265,10 @@ input:focus, textarea:focus {
 	border: solid 1px #FCBA5C;
 }
 
+input[readonly]:focus {
+	border: solid 1px #666666;
+}
+
 input[type="submit"] {
 	border: dotted 1px #F9A328;
 	background-image: -moz-linear-gradient(#FCBA5C, #F9A328);
@@ -291,6 +276,11 @@ input[type="submit"] {
 
 input[type="submit"]:active {
 	background-image: -moz-linear-gradient(#F9A328, #FCBA5C);
+}
+
+fieldset {
+	margin-bottom: 10px;
+	border: solid 1px #555;
 }
 
 /* === ASIDE Forms === */
@@ -317,6 +307,7 @@ aside input {
 	background-color: transparent;
 	padding: 0;
 	border: none;
+	vertical-align: top;
 }
 
 .normal-post-url button:hover {
@@ -325,16 +316,24 @@ aside input {
 }
 
 .normal-post-url button img {
+	vertical-align: top;
+}
+
+button {
 	vertical-align: middle;
 }
 
 a img {
 	border: none;
-	vertical-align: middle;
+	vertical-align: top;
 }
 
-.page-actions {
+.page-actions, .section-actions {
 	float: right;
+}
+
+.page-actions a {
+	text-decoration: none;
 }
 
 .twowaypager .next {

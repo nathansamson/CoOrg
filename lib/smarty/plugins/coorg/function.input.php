@@ -45,7 +45,7 @@ function smarty_helper_function_build_option($key, $option, $value)
 
 function smarty_function_input($params, $smarty)
 {
-
+	$br = $smarty->_coorg_form->nobreaks ? '' : '<br />';
 
 	if (array_key_exists('type', $params))
 	{
@@ -63,11 +63,8 @@ function smarty_function_input($params, $smarty)
 	{
 		$type = 'hidden';
 	}
-	$disabled = false;
-	if (array_key_exists('disabled', $params))
-	{
-		$disabled = true;
-	}
+	$disabled = array_key_exists('disabled', $params);
+	$readonly = array_key_exists('readonly', $params);
 	
 	if ($type != 'submit')
 	{
@@ -95,7 +92,7 @@ function smarty_function_input($params, $smarty)
 		else
 		{
 			$name = $params['name'];
-			$value = $params['value'];
+			$value = htmlspecialchars($params['value']);
 		}
 	}
 	else
@@ -115,7 +112,21 @@ function smarty_function_input($params, $smarty)
 	{
 		$form = $smarty->_coorg_form;
 		$id = $form->formID ? $form->formID.'_'.$name : $name;
-		$label = '<label for="'.$id.'" '.($required ? 'class="required"' : '' ). '>'.$label.'</label>';
+		$class = '';
+		if ($required) $class = 'required';
+		if ($type == 'select')
+		{
+			if ($class)
+			{
+				$class .= ' select';
+			}
+			else 
+			{
+				$class = 'select';
+			}
+
+		}
+		$label = '<label for="'.$id.'" '.($class ? 'class="'.$class.'"' : '' ). '>'.$label.'</label>';
 		if (array_key_exists('class', $params))
 		{
 			$class = $params['class'];
@@ -139,7 +150,8 @@ function smarty_function_input($params, $smarty)
 	               ($disabled ? ' disabled="disabled"' : '').
 	               ($class ? ' class="'.$class.'"' : '').
 	               ($size ? ' size="'.$size.'"' : '').
-	        '/><br />';
+	               ($readonly ? ' readonly="readonly"' : '').
+	        '/>'.$br;
 	    }
 	    else if ($type == 'textarea')
 	    {
@@ -187,7 +199,7 @@ function smarty_function_input($params, $smarty)
 	               ($disabled ? ' disabled="disabled"' : '').
 	               ($value ? ' checked="checked"' : '').
 	               ($class ? ' class="'.$class.'"' : '').
-	        '/><br />';
+	        '/>'.$br;
 	    }
 	    else
 	    {
@@ -196,7 +208,7 @@ function smarty_function_input($params, $smarty)
 	    	{
 	    		$input .= smarty_helper_function_build_option($key, $opt, $value); 
 	    	}
-	    	$input .= '</select><br />';
+	    	$input .= '</select>'.$br;
 	    }
 	    
 	    if (is_string($errors))
@@ -211,6 +223,14 @@ function smarty_function_input($params, $smarty)
 	    	}
 	    }
 		return $label . $input;
+	}
+	else if ($type == 'submit' && $params['stock'])
+	{
+		$stockInfo = CoOrg::stocks($params['stock']);
+		$button = '<img src="'.CoOrg::staticFile($stockInfo['img']).'"
+			            alt="'.$stockInfo['alt'].'"
+			            title="'.$stockInfo['title'].'"/>';
+		return '<button type="submit" name="'.$name.'">'.$button.'</button>';
 	}
 	else
 	{

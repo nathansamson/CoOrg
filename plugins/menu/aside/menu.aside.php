@@ -1,10 +1,10 @@
 <?php
 
-class MenuMenuAside extends AsideController
+class MenuMenuAside extends AsideConfigurableController
 {
-	public function run($widgetParams, $request)
+	public function run($widgetParams, $orient, $request)
 	{
-		$menu = Menu::get($widgetParams['name']);
+		$menu = Menu::get($widgetParams['menu']);
 		if ($menu != null)
 		{
 			$this->widgetMenu = $menu;
@@ -14,6 +14,24 @@ class MenuMenuAside extends AsideController
 		{
 			return 'Menu not found';
 		}
+	}
+	
+	public function preview($widgetParams, $orient)
+	{
+		return $this->renderPreview('aside/menu-preview');
+	}
+	
+	public function configure($widgetParams, $orient)
+	{
+		$this->menu = $widgetParams['menu'];
+		$menus = Menu::all();
+		$textMenus = array();
+		foreach ($menus as $menu)
+		{
+			$textMenus[$menu->name] = $menu->name;
+		}
+		$this->menus = $textMenus;
+		return $this->renderConfigure('aside/menu-configure');
 	}
 }
 
