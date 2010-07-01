@@ -13,6 +13,9 @@ DB::open('sqlite::memory:');
 
 function prepare()
 {
+	$q = DB::prepare('DROP TABLE IF EXISTS FooBars');
+	$q->execute();
+
 	$q = DB::prepare('DROP TABLE IF EXISTS Foo');
 	$q->execute();
 	
@@ -82,6 +85,13 @@ function prepare()
 	 fooID VARCHAR(10),
 	 barbar VARCHAR(20),
 	 FOREIGN KEY (fooID) REFERENCES Foo(ID))');
+	$q->execute();
+	
+	$q = DB::prepare('CREATE TABLE FooBars(
+	 fooID VARCHAR(10),
+	 barID VARCHAR(20),
+	 FOREIGN KEY (fooID) REFERENCES Foo(ID),
+	 FOREIGN KEY (barID) REFERENCES Bar(ID))');
 	$q->execute();
 }
 

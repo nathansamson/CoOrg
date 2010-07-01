@@ -1,0 +1,48 @@
+<dataset>
+
+	<Foo
+		ID="foo1"
+		foofoo="Foo"
+	/>
+	
+	<Foo
+		ID="foo2"
+		foofoo="Foo 2"
+	/>
+	
+	<Foo
+		ID="foo3"
+		foofoo="Foo 3"
+	/>
+	
+	<Bar
+		ID="bar 1"
+		barbar="Bar 1"
+	/>
+	
+	<Bar
+		ID="bar 2"
+		barbar="Bar 2"
+	/>
+	
+	<Bar
+		ID="bar 3"
+		barbar="Bar 3"
+	/>
+	
+	<FooBars
+		barID="bar 1"
+		fooID="foo3"
+	/>
+	
+	<FooBars
+		barID="bar 1"
+		fooID="foo2"
+	/>
+	
+	<FooBars
+		barID="bar 2"
+		fooID="foo3"
+	/>
+
+</dataset>
