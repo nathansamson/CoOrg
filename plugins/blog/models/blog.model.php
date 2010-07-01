@@ -29,6 +29,12 @@
  * @property timeEdited DateTime('Edited');
  * @property parentID String('Title', 256);
  * @property parentLanguage String('Parent Language', 6);
+ * @property commentsAllowed Bool(t('Allow Comments'));
+ * @property commentsCloseDate DateTime(t('Comments close date'));
+ * @property writeonly; commentsOpenFor Integer('Open Time');
+ * @variant year year datePosted
+ * @variant month month datePosted
+ * @variant day day datePosted
  * @extends Normalize title ID datePosted language
 */
 class Blog extends DBModel
@@ -133,6 +139,19 @@ class Blog extends DBModel
 		return $u;
 	}
 	
+	public function allowComments()
+	{
+		if ($this->commentsAllowed)
+		{
+			return ($this->commentsCloseDate === null) || 
+			       (time() < $this->commentsCloseDate);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
 	public static function getBlog($year, $month, $day, $ID, $language)
 	{
 		$q = DB::prepare('SELECT * FROM Blog
@@ -218,11 +237,26 @@ class Blog extends DBModel
 		if ($this->datePosted_db == null)
 			$this->datePosted = time();
 		$this->timePosted = time();
+		if ($this->commentsAllowed && $this->commentsOpenFor)
+		{
+			$this->commentsCloseDate = time() + 60*60*24*$this->commentsOpenFor;
+		}
 	}
 	
 	protected function beforeUpdate()
 	{
 		$this->timeEdited = time();
+		if ($this->commentsOpenFor !== null)
+		{
+			if ($this->commentsOpenFor !== 0)
+			{
+				$this->commentsCloseDate = $this->timePosted + 60*60*24*$this->commentsOpenFor;
+			}
+			else
+			{
+				$this->commentsCloseDate = null;
+			}
+		}
 	}
 
 	protected function validate($for)

@@ -1,4 +1,12 @@
 <dataset>
+	<AnonProfile
+	 	ID="1"
+	 	name="Some A User"
+	 	email="anon@anon.org"
+	 	website="http://google.be"
+	 	IP="127.0.0.1"
+	 />
+
 	<Language
 		language="en"
 		name="English"
@@ -59,6 +67,8 @@
 	   text="My Very long Blog"
 	   parentID=""
 	   parentLanguage=""
+	   commentsAllowed="1"
+	   commentsCloseDate="2010-05-11 21:20:20"
 	/>
 
 	<Blog 
@@ -72,6 +82,7 @@
 	   language="nl"
 	   parentID="some-blog"
 	   parentLanguage="en"
+	   commentsAllowed="0"
 	/>
 	
 	<Blog 
@@ -83,6 +94,8 @@
 	   title="Some Other Blog"
 	   text="My Very long Blog"
 	   language="en"
+	   commentsAllowed="1"
+	    commentsCloseDate="2030-05-11 21:20:20"
 	/>
 	
 	<Blog 
@@ -94,6 +107,7 @@
 	   title="Blog post"
 	   text="My Very long Blog"
 	   language="en"
+	   commentsAllowed="1"
 	/>
 	
 	<Blog 
@@ -131,6 +145,47 @@
 	    parentLanguage="de"
 	  />
 	  
+	  <Comment
+	  	ID="1"
+	  	title="Re: XYZER"
+	  	comment="My comment @ xyzer"
+	  	authorID="nele"
+	  />
+	  
+	 <BlogComment
+	 	ID="1"
+	 	blogID="xyzer"
+	 	blogDatePosted="2010-04-10"
+	 	blogLanguage="en"
+	 />
+	 
+	  <Comment
+	  	ID="2"
+	  	title="Re: XYZ"
+	  	comment="My comment @ XYZ (en)"
+	  	authorID="nathan"
+	  />
+	  
+	 <BlogComment
+	 	ID="2"
+	 	blogID="xyz"
+	 	blogDatePosted="2010-04-11"
+	 	blogLanguage="en"
+	 />
+	 
+	 <Comment
+	  	ID="3"
+	  	title="Re: XYZ"
+	  	comment="My comment @ XYZ (en)"
+	  	anonAuthorID="1"
+	  />
+	  
+	 <BlogComment
+	 	ID="3"
+	 	blogID="xyz"
+	 	blogDatePosted="2010-04-11"
+	 	blogLanguage="en"
+	 />
 	  <!-- Brasilian posts for archive test -->
 	  
 	  <Blog

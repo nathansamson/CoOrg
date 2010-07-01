@@ -7,9 +7,9 @@
 	{$originalBlog->text|format:all}
 	
 	{form request='blog/translateSave' instance=$translatedBlog}
-		{input value=$originalBlog->datePosted|date_format:'Y' name=year}
-		{input value=$originalBlog->datePosted|date_format:'m' name=month}
-		{input value=$originalBlog->datePosted|date_format:'d' name=day}
+		{input value=$originalBlog->year name=year}
+		{input value=$originalBlog->month name=month}
+		{input value=$originalBlog->day name=day}
 	
 		{input value=$originalBlog->ID name=id}
 		{input value=$originalBlog->language name=fromLanguage}

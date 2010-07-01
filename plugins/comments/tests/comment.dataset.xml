@@ -1,0 +1,81 @@
+<dataset>	
+	<MeCommentMock
+		ID="me-mock"
+		text="Some Text Of Me Mock"
+	/>
+	
+	<MeCommentMock
+		ID="other-mock"
+		text="Other Mock Test"
+	/>
+	
+	<MeCommentMock
+		ID="some-mock"
+		text="Some Mock Test"
+	/>
+	
+	<Comment
+		ID="1"
+		title="First Comment"
+		comment="Some Comment"
+		timePosted="2010-04-28 13:20:15"
+	/>
+	
+	<Comment
+		ID="2"
+		title="Second Comment"
+		comment="Some Comment"
+		timePosted="2010-04-28 15:20:15"
+	/>
+	
+	<Comment
+		ID="3"
+		title="Third Comment in DB, second in real"
+		comment="Some Comment"
+		timePosted="2010-04-28 14:20:15"
+	/>
+	
+	<Comment
+		ID="4"
+		title="Fourth Comment"
+		comment="Some Comment"
+		timePosted="2010-04-28 16:20:15"
+	/>
+	
+	<Comment
+		ID="5"
+		title="5th Comment"
+		comment="Some Comment"
+		timePosted="2010-04-28 17:20:15"
+	/>
+	
+	<MeCommentMockComment
+		ID="1"
+		mockID="some-mock"
+	/>
+	
+	<MeCommentMockComment
+		ID="2"
+		mockID="other-mock"
+	/>
+	
+	<MeCommentMockComment
+		ID="3"
+		mockID="other-mock"
+	/>
+	
+	<MeCommentMockComment
+		ID="4"
+		mockID="other-mock"
+	/>
+	
+	<MeCommentMockComment
+		ID="5"
+		mockID="other-mock"
+	/>
+	
+	<User
+		username="some-user"
+		email="some-user"
+	/>
+</dataset>

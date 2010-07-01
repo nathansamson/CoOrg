@@ -33,6 +33,20 @@ function user_install_db()
 	$s = DB::prepare($q);
 	$s->execute();
 	
+	$q = 'CREATE TABLE UserProfile (
+				username VARCHAR(24),
+				firstName VARCHAR(20),
+				lastName VARCHAR(20),
+				birthDate DATE,
+				gender CHAR(1),
+				website VARCHAR(1024),
+				intrests VARCHAR(1024),
+				biography TEXT,
+				FOREIGN KEY (username) REFERENCES User(username) ON DELETE CASCADE
+			)';
+
+	$s = DB::prepare($q);
+	$s->execute();
 	
 	$q = 'CREATE TABLE UserGroup (
 				name VARCHAR(26) PRIMARY KEY,
@@ -73,6 +87,9 @@ function user_delete_db()
 	$s->execute();
 
 	$s = DB::prepare('DROP TABLE IF EXISTS UserGroup');
+	$s->execute();
+
+	$s = DB::prepare('DROP TABLE IF EXISTS UserProfile');
 	$s->execute();
 
 	$s = DB::prepare('DROP TABLE IF EXISTS User');

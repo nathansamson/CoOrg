@@ -26,7 +26,7 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 	{
 		$this->login('dvorak');
 		$this->request('admin/menu/entry/save', array(
-		                  'menu' => 'main',
+		                  'menuID' => 'main',
 		                  'language' => 'nl',
 		                  'title' => 'Dutch Title',
 		                  'entryID' => 'URLMenuEntryProvider',
@@ -36,7 +36,7 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 		$this->assertFlashNotice('Menu entry added');
 		
 		$menu = Menu::get('main');
-		$entries = $menu->entries('nl');
+		$entries = $menu->entries->filter('nl');
 		$this->assertEquals('Dutch Title', $entries[count($entries)-1]->title);
 		$this->assertEquals('http://belgium.be', $entries[count($entries)-1]->url);
 	}
@@ -45,7 +45,7 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 	{
 		$this->login('azerty');
 		$this->request('admin/menu/entry/save', array(
-		                  'menu' => 'main',
+		                  'menuID' => 'main',
 		                  'language' => 'nl',
 		                  'title' => 'Dutch Title',
 		                  'entryID' => 'URLMenuEntryProvider',
@@ -59,7 +59,7 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 	{
 		$this->login('dvorak');
 		$this->request('admin/menu/entry/save', array(
-		                  'menu' => 'main',
+		                  'menuID' => 'main',
 		                  'language' => 'nl',
 		                  'title' => 'Dutch Title',
 		                  'entryID' => 'InvalidProvider',
@@ -73,7 +73,7 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 		$this->assertVarIs('adminlanguage', 'nl');
 		$entry = CoOrgSmarty::$vars['newEntry'];
 		$this->assertEquals('nl', $entry->language);
-		$this->assertEquals('main', $entry->menu);
+		$this->assertEquals('main', $entry->menuID);
 		$this->assertFlashError('Entry was not saved');
 	}
 	
@@ -81,7 +81,7 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 	{
 		$this->login('dvorak');
 		$this->request('admin/menu/entry/save', array(
-		                  'menu' => 'pneut',
+		                  'menuID' => 'pneut',
 		                  'language' => 'nl',
 		                  'title' => 'Dutch Title',
 		                  'entryID' => 'InvalidProvider',
@@ -94,13 +94,13 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 	{
 		$this->login('dvorak');
 		$m = Menu::get('main');
-		$e = $m->entries('nl');
+		$e = $m->entries->filter('nl');
 		
 		$this->request('admin/menu/entry/delete', array('entry' => $e[0]->ID));
 		$this->assertFlashNotice('Entry is deleted');
 		$this->assertRedirected('admin/menu/edit/main/nl');
 		
-		$this->assertEquals(1, count($m->entries('nl')));
+		$this->assertEquals(1, count($m->entries->filter('nl')));
 	}
 	
 	public function testDeleteNotFound()
@@ -117,7 +117,7 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 		$this->login('azerty');
 		
 		$m = Menu::get('main');
-		$e = $m->entries('nl');
+		$e = $m->entries->filter('nl');
 		
 		$this->request('admin/menu/entry/delete', array('entry' => $e[0]->ID));
 		$this->assertRedirected('');
@@ -128,14 +128,14 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 	{
 		$this->login('dvorak');
 		$m = Menu::get('main');
-		$e = $m->entries('nl');
+		$e = $m->entries->filter('nl');
 		
 		$this->request('admin/menu/entry/move', array('entry' => $e[0]->ID,
 		                                              'newsequence' => 1));
 		$this->assertFlashNotice('Entry is moved');
 		$this->assertRedirected('admin/menu/edit/main/nl');
 		
-		$e = $m->entries('nl');
+		$e = $m->entries->filter('nl');
 		$this->assertEquals(2, count($e));
 		$this->assertEquals('Iets anders', $e[0]->title);
 		$this->assertEquals('Iets', $e[1]->title);
@@ -146,7 +146,7 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 		$this->login('azerty');
 		
 		$m = Menu::get('main');
-		$e = $m->entries('nl');
+		$e = $m->entries->filter('nl');
 		
 		$this->request('admin/menu/entry/move', array('entry' => $e[0]->ID, 'newsequence' => 0));
 		$this->assertRedirected('');

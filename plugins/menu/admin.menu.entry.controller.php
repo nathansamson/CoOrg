@@ -25,10 +25,10 @@ class AdminMenuEntryController extends Controller
 {
 	private $_entry;
 
-	public function save($menu, $language, $title, $entryID, $data)
+	public function save($menuID, $language, $title, $entryID, $data)
 	{
-		$omenu = Menu::get($menu);
-		if ($omenu == null)
+		$menu = Menu::get($menuID);
+		if ($menu == null)
 		{
 			$this->error(t('Menu not found'));
 			$this->redirect('admin', 'menu', $language);
@@ -36,7 +36,7 @@ class AdminMenuEntryController extends Controller
 		}
 	
 		$entry = new MenuEntry;
-		$entry->menu = $menu;
+		$entry->menuID = $menuID;
 		$entry->title = $title;
 		$entry->data = $data;
 		$entry->entryID = $entryID;
@@ -48,16 +48,16 @@ class AdminMenuEntryController extends Controller
 			$this->notice(t('Menu entry added'));
 			if ($language == I18n::getLanguage())
 			{
-				$this->redirect('admin', 'menu', 'edit', $menu);
+				$this->redirect('admin', 'menu', 'edit', $menuID);
 			}
 			else
 			{
-				$this->redirect('admin', 'menu', 'edit', $menu, $language);
+				$this->redirect('admin', 'menu', 'edit', $menuID, $language);
 			}
 		}
 		catch (ValidationException $e)
 		{
-			$this->menu = $omenu;	
+			$this->menu = $menu;	
 			$this->adminlanguage = $language;	
 			$this->providerActionCombos = Menu::providerActionCombos($language);
 			$this->newEntry = $entry;
@@ -74,7 +74,7 @@ class AdminMenuEntryController extends Controller
 		$this->_entry->delete();
 		$this->notice(t('Entry is deleted'));
 		$this->redirect('admin', 'menu', 'edit',
-		                $this->_entry->menu,
+		                $this->_entry->menuID,
 		                $this->_entry->language);
 	}
 	
@@ -88,7 +88,7 @@ class AdminMenuEntryController extends Controller
 		$this->_entry->save();
 		$this->notice(t('Entry is moved'));
 		$this->redirect('admin', 'menu', 'edit',
-		                $this->_entry->menu,
+		                $this->_entry->menuID,
 		                $this->_entry->language);
 	}
 	

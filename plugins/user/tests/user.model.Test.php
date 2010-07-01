@@ -361,7 +361,7 @@ class UserModelTest extends CoOrgModelTest
 		$users = $userPager->execute(1, 3);
 		$this->assertEquals('azerty', $users[0]->username);
 		$this->assertEquals('dvorak', $users[1]->username);
-		$this->assertEquals('qwerty', $users[2]->username);
+		$this->assertEquals('no-profile', $users[2]->username);	
 	}
 }
 

@@ -101,6 +101,11 @@ class User extends DBModel
 		}
 	}
 	
+	public static function get($user)
+	{
+		return self::getUserByName($user);
+	}
+	
 	public static function users()
 	{
 		return new UserPager('SELECT * FROM User ORDER BY username');

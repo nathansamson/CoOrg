@@ -25,8 +25,8 @@ function page_install_db()
    	   language VARCHAR(6),
 	   created DATE,
 	   updated DATE,
-   	   author VARCHAR(64),
-   	   lastEditor VARCHAR(64),
+   	   authorID VARCHAR(64),
+   	   lastEditorID VARCHAR(64),
 	   title VARCHAR(256),
 	   content TEXT,
 	   PRIMARY KEY (ID, language))

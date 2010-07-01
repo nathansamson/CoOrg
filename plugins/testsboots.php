@@ -21,7 +21,7 @@ $configFile = 'config/temp.config.tests.php';
 define('COORG_TEST_CONFIG', $configFile);
 
 $config = new Config($configFile);
-$config->set('enabled_plugins', array('admin', 'menu', 'user', 'user-admin', 'blog', 'page'));
+$config->set('enabled_plugins', array('admin', 'menu', 'user', 'comments', 'user-admin', 'blog', 'page'));
 $config->set('site/title', 'The Site');
 DB::open($config->get('dbdsn'), $config->get('dbuser'), $config->get('dbpass'));
 
@@ -36,7 +36,7 @@ function prepare($plugins)
 		{
 			include_once 'plugins/'.$p.'/install.php';
 			
-			call_user_func($p.'_delete_db');
+			call_user_func($p.'_delete_db', true);
 		}
 	}
 	
@@ -46,7 +46,7 @@ function prepare($plugins)
 		{
 			include_once 'plugins/'.$p.'/install.php';
 			
-			call_user_func($p.'_install_db');
+			call_user_func($p.'_install_db', true);
 		}
 	}
 }

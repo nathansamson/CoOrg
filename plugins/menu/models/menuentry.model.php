@@ -20,7 +20,7 @@
 
 /**
  * @property primary autoincrement; ID Integer('ID');
- * @property menu String(t('Menu'), 32); required
+ * @property menuID String(t('Menu'), 32); required
  * @property language String('Language', 6); required
  * @property url String(t('URL'), 1024); required
  * @property title String(t('Title'), 64); required
@@ -87,21 +87,6 @@ class MenuEntry extends DBModel
 		{
 			return null;
 		}
-	}
-
-	public static function entries($menu, $language)
-	{
-		$q = DB::prepare('SELECT * FROM MenuEntry WHERE
-		                    menu=:menu AND language=:l
-		                  ORDER BY sequence');
-		$q->execute(array(':menu' => $menu, ':l' => $language));
-		
-		$entries = array();
-		foreach ($q->fetchAll() as $row)
-		{
-			$entries[] = self::fetch($row, 'MenuEntry');
-		}
-		return $entries;
 	}
 }
 ?>

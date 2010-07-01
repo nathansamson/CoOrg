@@ -28,7 +28,7 @@ function menu_install_db()
 	 
 	 $s = DB::prepare('CREATE TABLE MenuEntry (
 	 	ID INTEGER PRIMARY KEY AUTOINCREMENT,
-	 	menu VARCHAR(32),
+	 	menuID VARCHAR(32),
 	 	language VARCHAR(6),
 		sequence INTEGER,
 	 	url VARCHAR(1024),
@@ -37,7 +37,7 @@ function menu_install_db()
 	 	provider VARCHAR(64),
 	 	action VARCHAR(64),
 	 	data VARCHAR(128),
-	 	FOREIGN KEY (menu) REFERENCES Menu(name) ON UPDATE CASCADE ON DELETE CASCADE,
+	 	FOREIGN KEY (menuID) REFERENCES Menu(name) ON UPDATE CASCADE ON DELETE CASCADE,
 	 	FOREIGN KEY (submenu) REFERENCES Menu(name)
 	  )');
 	 $s->execute();

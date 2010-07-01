@@ -131,13 +131,25 @@ function smarty_function_input($params, $smarty)
 		{
 			$class = $params['class'];
 		}
+		if (array_key_exists('size', $params))
+		{
+			if ($params['size'] == 'wide')
+			{
+				$size = '40';
+			}
+			else if ($params['size'] == 'full-wide')
+			{
+				$size = '60';
+			}
+		}
 		
-		if ($type != 'textarea' && $type != 'select')
+		if ($type != 'textarea' && $type != 'select' && $type != 'checkbox')
 		{
 			$input = '<input type="'.$type.'" value="'.$value.'" name="'.$name.'" '. 'id="'.$id.'"'.
 	               ($required ? ' required="required"' : '').
 	               ($disabled ? ' disabled="disabled"' : '').
 	               ($class ? ' class="'.$class.'"' : '').
+	               ($size ? ' size="'.$size.'"' : '').
 	               ($readonly ? ' readonly="readonly"' : '').
 	        '/>'.$br;
 	    }
@@ -157,6 +169,16 @@ function smarty_function_input($params, $smarty)
 	    			$cols = 60;
 	    			$rows = 25;
 	    		}
+	    		else if ($params['size'] == 'wide')
+	    		{
+	    			$cols = 60;
+	    			$rows = 10;
+	    		}
+	    		else if($params['size'] == 'small-wide')
+	    		{
+	    			$cols = 60;
+	    			$rows = 4;
+	    		}
 	    	}
 	    	$editor = null;
 	    	if (array_key_exists('editor', $params))
@@ -169,6 +191,15 @@ function smarty_function_input($params, $smarty)
 	    	                         ($rows ? ' rows='.$rows : '').
 	    	                         ($editor ? ' class="'.$editor.'-editor"' : '').
 	    	               '>'.$value.'</textarea>';
+	    }
+	    else if ($type == 'checkbox')
+	    {
+	    	$input = '<input type="'.$type.'" name="'.$name.'" '. 'id="'.$id.'"'.
+	               ($required ? ' required="required"' : '').
+	               ($disabled ? ' disabled="disabled"' : '').
+	               ($value ? ' checked="checked"' : '').
+	               ($class ? ' class="'.$class.'"' : '').
+	        '/>'.$br;
 	    }
 	    else
 	    {

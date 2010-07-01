@@ -1,0 +1,56 @@
+<dataset>
+	<SomeContainer
+		ID="one"
+		content="One Text"
+	/>
+	
+	<SomeContainer
+		ID="two"
+		content="Two Text"
+	/>
+	
+	<SomeContainer
+		ID="three"
+		content="Three Text"
+	/>
+	
+	<SomeContainment
+		name="Containment of One"
+		containerID="one"
+		published="0"
+		sequence="3"
+	/>
+	
+	<SomeContainment
+		name="Another Containment of One"
+		containerID="one"
+		published="1"
+		sequence="2"
+	/>
+	
+	<SomeContainment
+		name="Last Containment of One"
+		containerID="one"
+		published="1"
+		sequence="1"
+	/>
+	
+	<SomeContainment
+		name="Containment of Three"
+		containerID="three"
+		published="0"
+		sequence="1"
+	/>
+	
+	<MockModel
+		name="base-mock"
+		email="email"
+		rot13name="???"
+	/>
+	
+	<IsAMockModel
+		name="base-mock"
+		isaExtension="Some Ext"
+		containerID="three"
+	/>
+</dataset>

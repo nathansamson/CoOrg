@@ -101,4 +101,91 @@ class PropertyDateTime extends PropertyDateTimeish implements IProperty
 	}
 }
 
+class YearVariant implements IPropertyVariant
+{
+	private $_p = null;
+
+	private function __construct(IProperty $p)
+	{
+		$this->_p = $p;
+	}
+	
+	public function get()
+	{
+		return (int)date('Y', $this->_p->get());
+	}
+	
+	public function set($year)
+	{
+		$v = $this->_p->get();
+		return mktime(date('H', $v), date('i', $v), date('s', $v),
+		              date('m', $v), date('d', $v), $year);
+	}
+	
+	public function update() {}
+	
+	public static function instance(IProperty $p, $args)
+	{
+		return new YearVariant($p);
+	}
+}
+
+class MonthVariant implements IPropertyVariant
+{
+	private $_p = null;
+
+	private function __construct(IProperty $p)
+	{
+		$this->_p = $p;
+	}
+	
+	public function get()
+	{
+		return (int)date('m', $this->_p->get());
+	}
+	
+	public function set($month)
+	{
+		$v = $this->_p->get();
+		return mktime(date('H', $v), date('i', $v), date('s', $v),
+		              $month, date('d', $v), date('Y', $v));
+	}
+	
+	public function update() {}
+	
+	public static function instance(IProperty $p, $args)
+	{
+		return new MonthVariant($p);
+	}
+}
+
+class DayVariant implements IPropertyVariant
+{
+	private $_p = null;
+
+	private function __construct(IProperty $p)
+	{
+		$this->_p = $p;
+	}
+	
+	public function get()
+	{
+		return (int)date('d', $this->_p->get());
+	}
+	
+	public function set($day)
+	{
+		$v = $this->_p->get();
+		return mktime(date('H', $v), date('i', $v), date('s', $v),
+		              date('m', $v), $day, date('Y', $v));
+	}
+	
+	public function update() {}
+	
+	public static function instance(IProperty $p, $args)
+	{
+		return new DayVariant($p);
+	}
+}
+
 ?>

@@ -22,15 +22,6 @@ class BlogControllerTest extends CoOrgControllerTest
 {
 	const dataset = 'blog.dataset.xml';
 
-	public function setUp()
-	{
-		parent::setUp();
-		if (UserSession::get())
-		{
-			UserSession::get()->delete();
-		}
-	}
-
 	public function testIndex()
 	{
 		$this->request('blog');
@@ -133,6 +124,16 @@ class BlogControllerTest extends CoOrgControllerTest
 	{
 		$this->request('blog/show/2010/04/11/xyz');
 		$this->assertVarSet('blog');
+		$this->assertVarSet('anonProfile');
+		$this->assertRendered('show');
+	}
+	
+	public function testShowLoggedIn()
+	{
+		$this->login();
+		$this->request('blog/show/2010/04/11/xyz');
+		$this->assertVarSet('blog');
+		$this->assertFalse(array_key_exists('anonProfile', CoOrgSmarty::$vars));
 		$this->assertRendered('show');
 	}
 	

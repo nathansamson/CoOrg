@@ -29,15 +29,29 @@ function blog_install_db()
 	   title VARCHAR(256),
 	   authorID VARCHAR(64),
 	   text TEXT,
+	   commentsAllowed BOOL,
+	   commentsCloseDate DATETIME,
 	   parentID VARCHAR(256),
 	   parentLanguage VARCHAR(6),
 	   PRIMARY KEY (ID, language, datePosted))
+	');
+	$s->execute();
+	
+	$s = DB::prepare('CREATE TABLE BlogComment (
+	   ID INTEGER,
+	   blogID VARCHAR(256),
+	   blogLanguage VARCHAR(6),
+	   blogDatePosted DATE,
+	   FOREIGN KEY (blogID, blogLanguage, blogDatePosted) REFERENCES Blog(ID, language, datePosted) ON DELETE CASCADE,
+	   FOREIGN KEY (ID) REFERENCES Comment(ID) ON DELETE CASCADE)
 	');
 	$s->execute();
 }
 
 function blog_delete_db()
 {
+	$s = DB::prepare('DROP TABLE IF EXISTS BlogComment');
+	$s->execute();
 	$s = DB::prepare('DROP TABLE IF EXISTS Blog');
 	$s->execute();
 }

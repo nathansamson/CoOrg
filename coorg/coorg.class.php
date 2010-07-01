@@ -29,6 +29,17 @@ require_once 'coorg/model.class.php';
 require_once 'coorg/i18n.class.php';
 require_once 'coorg/pager.class.php';
 require_once 'coorg/sortable.class.php';
+require_once 'coorg/relations/genericmodel.variant.php';
+require_once 'coorg/relations/relation.interface.php';
+require_once 'coorg/relations/relationpart.interface.php';
+require_once 'coorg/relations/one2one.class.php';
+require_once 'coorg/relations/one2many.class.php';
+require_once 'coorg/relations/many2many.class.php';
+require_once 'coorg/relations/manycollection.class.php';
+require_once 'coorg/relations/manymanycollection.class.php';
+require_once 'coorg/relations/onerelation.class.php';
+require_once 'coorg/relations/manyrelation.class.php';
+require_once 'coorg/relations/manymanyrelation.class.php';
 require_once 'coorg/normalize.class.php';
 require_once 'coorg/header.interface.php';
 require_once 'coorg/coorgsmarty.interface.php';
@@ -64,6 +75,7 @@ class CoOrg {
 		self::$_appdir = $appdir;
 		self::$_config = $config;
 		spl_autoload_register(array('CoOrg', 'loadModel'));
+		self::loadPluginInfo('relations');
 	}
 	
 	public static function clear()

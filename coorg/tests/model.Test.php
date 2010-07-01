@@ -18,6 +18,33 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+class Rot13Variant implements IPropertyVariant
+{
+	private $_original;
+
+	private function __construct(IProperty $org)
+	{
+		$this->_original = $org;
+	}
+
+	public function get()
+	{
+		return str_rot13($this->_original->get());
+	}
+	
+	public function set($value)
+	{
+		$this->_original->set(str_rot13($value));
+	}
+	
+	public function update() {}
+	
+	public static function instance(IProperty $p, $args)
+	{
+		return new Rot13Variant($p);
+	}
+}
+
 /**
  * @property primary; name String('Name', 64); required
  * @property description String('Description');
@@ -25,6 +52,7 @@
  * @property conditional Integer('Conditional value'); required only('special') 
  * @property writeonly; shadowProperty String('Shadow'); required only('insert')
  * @property protected; rot13name String('Name', 64); required
+ * @variant rot13 rot13 name
 */
 class MockModel extends DBModel
 {
@@ -48,7 +76,7 @@ class MockModel extends DBModel
 	
 	public static function getByName($name)
 	{
-		$q = DB::prepare('SELECT * FROM Mock WHERE name=:name');
+		$q = DB::prepare('SELECT * FROM MockModel WHERE name=:name');
 		$q->execute(array(':name' => $name));
 		
 		if ($row = $q->fetch())
@@ -70,6 +98,22 @@ class MockModel extends DBModel
 	protected function beforeUpdate()
 	{
 		$this->rot13name = str_rot13($this->name);
+	}
+}
+
+/**
+ * @property isaExtension String('Some String', 32); required
+ * @property containerID String('ContainerID"', 32);
+*/
+class IsAMockModel extends MockModel
+{
+	public static function get($name)
+	{
+		$q = DB::prepare('SELECT * FROM IsAMockModel 
+		                      NATURAL JOIN MockModel
+		                  WHERE name=:name');
+		$q->execute(array(':name' => $name));
+		return self::fetch($q->fetch(), 'IsAMockModel');
 	}
 }
 
@@ -265,6 +309,59 @@ class ModelTest extends CoOrgModelTest
 		$this->assertNotNull(MockModel::getByName('abczyx'));
 		$this->assertNotNull(MockModel::getByName('dvorak'));
 		$this->assertNull(MockModel::getByName('qwerty'));
+	}
+	
+	public function testVariants()
+	{
+		$n = new MockModel('abczyx', '', '...');
+		$this->assertEquals('nopmlk', $n->rot13);
+		$n->rot13 = 'abczyx';
+		$this->assertEquals('abczyx', $n->rot13);
+		$this->assertEquals('nopmlk', $n->name);
+	}
+	
+	public function testCreateISA()
+	{
+		$isa = new IsAMockModel;
+		$isa->name = 'Some ISA Name';
+		$isa->shadowProperty = 'shadow';
+		$isa->email = 'isa@isa.com';
+		$isa->isaExtension = 'Ext';
+		$isa->save();
+		
+		$base = MockModel::getByName('Some ISA Name');
+		$this->assertEquals('isa@isa.com', $base->email);
+		
+		$risa = IsAMockModel::get('Some ISA Name');
+		$this->assertEquals('isa@isa.com', $risa->email);
+		$this->assertEquals('Ext', $risa->isaExtension);
+		$this->assertEquals(str_rot13('Some ISA Name'), $risa->rot13);
+	}
+	
+	public function testUpdateISA()
+	{
+		$isa = IsAMockModel::get('base-mock');
+		$isa->isaExtension = 'Updated Ext';
+		$isa->email = 'updated@isa.com';
+		$isa->description = 'Update';
+		$isa->save();
+		
+		$risa = IsAMockModel::get('base-mock');
+		$this->assertEquals('Updated Ext', $risa->isaExtension);
+		$this->assertEquals('updated@isa.com', $risa->email);
+		$this->assertEquals('Update', $risa->description);
+	}
+	
+	public function testDeleteISA()
+	{
+		$isa = IsAMockModel::get('base-mock');
+		$isa->delete();
+		
+		$risa = IsAMockModel::get('base-mock');
+		$this->assertNull($risa);
+		
+		$rbase = MockModel::getByName('base-mock');
+		$this->assertNull($rbase);
 	}
 }
 

@@ -32,7 +32,7 @@ class pagerTester extends CoOrgModelTest
 	
 	public function testOnlyOnePage()
 	{
-		$pager = new MockPager('SELECT * FROM Mock WHERE name=:name',
+		$pager = new MockPager('SELECT * FROM MockModel WHERE name=:name',
 		                       array(':name'=>'AABB'));
 		$this->assertEquals(1, count($pager->execute(1, 10)));
 		$this->assertEquals(1, count($pager->pages(10)));
@@ -40,7 +40,7 @@ class pagerTester extends CoOrgModelTest
 	
 	public function testGapRight()
 	{
-		$pager = new MockPager('SELECT * FROM Mock ORDER BY name');
+		$pager = new MockPager('SELECT * FROM MockModel ORDER BY name');
 		$this->assertEquals(3, count($pager->execute(1, 3)));
 		$pages = $pager->pages(7);
 		$this->assertEquals(7, count($pages));
@@ -97,7 +97,7 @@ class pagerTester extends CoOrgModelTest
 	
 	public function testGapLeft()
 	{
-		$pager = new MockPager('SELECT * FROM Mock ORDER BY name');
+		$pager = new MockPager('SELECT * FROM MockModel ORDER BY name');
 		$this->assertEquals(3, count($pager->execute(12, 3)));
 		$pages = $pager->pages(7);
 		$this->assertEquals(7, count($pages));
@@ -154,7 +154,7 @@ class pagerTester extends CoOrgModelTest
 	
 	public function testGapBoth()
 	{
-		$pager = new MockPager('SELECT * FROM Mock ORDER BY name');
+		$pager = new MockPager('SELECT * FROM MockModel ORDER BY name');
 		$this->assertEquals(3, count($pager->execute(6, 3)));
 		$pages = $pager->pages(7);
 		$this->assertEquals(7, count($pages));
@@ -185,7 +185,7 @@ class pagerTester extends CoOrgModelTest
 	
 	public function testHasPrevAndNet()
 	{
-		$pager = new MockPager('SELECT * FROM Mock ORDER BY name');
+		$pager = new MockPager('SELECT * FROM MockModel ORDER BY name');
 		$this->assertEquals(3, count($pager->execute(6, 3)));
 		$this->assertEquals(5, $pager->prev());
 		$this->assertEquals(7, $pager->next());
@@ -198,7 +198,7 @@ class pagerTester extends CoOrgModelTest
 		$this->assertEquals(11, $pager->prev());
 		$this->assertNull($pager->next());
 		
-		$pager = new MockPager('SELECT * FROM Mock ORDER BY name');
+		$pager = new MockPager('SELECT * FROM MockModel ORDER BY name');
 		$this->assertEquals(36, count($pager->execute(1, 40)));
 		$this->assertNull($pager->prev());
 		$this->assertNull($pager->next());
@@ -206,7 +206,7 @@ class pagerTester extends CoOrgModelTest
 	
 	public function testNoEllips()
 	{
-		$pager = new MockPager('SELECT * FROM Mock ORDER BY name');
+		$pager = new MockPager('SELECT * FROM MockModel ORDER BY name');
 		$this->assertEquals(7, count($pager->execute(2, 7)));
 		$pages = $pager->pages(7);
 		$this->assertEquals(6, count($pages));
@@ -234,7 +234,7 @@ class pagerTester extends CoOrgModelTest
 	
 	public function testUnlimited()
 	{
-		$pager = new MockPager('SELECT * FROM Mock');
+		$pager = new MockPager('SELECT * FROM MockModel');
 		$this->assertEquals(36, count($pager->execute(0, 0)));
 		$this->assertNull($pager->pages(10));
 	}

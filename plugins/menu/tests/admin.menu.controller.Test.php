@@ -83,7 +83,7 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 		$this->assertVarIs('adminlanguage', 'en');
 		$entry = CoOrgSmarty::$vars['newEntry'];
 		$this->assertEquals('en', $entry->language);
-		$this->assertEquals('main', $entry->menu);
+		$this->assertEquals('main', $entry->menuID);
 		$this->assertVarSet('providerActionCombos');
 	}
 	
@@ -99,7 +99,7 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 		$this->assertVarIs('adminlanguage', 'nl');
 		$entry = CoOrgSmarty::$vars['newEntry'];
 		$this->assertEquals('nl', $entry->language);
-		$this->assertEquals('main', $entry->menu);
+		$this->assertEquals('main', $entry->menuID);
 	}
 	
 	public function testEditOtherLanguage()
@@ -110,7 +110,7 @@ class AdminMenuControllerTest extends CoOrgControllerTest
 		$this->assertVarIs('adminlanguage', 'nl');
 		$entry = CoOrgSmarty::$vars['newEntry'];
 		$this->assertEquals('nl', $entry->language);
-		$this->assertEquals('main', $entry->menu);
+		$this->assertEquals('main', $entry->menuID);
 	}
 	
 	public function testEditNotAllowed()

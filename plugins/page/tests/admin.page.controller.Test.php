@@ -57,7 +57,7 @@ class AdminPageControllerTest extends CoOrgControllerTest
 			$page->title = 'Some Name';
 			$page->language = 'nl';
 			$page->content = 'X';
-			$page->author = 'nathan';
+			$page->authorID = 'nathan';
 			$page->save();
 		}
 		$this->login('admin');
@@ -157,7 +157,7 @@ class AdminPageControllerTest extends CoOrgControllerTest
 		$newPage = Page::get('some-new-page', 'en');
 		$this->assertEquals('Some New Page', $newPage->title);
 		$this->assertEquals('The Very Much Appreciated Content', $newPage->content);
-		$this->assertEquals('admin', $newPage->author);
+		$this->assertEquals('admin', $newPage->authorID);
 	}
 	
 	public function testSavePreview()
@@ -174,7 +174,7 @@ class AdminPageControllerTest extends CoOrgControllerTest
 		$newPage = CoOrgSmarty::$vars['newPage'];
 		$this->assertEquals('Some New Page', $newPage->title);
 		$this->assertEquals('The Very Much Appreciated Content', $newPage->content);
-		$this->assertEquals('admin', $newPage->author);
+		$this->assertEquals('admin', $newPage->authorID);
 		$this->assertEquals('en', $newPage->language);
 		
 		$this->assertNull(Page::get('some-new-page', 'en'));
@@ -218,6 +218,7 @@ class AdminPageControllerTest extends CoOrgControllerTest
 		                   'originalID' => 'aabbcc'));
 		
 		$page = Page::get('translation-of-aa-bb-cc', 'fr');
+		$this->assertNotNull($page);
 		$this->assertEquals('Translated', $page->content);
 		$this->assertEquals('Translation of AA BB CC', $page->title);
 		$t = $page->languages();
@@ -261,7 +262,7 @@ class AdminPageControllerTest extends CoOrgControllerTest
 		$newPage = CoOrgSmarty::$vars['newPage'];
 		$this->assertEquals('Translation of AA BB CC', $newPage->title);
 		$this->assertEquals('Translated', $newPage->content);
-		$this->assertEquals('admin', $newPage->author);
+		$this->assertEquals('admin', $newPage->authorID);
 		$this->assertEquals('aabbcc', $newPage->originalID_raw);
 		$this->assertEquals('en', $newPage->originalLanguage_raw);
 		$oPage = CoOrgSmarty::$vars['originalPage'];
@@ -287,7 +288,7 @@ class AdminPageControllerTest extends CoOrgControllerTest
 		$newPage = CoOrgSmarty::$vars['newPage'];
 		$this->assertEquals('Translation of AA BB CC', $newPage->title);
 		$this->assertEquals('', $newPage->content);
-		$this->assertEquals('admin', $newPage->author);
+		$this->assertEquals('admin', $newPage->authorID);
 		$this->assertEquals('aabbcc', $newPage->originalID_raw);
 		$this->assertEquals('en', $newPage->originalLanguage_raw);
 		$oPage = CoOrgSmarty::$vars['originalPage'];
@@ -349,8 +350,8 @@ class AdminPageControllerTest extends CoOrgControllerTest
 		$updatedPage = Page::get('some-page', 'en');
 		$this->assertEquals('Some New Title', $updatedPage->title);
 		$this->assertEquals('The Very Much Appreciated Edited Content', $updatedPage->content);
-		$this->assertEquals('nathan', $updatedPage->author);
-		$this->assertEquals('admin', $updatedPage->lastEditor);
+		$this->assertEquals('nathan', $updatedPage->authorID);
+		$this->assertEquals('admin', $updatedPage->lastEditorID);
 	}
 	
 	public function testUpdateNotAllowed()

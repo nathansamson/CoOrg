@@ -31,11 +31,6 @@ class Menu extends DBModel
 		parent::__construct();
 	}
 
-	public function entries($language)
-	{
-		return MenuEntry::entries($this->name, $language);
-	}
-
 	protected function validate($for)
 	{
 		parent::validate($for);

@@ -57,7 +57,7 @@ class AdminPageController extends Controller
 		$page->title = $title;
 		$page->language = $language;
 		$page->content = $content;
-		$page->author = UserSession::get()->username;
+		$page->author = UserSession::get();
 		
 		if ($originalID)
 		{
@@ -122,7 +122,7 @@ class AdminPageController extends Controller
 	{
 		$this->_page->title = $title;
 		$this->_page->content = $content;
-		$this->_page->lastEditor = UserSession::get()->username;
+		$this->_page->lastEditorID = UserSession::get()->username;
 		if ($preview)
 		{
 			$this->preview = 'true';

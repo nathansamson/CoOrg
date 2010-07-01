@@ -39,6 +39,7 @@ class UserControllerTest extends CoOrgControllerTest
 		                      array('username' => 'New User',
 		                            'activationURL' => '**?**',
 		                            'site' => 'The Site'));
+		$this->assertNotNull(UserProfile::get('New User'));
 	}
 	
 	public function testSaveFailure()
