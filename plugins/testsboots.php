@@ -23,6 +23,7 @@ define('COORG_TEST_CONFIG', $configFile);
 $config = new Config($configFile);
 $config->set('enabled_plugins', array('admin', 'menu', 'user', 'comments', 'user-admin', 'blog', 'page'));
 $config->set('site/title', 'The Site');
+$config->save();
 DB::open($config->get('dbdsn'), $config->get('dbuser'), $config->get('dbpass'));
 
 CoOrg::init($config, 'coorg/testing/plugins-app', 'plugins'); // Load the models

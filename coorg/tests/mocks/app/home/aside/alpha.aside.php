@@ -20,7 +20,14 @@ class HomeAlphaAside extends AsideController
 			$this->myActionVar = 'lets rock\'n roll';
 		}
 		
-		return $this->render('alpha');
+		if ($p2 != 'fallback')
+		{
+			return $this->render('alpha');
+		}
+		else
+		{
+			return $this->render('asidefallback');
+		}
 	}
 	
 	public function preview($widgetParams, $orient)

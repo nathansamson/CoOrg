@@ -10,6 +10,11 @@ class HomeController extends Controller
 		$this->language = t('en');
 		$this->render('home');
 	}
+	
+	public function fallback()
+	{
+		$this->render('fallback');
+	}
 }
 
 ?>

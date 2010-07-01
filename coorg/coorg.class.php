@@ -20,7 +20,6 @@
 
 error_reporting(E_ALL);
 
-require_once 'static/resources.coorg.php';
 require_once 'coorg/controller.class.php';
 require_once 'coorg/asidecontroller.class.php';
 require_once 'coorg/config.class.php';
@@ -63,6 +62,7 @@ class CoOrg {
 	private static $_pluginDir;
 	private static $_config;
 	private static $_resources = array();
+	private static $_resourceTheme = 'default';
 	
 	private static $_request;
 	private static $_requestParameters;
@@ -71,6 +71,7 @@ class CoOrg {
 	{
 		self::loadDir($pluginsDir, $config->get('enabled_plugins'));
 		self::loadDir($appdir, null);
+		self::$_resources = array();		
 		I18n::addSearchDir('coorg', 'coorg');
 		self::$_pluginDir = $pluginsDir;
 		self::$_appdir = $appdir;
@@ -118,6 +119,19 @@ class CoOrg {
 
 	public static function process($request, $params = array(), $post = false)
 	{
+		self::$_resourceTheme = 'default';
+		include 'static/default/resources.coorg.php';
+		$theme = self::$_config->get('theme');
+		if (!$theme) $theme = 'default';
+		if ($theme != 'default')
+		{
+			self::$_resourceTheme = $theme;
+			if (file_exists('static/'.$theme.'/resources.coorg.php'))
+			{
+				include 'static/'.$theme.'/resources.coorg.php';
+			}
+		}
+	
 		self::normalizeRequest($request);
 		$url = $request;
 		if ($request == '') $request = 'home';
@@ -256,10 +270,23 @@ class CoOrg {
 	public static function staticFile($file, $app = null)
 	{
 		$external = self::$_config->get('staticpath');	
-	
+		$theme = self::$_config->get('theme');
+		if (!$theme) $theme = 'default';
 		if ($app == null)
 		{
-			$version = self::$_resources['/'][$file];
+			if (! array_key_exists($file, self::$_resources['/']))
+			{
+				$theme = 'default';
+				$version = '';
+			}
+			else
+			{
+				if (!array_key_exists($theme, self::$_resources['/'][$file]))
+				{
+					$theme = 'default';
+				}
+				$version = self::$_resources['/'][$file][$theme];
+			}
 			
 			if ($external)
 			{
@@ -269,14 +296,47 @@ class CoOrg {
 			{
 				$path = self::$_config->get('path').'static/';
 			}
-			return $path.$file.'?v='.$version;
+			return $path.$theme.'/'.$file.'?v='.$version;
 		}
 		else
 		{
-			self::loadPluginInfo('resources.coorg', $app);
+			$isPlugin = in_array($app, self::$_config->get('enabled_plugins'));
+			if ($app == 'blog' && $isPlugin == false)
+			{
+				var_dump(self::$_config->get('enabled_plugins'));
+				
+				print_r(self::$_config);
+				
+				die();
+			}
+			if (!array_key_exists($app, self::$_resources))
+			{
+				$path = $isPlugin ? self::$_pluginDir : self::$_appdir;
+				$appPath = $path . '/'.$app.'/static/';
+				self::$_resourceTheme = 'default';
+				include $appPath.'default/resources.coorg.php';
+				if ($theme != 'default')
+				{
+					self::$_resourceTheme = $theme;
+					if (file_exists($appPath.$theme.'/resources.coorg.php'))
+					{
+						include $appPath.$theme.'/resources.coorg.php';
+					}
+				}
+			}
+
 			if (array_key_exists($file, self::$_resources[$app]))
 			{
-				$version = self::$_resources[$app][$file];
+				$versions = self::$_resources[$app][$file];
+				if (array_key_exists($theme, $versions))
+				{
+					$version = self::$_resources[$app][$file][$theme];
+				}
+				else
+				{
+					$theme = 'default';
+					$version = self::$_resources[$app][$file][$theme];
+				}
 			}
 			else
 			{
@@ -290,7 +350,7 @@ class CoOrg {
 			else
 			{
 				$pluginPath = self::$_config->get('path') . '/';
-				if (in_array($app, self::$_config->get('enabled_plugins')))
+				if ($isPlugin)
 				{
 					$pluginPath .= self::$_pluginDir.'/'.$app;
 				}
@@ -299,7 +359,7 @@ class CoOrg {
 					$pluginPath .= self::$_appdir.'/'.$app;
 				}
 			}
-			return $pluginPath. '/static/'.$file.'?v='.$version;
+			return $pluginPath. '/static/'.$theme.'/'.$file.'?v='.$version;
 		}
 	}
 	
@@ -426,6 +486,12 @@ class CoOrg {
 		return ($l == '' ? 'en' : $l);
 	}
 	
+	public static function getTheme()
+	{
+		$theme = self::$_config->get('theme');
+		return $theme ? $theme : 'default';
+	}
+	
 	public static function config()
 	{
 		return self::$_config;
@@ -466,7 +532,18 @@ class CoOrg {
 	
 	public static function resreg($app, $resource, $version)
 	{
-		self::$_resources[$app][$resource] = $version;
+		if (!array_key_exists($app, self::$_resources))
+		{
+			self::$_resources[$app] = array();
+		}
+		if (array_key_exists($resource, self::$_resources[$app]))
+		{
+			self::$_resources[$app][$resource][self::$_resourceTheme] = $version;
+		}
+		else
+		{
+			self::$_resources[$app][$resource] = array(self::$_resourceTheme => $version);
+		}
 	}
 	
 	/* == These functions are only used for testing purposes == */

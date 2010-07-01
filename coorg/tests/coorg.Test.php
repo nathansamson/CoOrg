@@ -121,6 +121,22 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		                    AlphaController::$postParams);
 	}
 	
+	public function testRenderThemedTemplate()
+	{
+		CoOrg::config()->set('theme', 'testtheme');
+		CoOrg::process('');
+		
+		$this->assertContains('Home from Test Theme', CoOrgSmarty::$renderedOutput);
+	}
+	
+	public function testRenderFallbackTemplate()
+	{
+		CoOrg::config()->set('theme', 'testtheme');
+		CoOrg::process('home/fallback');
+		
+		$this->assertContains('FALLBACK TEMPLATE', CoOrgSmarty::$renderedOutput);
+	}
+	
 	public function testProcessNormalRequestPostRequired() {
 		CoOrg::process('alpha/postrequired', array('p1' => 'value1',
 		                                           'p2' => 'value2'), false);
@@ -170,6 +186,22 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$this->assertFalse(array_key_exists('asideVar',  CoOrgSmarty::$vars));
 		
 		$this->assertFalse(class_exists('HomeAlpha2Aside')); // This is not configured
+	}
+	
+	public function testAsideTheme()
+	{
+		CoOrg::config()->set('theme', 'testtheme');
+		CoOrg::process('alpha/withaside/p1/p2');
+		
+		$this->assertContains('THIS IS TESTTHEME VERSION', CoOrgSmarty::$renderedOutput);
+	}
+	
+	public function testAsideThemeFallback()
+	{
+		CoOrg::config()->set('theme', 'testtheme');
+		CoOrg::process('alpha/withaside/p1/fallback');
+		
+		$this->assertContains('FALLBACK ASIDE', CoOrgSmarty::$renderedOutput);
 	}
 	
 	public function testAsideWithParams()
@@ -347,10 +379,11 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 	
 	public function testStaticFile()
 	{
-		$this->assertEquals('/coorg/tests/mocks/plugins/alpha/static/somefile.css?v=2010-10-03',
+		CoOrg::process('/');
+		$this->assertEquals('/coorg/tests/mocks/plugins/alpha/static/default/somefile.css?v=2010-10-03',
 		                    CoOrg::staticFile('somefile.css', 'alpha'));
 
-		$this->assertEquals('static/mockfile.css?v=A',
+		$this->assertEquals('static/default/mockfile.css?v=A',
 		                    CoOrg::staticFile('mockfile.css'));
 	}
 	
@@ -359,14 +392,15 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		CoOrg::config()->set('staticpath', 'http://mystatic.somestatic.com/static/path/');
 		CoOrg::config()->set('staticpath/alpha', true);
 		CoOrg::config()->set('staticpath/home', false);
+		CoOrg::process('/');
 		
-		$this->assertEquals('/coorg/tests/mocks/app/home/static/homefile.css?v=theversion',
+		$this->assertEquals('/coorg/tests/mocks/app/home/static/default/homefile.css?v=theversion',
 		                    CoOrg::staticFile('homefile.css', 'home'));
 		
-		$this->assertEquals('http://mystatic.somestatic.com/static/path/alpha/static/somefile.css?v=2010-10-03',
+		$this->assertEquals('http://mystatic.somestatic.com/static/path/alpha/static/default/somefile.css?v=2010-10-03',
 		                    CoOrg::staticFile('somefile.css', 'alpha'));
 
-		$this->assertEquals('http://mystatic.somestatic.com/static/path/_root/mockfile.css?v=A',
+		$this->assertEquals('http://mystatic.somestatic.com/static/path/_root/default/mockfile.css?v=A',
 		                    CoOrg::staticFile('mockfile.css'));
 	}
 	
@@ -376,6 +410,24 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('App Shared String', t('home|some shared string'));
 		$this->assertEquals('Alpha Shared String', t('alpha|some shared string'));
 		$this->assertEquals('Do Not Translate Me', t('Do Not Translate Me'));
+	}
+	
+	public function testThemes()
+	{
+		CoOrg::config()->set('theme', 'testtheme');
+		CoOrg::process('/');
+		
+		$this->assertEquals('static/testtheme/mockfile.css?v=testtheme',
+		                    CoOrg::staticFile('mockfile.css'));
+
+		$this->assertEquals('static/default/onlydefault.css?v=A',
+		                    CoOrg::staticFile('onlydefault.css'));
+		                    
+		$this->assertEquals('/coorg/tests/mocks/plugins/alpha/static/testtheme/somefile.css?v=alphaV',
+		                    CoOrg::staticFile('somefile.css', 'alpha'));
+		
+		$this->assertEquals('/coorg/tests/mocks/plugins/alpha/static/default/onlydefault.css?v=2010-10-03',
+		                    CoOrg::staticFile('onlydefault.css', 'alpha'));
 	}
 	
 	private function alternativeConfig($config)

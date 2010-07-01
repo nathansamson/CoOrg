@@ -218,7 +218,7 @@ class Controller {
 
 	protected function render($tpl, $app = false, $baseFile = 'base')
 	{
-		$this->smarty()->addTemplateDir($this->_tplPath);
+		$this->addTemplateDirs($this->smarty());
 		if (array_key_exists($this->_renderType, $this->_contentTypes))
 		{
 			Header::setContentType($this->_contentTypes[$this->_renderType]);
@@ -256,7 +256,7 @@ class Controller {
 	protected function mail()
 	{
 		$smarty = $this->prepareASmarty();
-		$smarty->addTemplateDir($this->_tplPath);
+		$this->addTemplateDirs($smarty);
 		return new Mail($smarty);
 	}
 	
@@ -267,6 +267,16 @@ class Controller {
 			$this->_smarty = $this->prepareASmarty();
 		}
 		return $this->_smarty;
+	}
+	
+	private function addTemplateDirs($smarty)
+	{
+		$theme = CoOrg::config()->get('theme');
+		if ($theme && $theme != 'default')
+		{
+			$smarty->addTemplateDir($this->_tplPath.'/'.$theme);
+		}
+		$smarty->addTemplateDir($this->_tplPath.'/default/');
 	}
 	
 	private function prepareASmarty()

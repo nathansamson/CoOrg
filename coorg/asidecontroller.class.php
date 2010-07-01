@@ -55,13 +55,26 @@ abstract class AsideController
 	
 	protected function doRender($tpl, $base = null)
 	{
-		if ($base)
+		$theme = CoOrg::getTheme();
+		if ($theme != 'default')
 		{
-			$tpl = $this->_smarty->createTemplate('extends:'.$base.'|'.$this->_viewsPath.$tpl.'.html.tpl', $this->_data);
+			$file = $this->_viewsPath.$theme.'/'.$tpl.'.html.tpl';
+			if (!file_exists($file))
+			{
+				$file = $this->_viewsPath.'default/'.$tpl.'.html.tpl';
+			}
 		}
 		else
 		{
-			$tpl = $this->_smarty->createTemplate($this->_viewsPath.$tpl.'.html.tpl', $this->_data);
+			$file = $this->_viewsPath.'default/'.$tpl.'.html.tpl';
+		}
+		if ($base)
+		{
+			$tpl = $this->_smarty->createTemplate('extends:'.$base.'|'.$file, $this->_data);
+		}
+		else
+		{
+			$tpl = $this->_smarty->createTemplate($file, $this->_data);
 		}
 		return $tpl->fetch();
 	}
