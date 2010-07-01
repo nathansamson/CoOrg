@@ -19,12 +19,12 @@
 */
 
 /**
- * @property primary; ID String(t('Title'), 256); required
+ * @property primary; ID String('ID', 256); required
  * @property primary; datePosted Date(t('Date posted')); required
- * @property primary; language String(t('Language'), 6); required
- * @property title String(t('Title'), 256); required
- * @property authorID String(t('Author'), 64); required 
- * @property text String(t('Content')); required
+ * @property primary; language String(t('coorg|Language'), 6); required
+ * @property title String(t('blog|Title'), 256); required
+ * @property authorID String(t('blog|Author'), 64); required 
+ * @property text String(t('blog|Content')); required
  * @property timePosted DateTime('Posted'); required
  * @property timeEdited DateTime('Edited');
  * @property parentID String('Title', 256);

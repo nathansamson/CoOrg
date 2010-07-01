@@ -4,8 +4,8 @@
 	<h1>{'User admin'|_}</h1>
 	<table>
 		<tr>
-			<th>{'Username'|_}</th>
-			<th>{'Email'|_}</th>
+			<th>{'user|Username'|_}</th>
+			<th>{'user|Email'|_}</th>
 			<th>&nbsp;</th>
 		</tr>
 		{foreach $users as $user}

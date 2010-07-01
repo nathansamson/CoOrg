@@ -6,7 +6,7 @@
 	{a request="admin/page/create"}{'Create page'|_}{/a}
 	<table>
 		<tr>
-			<th>{'Title'|_}</th>
+			<th>{'page|Title'|_}</th>
 			<th>{'Short fragment'|_}</th>
 			<th>{'Other languages'|_}</th>
 			<th>&nbsp;</th>

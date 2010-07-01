@@ -370,6 +370,14 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		                    CoOrg::staticFile('mockfile.css'));
 	}
 	
+	public function testI18n()
+	{
+		i18n::setLanguage('nl');
+		$this->assertEquals('App Shared String', t('home|some shared string'));
+		$this->assertEquals('Alpha Shared String', t('alpha|some shared string'));
+		$this->assertEquals('Do Not Translate Me', t('Do Not Translate Me'));
+	}
+	
 	private function alternativeConfig($config)
 	{
 		CoOrg::init($config, 'coorg/tests/mocks/app', 'coorg/tests/mocks/plugins');

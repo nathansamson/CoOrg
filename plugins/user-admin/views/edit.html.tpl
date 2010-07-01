@@ -9,9 +9,9 @@
 	<h1>{'Edit %u'|_:$user->username}</h1>
 	{form request="admin/user/save" instance=$user}
 		{input name=from value=$from}
-		{input for=username label="Username" readonly required}
+		{input for=username label="user|Username" readonly required}
 		
-		{input for=email type="email" label="Email" required}
+		{input for=email type="email" label="user|Email" required}
 		
 		<fieldset>
 			<legend>{'Password change'|_}</legend>

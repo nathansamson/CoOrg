@@ -71,6 +71,7 @@ class CoOrg {
 	{
 		self::loadDir($pluginsDir, $config->get('enabled_plugins'));
 		self::loadDir($appdir, null);
+		I18n::addSearchDir('coorg', 'coorg');
 		self::$_pluginDir = $pluginsDir;
 		self::$_appdir = $appdir;
 		self::$_config = $config;
@@ -712,7 +713,7 @@ class CoOrg {
 					}
 					else if (is_dir($file) && $sfile == 'lang')
 					{
-						I18n::addSearchDir($file);
+						I18n::addSearchDir($file, $subdir);
 					}
 				}
 			}
@@ -764,4 +765,9 @@ class RequestNotFoundException extends Exception
 		parent::__construct('Request not found: '. $request);
 	}
 }
+
+/**
+	t('Save');
+	t('Language');
+*/
 ?>

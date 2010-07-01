@@ -31,10 +31,10 @@
 			{input value=$redirect name=redirect}
 		{/if}
 		
-		{input for=title label="Title" required class=title}
+		{input for=title label="page|Title" required class=title}
 		{input for=content label="Content" type="textarea" size=big required editor=full}
 		
-		{input type=submit label="Save page"}
+		{input type=submit label="coorg|Save"}
 		{input type=submit label="Preview page" name="preview"}
 	{/form}
 {/block}

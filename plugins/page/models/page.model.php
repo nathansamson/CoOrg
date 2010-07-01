@@ -20,13 +20,13 @@
 
 /**
  * @property primary; ID String('ID', 256); required
- * @property primary; language String(t('Language'), 6); required
+ * @property primary; language String(t('coorg|Language'), 6); required
  * @property created Date('Created'); required
  * @property updated Date('Updated'); required only('update')
- * @property authorID String(t('Author'), 24); required
+ * @property authorID String(t('page|Author'), 24); required
  * @property lastEditorID String('Last Editor', 24); required only('update')
- * @property title String(t('Title'), 256); required
- * @property content String(t('Content')); required
+ * @property title String(t('page|Title'), 256); required
+ * @property content String(t('page|Content')); required
  * @property writeonly; originalLanguage String('', 6);
  * @property writeonly; originalID String('', 256);
  * @extends Normalize title ID language

@@ -23,6 +23,6 @@
 		
 		{input name=menu value=$menu options=$menus type=select label="Menu"}
 		
-		{input type=submit label="Save"}
+		{input type=submit label="coorg|Save"}
 	{/form}
 {/block}

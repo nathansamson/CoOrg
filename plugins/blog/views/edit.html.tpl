@@ -33,13 +33,13 @@
 		{input for=ID name=id}
 		
 		{input for=language}
-		{input for=title label="Title" required class=title}
+		{input for=title label="blog|Title" required class=title}
 		{input for=text label="Blog content" type=textarea required size=big editor=full}
 		
 		<h2>{'Comments'|_}</h2>
 		{input for=commentsAllowed type=checkbox label="Allow comments"}
 		{input name=commentsOpenFor value="$currentOpenFor" options=$openFor label="Allow comments for" type=select}
 		
-		{input type=submit label="Save blog"}
+		{input type=submit label="coorg|Save"}
 	{/form}
 {/block}

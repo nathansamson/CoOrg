@@ -19,8 +19,8 @@
 */
 
 /**
- * @property primary; name String(t('Name'), 32); required
- * @property description String(t('Description'), 256);
+ * @property primary; name String(t('menu|Name'), 32); required
+ * @property description String(t('menu|Description'), 256);
 */
 class Menu extends DBModel
 {

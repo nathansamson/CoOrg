@@ -27,7 +27,7 @@ class BlogMenuEntryProvider implements IMenuEntryProvider
 	
 	public static function listActions()
 	{
-		return array('show' => t('Show'), 'latest' => t('Latest'), 'create' => t('Create'));
+		return array('show' => t('blog|Show'), 'latest' => t('Latest blogs'), 'create' => t('New Blog'));
 	}
 	
 	public static function listData($action, $language)

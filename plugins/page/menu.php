@@ -27,7 +27,7 @@ class PageMenuEntryProvider implements IMenuEntryProvider
 	
 	public static function listActions()
 	{
-		return array('show' => t('Show'), 'create' => t('Create'));
+		return array('show' => t('page|Show'), 'create' => t('New Page'));
 	}
 	
 	public static function listData($action, $language)

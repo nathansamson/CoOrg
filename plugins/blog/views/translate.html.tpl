@@ -14,7 +14,7 @@
 		{input value=$originalBlog->ID name=id}
 		{input value=$originalBlog->language name=fromLanguage}
 	
-		{input for=title label="Title" required class=title}
+		{input for=title label="blog|Title" required class=title}
 		{input for=text type=textarea label="Blog content" required size=big editor=full}
 		{input for=language}
 		

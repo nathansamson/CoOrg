@@ -23,9 +23,10 @@ $_['Add entry'] = 'Voeg item toe';
 $_['Edit menu properties'] = 'Wijzig menu instellingen';
 $_['To'] = 'Naar';
 $_['Data'] = 'Gegegenvs';
-$_['Save menu'] = 'Menu opslaan';
 $_['Small description'] = 'Korte beschrijving';
 $_['Create new menu'] = 'Nieuw menu maken';
 $_['Create menu'] = 'Menu opslaan';
 $_['Edit menu'] = 'Menu opslaan';
+$_['Deleted menu "%n"'] = 'Menu "%n" verwijderd';
+$_['Save menu entry'] = 'Menuitem opslaan';
 ?>

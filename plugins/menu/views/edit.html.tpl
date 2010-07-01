@@ -47,7 +47,7 @@
 			{input for=menuID}
 			{input for=language}
 		
-			{input for=title label="Title" required}
+			{input for=title label="menu|Title" required}
 		
 			{input type=select for=entryID label="To" options=$providerActionCombos}
 		

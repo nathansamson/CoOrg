@@ -23,7 +23,7 @@
  * @property menuID String(t('Menu'), 32); required
  * @property language String('Language', 6); required
  * @property url String(t('URL'), 1024); required
- * @property title String(t('Title'), 64); required
+ * @property title String(t('menu|Title'), 64); required
  * @property provider String('Provider', 64); required
  * @property action String('Action', 64); required
  * @property data String('Data', 128);

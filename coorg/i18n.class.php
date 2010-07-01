@@ -22,11 +22,12 @@ class I18n
 {
 	private static $_searchDirs = array();
 	private static $_strings = array();
+	private static $_contexts = array();
 	private static $_language = '';
 
-	public static function addSearchDir($dir)
+	public static function addSearchDir($dir, $context)
 	{
-		self::$_searchDirs[] = $dir;
+		self::$_searchDirs[$context] = $dir;
 	}
 
 	public static function getLanguage()
@@ -36,27 +37,51 @@ class I18n
 
 	public static function setLanguage($lang)
 	{
-		$_ = array();
+		self::$_strings = array();
+		self::$_contexts = array();
 		if ($lang != null) 
 		{
-			foreach (self::$_searchDirs as $dir)
+			foreach (self::$_searchDirs as $context => $dir)
 			{
 				if (file_exists($dir.'/'.$lang.'.lang.php'))
 				{
+					$_ = array();
 					include $dir.'/'.$lang.'.lang.php';
+					self::$_strings = array_merge(self::$_strings, $_);
+					self::$_contexts[$context] = $_;
 				}
 			}
 		}
 		
 		self::$_language = $lang;
-		self::$_strings = $_;
 	}
 	
 	public static function translate($string, $params)
 	{
-		if (array_key_exists($string, self::$_strings))
+		if (preg_match('/^([a-zA-Z0-9]*)\|(.*)/', $string, $matches))
 		{
-			$translated = self::$_strings[$string];
+			$context = $matches[1];
+			if (array_key_exists($context, self::$_contexts))
+			{
+				$haystack = self::$_contexts[$context];
+			}
+			else
+			{
+				$haystack = array();
+			}
+			$string = $matches[2];
+		}
+		else
+		{
+			$haystack = self::$_strings;
+		}
+		if (array_key_exists($string, $haystack))
+		{
+			$translated = $haystack[$string];
+			if ($translated == null)
+			{
+				$translated = $string;
+			}
 		}
 		else
 		{

@@ -19,7 +19,7 @@
 */
 
 /**
- * @property title String(t('Title')); required
+ * @property title String(t('Site Title')); required
  * @property subtitle String(t('SubTitle'));
  * @property siteAuthor String(t('Site Author')); required
  * @property siteContactEmail Email(t('Site Contact Email')); required
