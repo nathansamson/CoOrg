@@ -1,5 +1,5 @@
 <?php
 
-CoOrg::resreg('user-admin', 'images/user.png', '53e03e1f4f640dfab1c546368a24bf20');
+CoOrg::resreg('user-admin', 'images/user.png', '9c63129ad5e39058527565b7c83ffb9d');
 
 ?>

@@ -11,24 +11,25 @@ class CoOrg
 	}
 }
 
-function update($p, $dir)
+function update($p, $dir, $theme, &$dirUpdates)
 {
 	global $res;
 	$res[$p] = array();
 	
-	if (file_exists($dir.'/resources.coorg.php'))
+	$resFile = $dir.'/static/'.$theme.'/resources.coorg.php';
+	if (file_exists($resFile))
 	{
-		include_once $dir.'/resources.coorg.php';
+		include_once $dir.'/static/'.$theme.'/resources.coorg.php';
 	}
 	else if ($p == '/')
 	{
-		include_once 'static/resources.coorg.php';
+		include_once 'static/'.$theme.'/resources.coorg.php';
 	}
 	
 	$updated = false;
 	foreach ($res[$p] as $file => $version)
 	{
-		$nfile = $dir.'/static/'.$file;
+		$nfile = $dir.'/static/'.$theme.'/'.$file;
 		if (strlen($version) == '32') // md5 hashing
 		{
 			$newversion = md5(file_get_contents($nfile));
@@ -42,11 +43,13 @@ function update($p, $dir)
 
 	if ($updated)
 	{
+		$dirUpdates = true;
 		print_r($res[$p]);
 	}
 }
 
-update('/', '.');
+$updates = false;
+update('/', '.', 'default', $updates);
 
 foreach (scandir('plugins') as $p)
 {
@@ -54,7 +57,16 @@ foreach (scandir('plugins') as $p)
 	if (!is_dir('plugins/'.$p)) continue;
 	echo 'Scanning ' . $p."\n";
 	
-	update($p, 'plugins/'.$p);
+	update($p, 'plugins/'.$p, 'default', $updates);
+}
+
+if ($updates)
+{
+	exit(1);
+}
+else
+{
+	exit(0);
 }
 
 ?>
