@@ -71,7 +71,7 @@
 						</fieldset>
 					{/if}
 					
-					{input for=comment label=comment type=textarea required}
+					{input for=comment label=comment type=textarea required editor=lite}
 					
 					{input type="submit" label="Save comment"}
 				{/form}
@@ -103,7 +103,7 @@
 			</fieldset>
 		{/if}
 		
-		{input for=comment label=comment type=textarea required}
+		{input for=comment label=comment type=textarea required editor=lite}
 		
 		{input type="submit" label="Comment"}
 	{/form}

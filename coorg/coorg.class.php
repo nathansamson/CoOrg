@@ -158,6 +158,7 @@ class CoOrg {
 			self::normalizeRequest($coorgUrl);
 			$controllerClass->coorgUrl = $coorgUrl;
 			$controllerClass->staticPath = self::$_config->get('path').'static/';
+			$controllerClass->coorgLanguage = self::getLanguage();
 			if (!$post && $controllerClass->isPost($action))
 			{
 				throw new WrongRequestMethodException();

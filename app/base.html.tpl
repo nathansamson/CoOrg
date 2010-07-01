@@ -8,11 +8,20 @@
 		
 		{block name='head'}{/block}
 		
-		<script type="text/javascript" src="{'scripts/cwysiwyg.js'|static}"></script>
+		<script type="text/javascript" src="{'ckeditor/ckeditor.js'|static}"></script>
+		<script type="text/javascript" src="{'ckeditor/adapters/jquery.js'|static}"></script>
 		<script>
+			var COORGLANG = '{$coorgLanguage}'; 
 			$(document).ready(function() {
-				$('.full-editor').each(function (i, element) {
-					cWYSIWYG(element);
+				$('.full-editor').ckeditor(function() {}, {
+					language: '{$coorgLanguage}',
+					customConfig: '{'ckeditor/coorgConfig.js'|static}'
+				});
+				
+				$('.lite-editor').ckeditor(function() {}, {
+					language: '{$coorgLanguage}',
+					toolbar: 'Lite',
+					customConfig: '{'ckeditor/coorgConfig.js'|static}'
 				});
 			});
 			
