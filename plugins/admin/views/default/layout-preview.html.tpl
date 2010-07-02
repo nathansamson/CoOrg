@@ -35,9 +35,9 @@
 			{form request="admin/layout/save" nobreaks id=$widgetName}
 				{input value=$widgetName name="widgetName"}
 				
-				{input type=select type=select options=$panels name="panelID"}
+				{input type=select type=select options=$panels name="panelID" nolabel}
 				
-				{input type="submit" stock="list-add"}
+				{input type="submit" stock="list-add" nolabel}
 			{/form}
 			</div>
 		{/if}

@@ -59,6 +59,10 @@ function smarty_function_input($params, $smarty)
 	{
 		$label = t($params['label']);
 	}
+	else if (array_key_exists('nolabel', $params))
+	{
+		$label = null;
+	}
 	else
 	{
 		$type = 'hidden';
@@ -126,7 +130,10 @@ function smarty_function_input($params, $smarty)
 			}
 
 		}
-		$label = '<label for="'.$id.'" '.($class ? 'class="'.$class.'"' : '' ). '>'.$label.'</label>';
+		if ($label)
+		{
+			$label = '<label for="'.$id.'" '.($class ? 'class="'.$class.'"' : '' ). '>'.$label.'</label>';
+		}
 		if (array_key_exists('class', $params))
 		{
 			$class = $params['class'];
