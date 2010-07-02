@@ -6,7 +6,7 @@
 		<h1>{'Login'|_}</h1>
 {form request="#" instance=sideUser id=$ID}
 	{input for=username label="Username" required}
-	{input for=password label="Password" required}
+	{input for=password label="Password" required type=preview}
 	
 	<input type="hidden" name="redirect" value="{$coorgRequest|escape}"/>
 	
