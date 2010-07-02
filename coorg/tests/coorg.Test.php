@@ -379,16 +379,18 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 	
 	public function testStaticFile()
 	{
+		CoOrg::config()->set('path', '/');
 		CoOrg::process('/');
 		$this->assertEquals('/coorg/tests/mocks/plugins/alpha/static/default/somefile.css?v=2010-10-03',
 		                    CoOrg::staticFile('somefile.css', 'alpha'));
 
-		$this->assertEquals('static/default/mockfile.css?v=A',
+		$this->assertEquals('/static/default/mockfile.css?v=A',
 		                    CoOrg::staticFile('mockfile.css'));
 	}
 	
 	public function testExternalStaticFile()
 	{
+		CoOrg::config()->set('path', '/');
 		CoOrg::config()->set('staticpath', 'http://mystatic.somestatic.com/static/path/');
 		CoOrg::config()->set('staticpath/alpha', true);
 		CoOrg::config()->set('staticpath/home', false);
@@ -397,10 +399,21 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('/coorg/tests/mocks/app/home/static/default/homefile.css?v=theversion',
 		                    CoOrg::staticFile('homefile.css', 'home'));
 		
-		$this->assertEquals('http://mystatic.somestatic.com/static/path/alpha/static/default/somefile.css?v=2010-10-03',
+		$this->assertEquals('http://mystatic.somestatic.com/static/path/alpha/default/somefile.css?v=2010-10-03',
 		                    CoOrg::staticFile('somefile.css', 'alpha'));
 
 		$this->assertEquals('http://mystatic.somestatic.com/static/path/_root/default/mockfile.css?v=A',
+		                    CoOrg::staticFile('mockfile.css'));
+	}
+	
+	public function testStaticFileRootDir()
+	{
+		CoOrg::config()->set('path', '/');
+		CoOrg::process('/');
+		$this->assertEquals('/coorg/tests/mocks/plugins/alpha/static/default/somefile.css?v=2010-10-03',
+		                    CoOrg::staticFile('somefile.css', 'alpha'));
+
+		$this->assertEquals('/static/default/mockfile.css?v=A',
 		                    CoOrg::staticFile('mockfile.css'));
 	}
 	
@@ -414,13 +427,14 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 	
 	public function testThemes()
 	{
+		CoOrg::config()->set('path', '/');
 		CoOrg::config()->set('theme', 'testtheme');
 		CoOrg::process('/');
 		
-		$this->assertEquals('static/testtheme/mockfile.css?v=testtheme',
+		$this->assertEquals('/static/testtheme/mockfile.css?v=testtheme',
 		                    CoOrg::staticFile('mockfile.css'));
 
-		$this->assertEquals('static/default/onlydefault.css?v=A',
+		$this->assertEquals('/static/default/onlydefault.css?v=A',
 		                    CoOrg::staticFile('onlydefault.css'));
 		                    
 		$this->assertEquals('/coorg/tests/mocks/plugins/alpha/static/testtheme/somefile.css?v=alphaV',

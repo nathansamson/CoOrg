@@ -301,14 +301,6 @@ class CoOrg {
 		else
 		{
 			$isPlugin = in_array($app, self::$_config->get('enabled_plugins'));
-			if ($app == 'blog' && $isPlugin == false)
-			{
-				var_dump(self::$_config->get('enabled_plugins'));
-				
-				print_r(self::$_config);
-				
-				die();
-			}
 			if (!array_key_exists($app, self::$_resources))
 			{
 				$path = $isPlugin ? self::$_pluginDir : self::$_appdir;
@@ -345,11 +337,11 @@ class CoOrg {
 			
 			if ($external && self::$_config->get('staticpath/'.$app))
 			{
-				$pluginPath = $external.$app;
+				$pluginPath = $external.$app.'/';
 			}
 			else
 			{
-				$pluginPath = self::$_config->get('path') . '/';
+				$pluginPath = self::$_config->get('path');
 				if ($isPlugin)
 				{
 					$pluginPath .= self::$_pluginDir.'/'.$app;
@@ -358,8 +350,9 @@ class CoOrg {
 				{
 					$pluginPath .= self::$_appdir.'/'.$app;
 				}
+				$pluginPath .= '/static/';
 			}
-			return $pluginPath. '/static/'.$theme.'/'.$file.'?v='.$version;
+			return $pluginPath.$theme.'/'.$file.'?v='.$version;
 		}
 	}
 	
