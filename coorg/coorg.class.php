@@ -56,8 +56,6 @@ class CoOrg {
 	private static $_beforeFilters = array();
 	private static $_extras = array();
 	
-	private static $_site = null;
-	private static $_referer = null;
 	private static $_appdir;
 	private static $_pluginDir;
 	private static $_config;
@@ -91,16 +89,6 @@ class CoOrg {
 		DB::open($config->get('dbdsn'), $config->get('dbuser'),
 		         $config->get('dbpass'));
 		
-		self::$_site = 'http://gamma';
-		if (array_key_exists('HTTP_REFERER', $_SERVER))
-		{
-			self::$_referer = $_SERVER['HTTP_REFERER'];
-		}
-		else
-		{
-			self::$_referer = '';
-		}
-	
 		$params = array();
 		$post = false;
 		if (array_key_exists('r', $_GET)) {
@@ -178,7 +166,7 @@ class CoOrg {
 				throw new WrongRequestMethodException();
 			}
 			
-			if ($post && strpos(self::$_referer, self::$_site) === false)
+			if ($post && strpos(Session::getReferrer(), Session::getSite()) === false)
 			{
 				throw new WrongRequestMethodException();
 			}
@@ -204,7 +192,7 @@ class CoOrg {
 				}
 				catch (Exception $e)
 				{
-					$controllerClass->systemError($request, self::$_referer, $e);
+					$controllerClass->systemError($request, Session::getReferrer(), $e);
 				}
 			}
 			$controllerClass->done();
@@ -214,7 +202,7 @@ class CoOrg {
 			$controller = new Controller();
 			$controller->init('.', self::$_appdir);
 			
-			$controller->notFound($request, self::$_referer, $e);
+			$controller->notFound($request, Session::getReferrer(), $e);
 			return;
 		}
 		catch (Exception $e)
@@ -222,7 +210,7 @@ class CoOrg {
 			$controller = new Controller();
 			$controller->init('.', self::$_appdir);
 			
-			$controller->systemError($request, self::$_referer, $e);
+			$controller->systemError($request, Session::getReferrer(), $e);
 			return;
 		}
 	}
@@ -238,7 +226,7 @@ class CoOrg {
 	
 	public static function createFullURL($params, $language = null)
 	{
-		return self::$_site.self::createURL($params, $language);
+		return Session::getSite().self::createURL($params, $language);
 	}
 	
 	public static function createURL($params, $language = null)
@@ -537,18 +525,6 @@ class CoOrg {
 		{
 			self::$_resources[$app][$resource] = array(self::$_resourceTheme => $version);
 		}
-	}
-	
-	/* == These functions are only used for testing purposes == */
-	
-	public static function setSite($url)
-	{
-		self::$_site = $url;
-	}
-	
-	public static function spoofReferer($referer)
-	{
-		self::$_referer = $referer;
 	}
 	
 	/* == Private Functions == */

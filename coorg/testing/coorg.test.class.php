@@ -44,8 +44,8 @@ class CoOrgControllerTest extends CoOrgModelTest
 		{
 			$s->delete();
 		}
-		CoOrg::setSite('http://www.test.info/');
-		CoOrg::spoofReferer('http://www.test.info/some/part/of/the/site');
+		Session::$site = 'http://www.test.info/';
+		Session::$referrer = 'http://www.test.info/some/part/of/the/site';
 		$config = new Config(COORG_TEST_CONFIG);
 		$config->set('site/title', 'The Site');
 		CoOrg::init($config, 'app', 'plugins');

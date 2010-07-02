@@ -9,6 +9,7 @@ require_once 'coorg/testing/coorg.test.class.php';
 require_once 'coorg/testing/coorgsmarty.test.class.php';
 require_once 'coorg/testing/header.test.class.php';
 require_once 'coorg/testing/mail.test.class.php';
+require_once 'coorg/testing/state.test.class.php';
 
 DB::open('sqlite::memory:');
 

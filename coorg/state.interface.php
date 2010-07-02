@@ -37,6 +37,8 @@ interface ISession
 	static function destroy();
 	
 	static function IP();
+	static function getSite();
+	static function getReferrer();
 }
 
 ?>

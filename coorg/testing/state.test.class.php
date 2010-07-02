@@ -41,6 +41,8 @@ class Cookies implements ICookies
 class Session implements ISession
 {
 	private static $_keys = array();
+	public static $referrer = '';
+	public static $site =  '';
 
 	public static function has($key)
 	{
@@ -70,6 +72,16 @@ class Session implements ISession
 	public static function IP()
 	{
 		return '0.0.0.0';
+	}
+	
+	public static function getReferrer()
+	{
+		return self::$referrer;
+	}
+	
+	public static function getSite()
+	{
+		return self::$site;
 	}
 }
 

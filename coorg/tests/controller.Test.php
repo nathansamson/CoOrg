@@ -20,8 +20,8 @@
 
 class ControllerTest extends PHPUnit_Framework_TestCase {
 	public function setUp() {
-		CoOrg::setSite('http://www.test.info/');
-		CoOrg::spoofReferer('http://www.test.info/some/part/of/the/site');
+		Session::$site = 'http://www.test.info/';
+		Session::$referrer = 'http://www.test.info/some/part/of/the/site';
 		$config = new Config('config/tests.config.php');
 		CoOrg::init($config, 'coorg/tests/mocks/app', 'coorg/tests/mocks/plugins');
 		CoOrgSmarty::$vars = array();

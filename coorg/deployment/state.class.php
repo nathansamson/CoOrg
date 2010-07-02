@@ -87,18 +87,35 @@ class Session implements ISession
 			
 			if (array_key_exists('__IP', $_SESSION))
 			{
-				if ($_SESSION['__IP'] != $_SERVER['REMOTE_ADDR'])
+				if ($_SESSION['__IP'] != self::IP())
 				{
 					session_destroy();
 				}
 			}
 			else
 			{
-				$_SESSION['__IP'] = $_SERVER['REMOTE_ADDR'];
+				$_SESSION['__IP'] = self::IP();
 			}
 			
 			self::$_started = true;
 		}
+	}
+	
+	public static function getReferrer()
+	{
+		if (array_key_exists('HTTP_REFERER', $_SERVER))
+		{
+			return $_SERVER['HTTP_REFERER'];
+		}
+		else
+		{
+			return '';
+		}
+	}
+	
+	public static function getSite()
+	{
+		return 'http://'.$_SERVER['HTTP_HOST'];
 	}
 }
 

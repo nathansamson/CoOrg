@@ -22,8 +22,8 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 
 	public function setUp() {
 		CoOrgSmarty::$vars = array();
-		CoOrg::setSite('http://www.test.info/');
-		CoOrg::spoofReferer('http://www.test.info/some/part/of/the/site');
+		Session::$site = 'http://www.test.info/';
+		Session::$referrer = 'http://www.test.info/some/part/of/the/site';
 		$config = new Config('config/tests.config.php');
 		$config->set('aside/main', array('home/alpha'));
 		CoOrg::init($config, 'coorg/tests/mocks/app', 'coorg/tests/mocks/plugins');
@@ -151,7 +151,7 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 	
 	public function testProcessPostRequestWrongReferer()
 	{
-		CoOrg::spoofReferer('http://someothershit.com');
+		Session::$referrer = 'http://someothershit.com';
 		CoOrg::process('alpha/post', array('p1' => 'value1',
 		                                   'p2' => 'value2'), true);
 
