@@ -167,7 +167,6 @@ class UserControllerTest extends CoOrgControllerTest
 		$this->assertRedirected('');
 		$this->assertFlashError('Invalid username');
 	}
-	
 }
 
 ?>

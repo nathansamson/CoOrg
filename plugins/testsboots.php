@@ -1,5 +1,5 @@
 <?php
-
+define('COORG_UNITTEST', true);
 require_once 'PHPUnit/Framework.php';
 
 require_once 'coorg/testing/domainexists.test.php';
@@ -21,7 +21,10 @@ $configFile = 'config/temp.config.tests.php';
 define('COORG_TEST_CONFIG', $configFile);
 
 $config = new Config($configFile);
-$config->set('enabled_plugins', array('admin', 'menu', 'user', 'comments', 'user-admin', 'blog', 'page'));
+$config->set('mollom/public', 'valid-pub-key');
+$config->set('mollom/private', 'valid-priv-key');
+$config->set('mollom/serverlist', array('valid-server-list'));
+$config->set('enabled_plugins', array('spam', 'admin', 'menu', 'user', 'comments', 'user-admin', 'blog', 'page'));
 $config->set('site/title', 'The Site');
 $config->save();
 DB::open($config->get('dbdsn'), $config->get('dbuser'), $config->get('dbpass'));

@@ -30,6 +30,7 @@
  * @property protected; passwordHash String('Password hash', 128); required
  * @property protected; passwordHashKey String('Pasword hash key', 64); required
  * @property protected; lockKey String('Reigstration lock key', 64); required only('insert')
+ * @property protected; resetPasswordKey String('Password reset key', 64);
 */
 class User extends DBModel
 {
@@ -65,6 +66,29 @@ class User extends DBModel
 		}
 	}
 	
+	public function resetPassword()
+	{
+		$this->resetPasswordKey = $this->randomkey();
+		return $this->resetPasswordKey;
+	}
+	
+	public function generateNewPassword($key)
+	{
+		if ($this->resetPasswordKey == $key)
+		{
+			$this->resetPasswordKey == '';
+			$newPass = $this->generatePassword();
+			$this->forceNewPassword = true;
+			$this->password = $newPass;
+			$this->passwordConfirmation = $newPass;
+			return $newPass;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
 	public function checkPassword($password)
 	{
 		return $this->createHashedPassword($password) ==
@@ -90,6 +114,21 @@ class User extends DBModel
 	{
 		$q = DB::prepare('SELECT * FROM User WHERE username=:username');
 		$q->execute(array(':username' => $username));
+		
+		if ($row = $q->fetch())
+		{
+			return self::fetch($row, 'User');
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	public static function getUserByEmail($email)
+	{
+		$q = DB::prepare('SELECT * FROM User WHERE email=:email');
+		$q->execute(array(':email' => $email));
 		
 		if ($row = $q->fetch())
 		{
@@ -218,8 +257,7 @@ class User extends DBModel
 		                         md5(uniqid('qwerty1989', true));
 
 		$this->passwordHash = $this->createHashedPassword($this->password);
-		$this->lockKey = md5(uniqid('#kadro23ela', true)) . 
-		                 md5(uniqid('as90pa#zan', true));
+		$this->lockKey = $this->randomkey();
 
 	}
 	
@@ -236,6 +274,31 @@ class User extends DBModel
 	protected function createHashedPassword($password)
 	{
 		return hash('sha512', $this->passwordHashKey.$password);
+	}
+	
+	protected function randomkey()
+	{
+		return md5(uniqid('#kadro23ela', true)) . 
+		       md5(uniqid('as90pa#zan', true));
+	}
+	
+	protected function generatePassword()
+	{
+		$s = '';
+		while (strlen($s) <= 12)
+		{
+			$o = mt_rand(32, 127);
+			$c = chr($o);
+			$allowed = array('@', '#', '&', '!', '%', '*', '$', '?');
+			if (($o >= ord('a') && $o <= ord('z')) ||
+			    ($o >= ord('A') && $o <= ord('Z')) ||
+			    ($o >= ord('0') && $o <= ord('9')) ||
+			    in_array($c, $allowed))
+			{
+				$s .= $c;
+			}
+		}
+		return $s;
 	}
 }
 

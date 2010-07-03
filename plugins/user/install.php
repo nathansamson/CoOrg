@@ -27,7 +27,8 @@ function user_install_db()
 				lastName VARCHAR(64),
 				passwordHash VARCHAR(128),
 				passwordHashKey VARCHAR(64),
-				lockKey VARCHAR(64)
+				lockKey VARCHAR(64),
+				resetPasswordKey VARCHAR(64)
 			)';
 
 	$s = DB::prepare($q);

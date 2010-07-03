@@ -13,6 +13,8 @@ class UserModelTest extends CoOrgModelTest
 		
 		$this->assertNotNull($key);
 		$nathan = User::getUserByName('Nathan');
+		$nathan2 = User::getUserByEmail('nathan@mail.be');
+		$this->assertEquals('Nathan', $nathan2->username);
 		$this->assertTrue($nathan->isLocked());
 		$this->assertNotNull($nathan);
 		$this->assertTrue($nathan->checkPassword('azerty'));
@@ -353,6 +355,28 @@ class UserModelTest extends CoOrgModelTest
 		{
 			$this->assertEquals('Passwords do not match', $user->passwordConfirmation_error);
 		}
+	}
+	
+	public function testResetPassword()
+	{
+		$user = new User('Nathan', 'nathan@mail.be');
+		$user->password = 'azerty';
+		$user->passwordConfirmation = 'azerty';
+		$user->save();
+		
+		$user = User::getUserByName('Nathan');
+		$key = $user->resetPassword();
+		$user->save();
+		
+		$password = $user->generateNewPassword('some-key');
+		$this->assertNull($password);
+		$this->assertTrue($user->checkPassword('azerty'));
+		
+		$password = $user->generateNewPassword($key);
+		$this->assertNotNull($password);
+		$user->save();
+		$this->assertFalse($user->checkPassword('azerty'));
+		$this->assertTrue($user->checkPassword($password));
 	}
 	
 	public function testUsers()

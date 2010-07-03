@@ -9,6 +9,7 @@
 	{/if}
 	
 	{input type="submit" label="Login"} <a href="{url request='user/create'}">{'No account?'|_}</a>
+	<a href="{url request='user/password/reset'}">{'Forgot your password?'|_}</a>
 {/form}
 
 {/block}
