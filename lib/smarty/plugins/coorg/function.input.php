@@ -69,6 +69,7 @@ function smarty_function_input($params, $smarty)
 	}
 	$disabled = array_key_exists('disabled', $params);
 	$readonly = array_key_exists('readonly', $params);
+	$tabindex = array_key_exists('tabindex', $params) ? $params['tabindex'] : null;
 	
 	if ($type != 'submit')
 	{
@@ -237,7 +238,9 @@ function smarty_function_input($params, $smarty)
 		$button = '<img src="'.CoOrg::staticFile($stockInfo['img']).'"
 			            alt="'.$stockInfo['alt'].'"
 			            title="'.$stockInfo['title'].'"/>';
-		return '<button type="submit" name="'.$name.'">'.$button.'</button>';
+		return '<button type="submit" name="'.$name.'" value="dummy"'.
+		        ($tabindex ? ' tabindex="'.$tabindex.'"' : '').
+		        '>'.$button.'</button>';
 	}
 	else
 	{

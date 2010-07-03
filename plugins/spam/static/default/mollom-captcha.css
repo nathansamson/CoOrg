@@ -1,0 +1,27 @@
+.mollom-captcha > img, .mollom-captcha object {
+	display: inline;
+	vertical-align: top;
+}
+
+.mollom-captcha button {
+	background-color: transparent;
+	border: solid 1px #999;
+}
+
+.mollom-captcha button:hover {
+	background-color: #F9A328;
+	cursor: pointer;
+}
+
+.mollom-captcha button img {
+	vertical-align: middle;
+	padding: 2px 0px;
+}
+
+.mollom-captcha {
+	margin-bottom: 10px;
+}
+
+.captcha-hide {
+	display: none;
+}
