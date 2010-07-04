@@ -508,7 +508,9 @@ class CoOrg {
 			'list-add' => array('img' => 'images/icons/list-add.png', 'alt' => t('Add'), 'title' => t('Add')),
 			'audio-captcha' => array('img' => 'images/icons/audio-captcha.png', 'alt' => t('Audio Captcha'), 'title' => t('Audio Captcha')),
 			'image-captcha' => array('img' => 'images/icons/image-captcha.png', 'alt' => t('Image Captcha'), 'title' => t('Iamge Captcha')),
-			'refresh-captcha' => array('img' => 'images/icons/refresh.png', 'alt' => t('Refresh Captcha'), 'title' => t('Refresh Captcha'))
+			'refresh-captcha' => array('img' => 'images/icons/refresh.png', 'alt' => t('Refresh Captcha'), 'title' => t('Refresh Captcha')),
+			'spam' => array('img' => 'images/icons/spam.png', 'alt' => t('Mark as spam'), 'title' => t('Mark as spam')),
+			'notspam' => array('img' => 'images/icons/notspam.png', 'alt' => t('Unmark as spam'), 'title' => t('Unmark as spam'))
 		);
 		
 		return $stocks[$stock];

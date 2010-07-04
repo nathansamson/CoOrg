@@ -84,6 +84,7 @@ class BlogController extends Controller
 		{
 			$this->anonProfile = new AnonProfile;
 		}
+		$this->spamOptions = BlogControllerHelper::spamOptions();
 		$this->render('show');
 	}
 	
@@ -228,6 +229,18 @@ class BlogController extends Controller
 		$this->blogs = $pager->execute($page, 10);
 		$this->blogpager = $pager;
 		return true;
+	}
+}
+
+class BlogControllerHelper
+{
+	public function spamOptions()
+	{
+		return array(
+			'spam' => t('Spam'),
+			'profanity' => t('Profanity'),
+			'low-quality' => t('Low Quality'),
+			'unwanted' => t('Annoying'));
 	}
 }
 

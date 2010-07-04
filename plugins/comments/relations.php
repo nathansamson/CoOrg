@@ -30,7 +30,8 @@ class MockCommentHasMockRelation extends One2Many
 			'localAs' => 'mock',
 			'foreign' => 'ID',
 			'foreignAs' => 'comments',
-			'orderBy' => 'timePosted'
+			'orderBy' => 'timePosted',
+			'filter' => 'spamStatus'
 		);
 	}
 }

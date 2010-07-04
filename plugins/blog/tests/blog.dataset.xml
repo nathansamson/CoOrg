@@ -150,6 +150,8 @@
 	  	title="Re: XYZER"
 	  	comment="My comment @ xyzer"
 	  	authorID="nele"
+	  	spamStatus="1"
+	  	timePosted="2010-04-11 14:20:20"
 	  />
 	  
 	 <BlogComment
@@ -164,6 +166,9 @@
 	  	title="Re: XYZ"
 	  	comment="My comment @ XYZ (en)"
 	  	authorID="nathan"
+	  	spamStatus="1"
+	  	spamSessionID="some-session"
+	  	timePosted="2010-04-11 14:20:20"
 	  />
 	  
 	 <BlogComment
@@ -178,6 +183,8 @@
 	  	title="Re: XYZ"
 	  	comment="My comment @ XYZ (en)"
 	  	anonAuthorID="1"
+	  	spamStatus="2"
+	  	timePosted="2010-04-11 15:20:20"
 	  />
 	  
 	 <BlogComment

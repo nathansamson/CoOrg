@@ -39,6 +39,8 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->assertEquals('nele', $comment->authorID);
 		$this->assertEquals('RE: Some Other Blog', $comment->title);
 		$this->assertEquals('My very first comment', $comment->comment);
+		$this->assertEquals(PropertySpamStatus::OK, $comment->spamStatus);
+		$this->assertNull($comment->spamSessionID);
 	}
 	
 	public function testSaveFailure()
@@ -50,6 +52,7 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 			'blogLanguage' => 'en'));
 		
 		$this->assertRendered('show');
+		$this->assertVarSet('spamOptions');
 		$this->assertVarSet('blog');
 		$this->assertVarSet('blogComment');
 		$c = CoOrgSmarty::$vars['blogComment'];
@@ -83,6 +86,9 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 			'name' => 'My Anon',
 			'email' => 'myemail@email.com'));
 		
+		$this->assertFlashNotice('Your comment has been posted');
+		$this->assertRedirected('blog/show/2010/4/10/some-other-blog');
+		
 		$blog = Blog::getBlog('2010', '04', '10', 'some-other-blog', 'en');
 		$comment = $blog->comments[0];
 		$this->assertNull($comment->author);
@@ -92,6 +98,52 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->assertEquals('0.0.0.0', $comment->anonAuthor->IP);
 		$this->assertEquals('RE: Some Other Blog', $comment->title);
 		$this->assertEquals('My very first comment', $comment->comment);
+		$this->assertEquals(PropertySpamStatus::OK, $comment->spamStatus);
+		$this->assertNotNull($comment->spamSessionID);
+	}
+	
+	public function testSaveAnonymousSpam()
+	{
+		$this->request('blog/comment/save', array(
+			'blogID' => 'some-other-blog',
+			'blogDate' => '2010-04-10',
+			'blogLanguage' => 'en',
+			'comment' => 'BODY SPAM',
+			'name' => 'My Anon',
+			'email' => 'myemail@email.com'));
+		
+		$this->assertFlashNotice('Your comment has been marked as spam, and will not appear');
+		$this->assertRedirected('blog/show/2010/4/10/some-other-blog');
+		
+		$blog = Blog::getBlog('2010', '04', '10', 'some-other-blog', 'en');
+		$this->assertEquals(0, count($blog->comments));
+	}
+	
+	public function testSaveAnonymousUnknown()
+	{
+		$this->request('blog/comment/save', array(
+			'blogID' => 'some-other-blog',
+			'blogDate' => '2010-04-10',
+			'blogLanguage' => 'en',
+			'comment' => 'UNKNOWN BODY',
+			'name' => 'My Anon',
+			'email' => 'myemail@email.com'));
+		
+		$this->assertFlashNotice('Your comment will be moderated, and will appear on a later time on the site');
+		$this->assertRedirected('blog/show/2010/4/10/some-other-blog');
+		
+		$blog = Blog::getBlog('2010', '04', '10', 'some-other-blog', 'en');
+		$this->assertEquals(1, count($blog->comments));
+		$comment = $blog->comments[0];
+		$this->assertNull($comment->author);
+		$this->assertNotNull($comment->anonAuthor);
+		$this->assertEquals('My Anon', $comment->anonAuthor->name);
+		$this->assertEquals('myemail@email.com', $comment->anonAuthor->email);
+		$this->assertEquals('0.0.0.0', $comment->anonAuthor->IP);
+		$this->assertEquals('RE: Some Other Blog', $comment->title);
+		$this->assertEquals('UNKNOWN BODY', $comment->comment);
+		$this->assertEquals(PropertySpamStatus::UNKNOWN, $comment->spamStatus);
+		$this->assertNotNull($comment->spamSessionID);
 	}
 	
 	public function testSaveAnonymousFailure()
@@ -134,6 +186,7 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->request('blog/comment/edit/1');
 		
 		$this->assertRendered('show');
+		$this->assertVarSet('spamOptions');
 		$this->assertVarSet('blog');
 		$this->assertVarSet('blogComment');
 		$this->assertVarSet('blogCommentEdit');
@@ -152,12 +205,13 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->assertRedirected('blog/show/2010/4/11/xyz');
 	}
 	
-	public function testEditAdnonymous()
+	public function testEditAnonymous()
 	{
 		$this->login('nathan');
 		$this->request('blog/comment/edit/3');
 		
 		$this->assertRendered('show');
+		$this->assertVarSet('spamOptions');
 		$this->assertVarSet('blog');
 		$this->assertVarSet('blogComment');
 		$this->assertVarSet('blogCommentEdit');
@@ -201,6 +255,7 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		               'ID' => 1
 		               ));
 		$this->assertRendered('show');
+		$this->assertVarSet('spamOptions');
 		$this->assertVarSet('blog');
 		$this->assertVarSet('blogComment');
 		$this->assertVarSet('blogCommentEdit');
@@ -355,6 +410,73 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->assertRedirected('blog/show/2010/4/11/xyz');
 		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
 		$this->assertEquals(2, count($blog->comments));
+	}
+	
+	public function testMarkAsSpam()
+	{
+		$this->login('nathan');
+		
+		$this->request('blog/comment/spam', array(
+			'commentID' => 2,
+			'feedback' => 'profanity'));
+		$this->assertFlashNotice('Comment marked as spam');
+		$this->assertRedirected('blog/show/2010/4/11/xyz');
+		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
+		$comment = $blog->comments[0];
+		$this->assertEquals(2, $comment->ID);
+		$this->assertEquals(PropertySpamStatus::SPAM, $comment->spamStatus);
+	}
+	
+	public function testMarkAsSpamNotAllowed()
+	{
+		$this->login('nele');
+		
+		$this->request('blog/comment/spam', array(
+			'commentID' => 2,
+			'feedback' => 'profanity'));
+		
+		$this->assertFlashError('You don\'t have the rights to view this page');
+		$this->assertRedirected('');
+	}
+	
+	public function testMarkAsSpamNoSpamSessionID()
+	{
+		$this->login('nathan');
+		
+		$this->request('blog/comment/spam', array(
+			'commentID' => 1,
+			'feedback' => 'spam'));
+		$this->assertFlashNotice('Comment marked as spam');
+		$this->assertRedirected('blog/show/2010/4/10/xyzer');
+		$blog = Blog::getBlog('2010', '04', '10', 'xyzer', 'en');
+		$comment = $blog->comments[0];
+		$this->assertEquals(1, $comment->ID);
+		$this->assertEquals(PropertySpamStatus::SPAM, $comment->spamStatus);
+	}
+	
+	public function testUnmarkSpam()
+	{
+		$this->login('nathan');
+		
+		$this->request('blog/comment/notspam', array(
+			'commentID' => 3));
+		$this->assertFlashNotice('Comment unmarked as spam');
+		$this->assertRedirected('blog/show/2010/4/11/xyz');
+		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
+		$comment = $blog->comments[1];
+		$this->assertEquals(3, $comment->ID);
+		$this->assertEquals(PropertySpamStatus::OK, $comment->spamStatus);
+	}
+	
+	public function testUnmarkSpamNotAllowed()
+	{
+		$this->login('nele');
+		
+		$this->request('blog/comment/notspam', array(
+			'commentID' => 3));
+		
+		$this->assertFlashError('You don\'t have the rights to view this page');
+		$this->assertRedirected('');
 	}
 	
 	private function login($u)

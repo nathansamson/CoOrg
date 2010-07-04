@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2010 Nathan Samson <nathansamson at gmail dot com>
  *
@@ -19,39 +18,22 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class BlogHasComments extends One2Many
+
+class PropertySpamStatus extends PropertyEnum
 {
-	protected function info()
+	const OK = 1;
+	const SPAM = 2;
+	const UNKNOWN = 3;
+
+	public function __construct($name)
 	{
-		return array(
-			'from' => 'BlogComment',
-			'to' => 'Blog',
-			'local' => array('blogID', 'blogDatePosted', 'blogLanguage'),
-			'localAs' => 'blog',
-			'foreign' => array('ID', 'datePosted', 'language'),
-			'foreignAs' => 'comments',
-			'orderBy' => 'timePosted',
-			'filter' => 'spamStatus'
-		);
+		parent::__construct($name,
+		                    array(
+		                    	self::OK,
+		                    	self::SPAM,
+		                    	self::UNKNOWN
+		                    ));
 	}
 }
 
-Model::registerRelation(new BlogHasComments);
-
-class BlogHasAuthor extends One2Many
-{
-	protected function info()
-	{
-		return array(
-			'from' => 'Blog',
-			'to' => 'User',
-			'local' => 'authorID',
-			'localAs' => 'author',
-			'foreign' => 'username',
-			'foreignAs' => ''
-		);
-	}
-}
-
-Model::registerRelation(new BlogHasAuthor);
-
+?>

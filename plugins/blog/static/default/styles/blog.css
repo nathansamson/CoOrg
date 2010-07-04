@@ -69,3 +69,8 @@ article.comment {
 	margin: 5px 0;
 	-moz-border-radius: 10px 0;
 }
+
+article.comment.moderation {
+	background-color: #BBB;
+	border: solid 1px black;
+}

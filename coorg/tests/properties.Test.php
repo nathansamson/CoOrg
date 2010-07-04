@@ -692,7 +692,9 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 	{
 		$e = new SomeEnumProperty('X');
 		$this->assertTrue($e->validate('.'));
+		$this->assertFalse($e->changed());
 		$e->set('A');
+		$this->assertTrue($e->changed());
 		$this->assertEquals('A', $e->get());
 		$this->assertEquals('A', $e->db());
 		$this->assertTrue($e->validate(''));

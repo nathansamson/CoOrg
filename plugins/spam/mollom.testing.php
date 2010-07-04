@@ -122,6 +122,33 @@ class Mollom
 		}
 	}
 	
+	public static function checkContent($sessID = '', $title = '', $body = '',
+	        $authorName = '', $authorURL = '', $authorEmail = '',
+	        $authorOpenID = '', $authorID = '')
+	{
+		self::check();
+		if (! $sessID) $sessID = 'new-session';
+		if (strpos($body, 'SPAM') !== false)
+		{
+			$spam = 'spam';
+		}
+		else if (strpos($body, 'UNKNOWN') !== false)
+		{
+			$spam = 'unsure';
+		}
+		else
+		{
+			$spam = 'ham';
+		}
+		return array('spam' => $spam, 'session_id' => $sessID, 'quality' => 0.9);
+	}
+	
+	public static function sendFeedback($sessID, $feedback)
+	{
+		self::check();
+		return true;
+	}
+	
 	public static function getServerList()
 	{
 		self::$_serverList = array('valid-server-list');

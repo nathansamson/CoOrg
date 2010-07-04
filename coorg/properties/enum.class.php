@@ -63,15 +63,15 @@ abstract class PropertyEnum extends Property implements IProperty
 	
 	protected function toDB($value)
 	{
-		if (($value !== null) && ($this->_value !== ''))
+		if (($value !== null) && ($value !== ''))
 		{
-			if (is_numeric($this->_value))
+			if (is_numeric($value))
 			{
-				return (string)$this->_value;
+				return (string)$value;
 			}
 			else
 			{
-				return $this->_value;
+				return $value;
 			}
 		}
 		else

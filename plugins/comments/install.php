@@ -36,6 +36,8 @@ function comments_install_db($test = false)
 	 	timePosted DATETIME,
 	 	title VARCHAR(128),
 	 	comment TEXT,
+	 	spamStatus INTEGER,
+	 	spamSessionID VARCHAR(256),
 	 	FOREIGN KEY (authorID) REFERENCES User(username),
 	 	FOREIGN KEY (anonAuthorID) REFERENCES AnonProfile(ID)
 	  )');

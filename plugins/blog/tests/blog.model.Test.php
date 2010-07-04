@@ -294,6 +294,7 @@ class BlogTest extends CoOrgModelTest
 		$comment->title = 'RE: XYZ';
 		$comment->author = User::getUserByName('nathan');
 		$comment->comment = 'Some Comment';
+		$comment->spamStatus = PropertySpamStatus::OK;
 		$blog->comments[] = $comment;
 		
 		$blog = Blog::getBlog('2010', '04', '10', 'xyzer', 'en');

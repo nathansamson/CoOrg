@@ -20,15 +20,51 @@
 <h1>{$blog->title|escape}</h1>
 {$blog->text|format:all}
 
-{if count($blog->comments)}
+{if UserSession::get() && Acl::isAllowed(UserSession::get()->username,'blog-writer')}
+	{assign var=comments value=$blog->comments}
+{else}
+	{assign var=comments value=$blog->comments->filter(PropertySpamStatus::OK)}
+{/if}
+
+{if count($comments)}
 	<h2>{'Comments'|_}</h2>
-	{foreach $blog->comments as $comment}
+	
+	{foreach $comments as $comment}
+		{if $comment->spamStatus == PropertySpamStatus::OK}
 		<article class="comment" ID="comment{$comment->ID}">
+		{else}
+		<article class="comment moderation" ID="comment{$comment->ID}">
+		{/if}
 			{if !($blogCommentEdit && $blogCommentEdit->ID == $comment->ID)}
 			<header>
 				{if UserSession::get() && ($comment->authorID == UserSession::get()->username ||
 				    Acl::isAllowed(UserSession::get()->username,'admin'))}
 					<div class="page-actions">
+						{if Acl::isAllowed(UserSession::get()->username,'blog-writer')}
+							{if $comment->spamStatus == PropertySpamStatus::OK}
+								{form request="blog/comment/spam" nobreaks id="comment_{$comment->ID}"}
+									{input name=commentID value=$comment->ID}
+								
+									{input name=feedback type="select" options=$spamOptions nolabel}
+									{input type="submit" stock="spam" nolabel}
+								{/form}
+							{else if $comment->spamStatus == PropertySpamStatus::UNKNOWN}
+								{form request="blog/comment/spam" nobreaks id="comment_{$comment->ID}"}
+									{input name=commentID value=$comment->ID}
+								
+									{input name=feedback type="select" options=$spamOptions nolabel}
+									{input type="submit" stock="spam" nolabel}
+								{/form}
+								{button request="blog/comment/notspam"
+									param_commentID=$comment->ID
+									coorgStock="notspam"}{/button} 
+							{else}
+								{button request="blog/comment/notspam"
+									param_commentID=$comment->ID
+									coorgStock="notspam"}{/button}  
+							{/if}
+						{/if}
+					
 						{a request="blog/comment/edit" 
 						   ID=$comment->ID
 						  	coorgStock="edit"}{/a}
@@ -53,7 +89,7 @@
 				<header>
 				<h1>{$comment->title}</h1>
 				<h2>
-					{'By %name on %date'|_:$comment->author->username:($comment->timePosted|date_format:'Y-m-d H:i:s')}
+					{*{'By %name on %date'|_:$comment->author->username:($comment->timePosted|date_format:'Y-m-d H:i:s')}*}
 				</h2>
 				</header>
 				{form request="blog/comment/update" instance=$blogCommentEdit}

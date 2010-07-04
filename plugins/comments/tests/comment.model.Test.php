@@ -69,6 +69,7 @@ class CommentModelTest extends CoOrgModelTest
 		$comment->title = 'Some Title';
 		$comment->comment = 'Some Comment';
 		$comment->author = User::getUserByName('some-user');
+		$comment->spamStatus = PropertySpamStatus::OK;
 		$comment->save();
 		
 		$this->assertEquals('me-mock', $comment->mockID);
@@ -87,6 +88,7 @@ class CommentModelTest extends CoOrgModelTest
 		$comment = new MeCommentMockComment;
 		$comment->title = 'Some Title';
 		$comment->comment = 'Some Comment';
+		$comment->spamStatus = PropertySpamStatus::OK;
 		
 		$mock->comments[] = $comment;
 	}
@@ -102,6 +104,15 @@ class CommentModelTest extends CoOrgModelTest
 		$this->assertEquals('5th Comment', $comments[3]->title);
 	}
 	
+	public function testCommentsNotSpam()
+	{
+		$mock = MeCommentMock::get('other-mock');
+		$comments = $mock->comments->filter(PropertySpamStatus::OK);
+		$this->assertEquals(2, count($comments));
+		$this->assertEquals('Third Comment in DB, second in real', $comments[0]->title);
+		$this->assertEquals('Second Comment', $comments[1]->title);
+	}
+	
 	public function testAnonProfile()
 	{
 		$anon = new AnonProfile;
@@ -115,6 +126,7 @@ class CommentModelTest extends CoOrgModelTest
 		$comment->title = 'Some Title';
 		$comment->comment = 'Some Comment';
 		$comment->anonAuthor = $anon;
+		$comment->spamStatus = PropertySpamStatus::OK;
 		$comment->save();
 		
 		$comment = $mock->comments[count($mock->comments)-1];

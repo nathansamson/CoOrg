@@ -38,6 +38,7 @@ class BlogCommentController extends Controller
 			if (UserSession::get())
 			{
 				$blogComment->author = UserSession::get()->user();
+				$blogComment->spamStatus = PropertySpamStatus::OK;
 			}
 			else
 			{
@@ -47,27 +48,55 @@ class BlogCommentController extends Controller
 				$anon->website = $website;
 				$anon->IP = Session::IP();
 				$blogComment->anonAuthor = $anon;
+				$message = new MollomMessage;
+				$message->title = $blogComment->title;
+				$message->body = $blogComment->comment;
+				$message->authorName = $name;
+				$message->authorEmail = $email;
+				$message->authorWebsite = $website;
+				$blogComment->spamStatus = $message->check();
+				$blogComment->spamSessionID = Session::get('mollom/sessionid');
 			}
-			try
+			if ($blogComment->spamStatus != PropertySpamStatus::SPAM)
 			{
-				$this->_blog->comments[] = $blogComment;
-				$this->notice(t('Your comment has been posted'));
-				$this->redirect('blog/show',
-					            $this->_blog->year,
-					            $this->_blog->month,
-					            $this->_blog->day,
-					            $this->_blog->ID);
-			}
-			catch (ValidationException $e)
-			{
-				$this->error(t('Your comment was not posted'));
-				$this->blogComment = $blogComment;
-				$this->blog = $this->_blog;
-				if ($anon)
+				try
 				{
-					$this->anonProfile = $anon;
+					$this->_blog->comments[] = $blogComment;
+					if ($blogComment->spamStatus == PropertySpamStatus::OK)
+					{
+						$this->notice(t('Your comment has been posted'));
+					}
+					else
+					{
+						$this->notice(t('Your comment will be moderated, and will appear on a later time on the site'));	
+					}
+					$this->redirect('blog/show',
+							        $this->_blog->year,
+							        $this->_blog->month,
+							        $this->_blog->day,
+							        $this->_blog->ID);
 				}
-				$this->render('show');
+				catch (ValidationException $e)
+				{
+					$this->error(t('Your comment was not posted'));
+					$this->blogComment = $blogComment;
+					$this->blog = $this->_blog;
+					if ($anon)
+					{
+						$this->anonProfile = $anon;
+					}
+					$this->spamOptions = BlogControllerHelper::spamOptions();
+					$this->render('show');
+				}
+			}
+			else
+			{
+				$this->notice(t('Your comment has been marked as spam, and will not appear'));
+				$this->redirect('blog/show',
+							        $this->_blog->year,
+							        $this->_blog->month,
+							        $this->_blog->day,
+							        $this->_blog->ID);
 			}
 		}
 		else
@@ -95,6 +124,7 @@ class BlogCommentController extends Controller
 			{
 				$this->anonProfileEdit = $anon;
 			}
+			$this->spamOptions = BlogControllerHelper::spamOptions();
 			$this->render('show');
 		}
 		else
@@ -147,6 +177,7 @@ class BlogCommentController extends Controller
 				}
 				$this->blogCommentEdit = $this->_comment;
 				$this->blogComment = new BlogComment;
+				$this->spamOptions = BlogControllerHelper::spamOptions();
 				$this->render('show');
 			}
 		}
@@ -190,6 +221,41 @@ class BlogCommentController extends Controller
 				            $this->_blog->day,
 				            $this->_blog->ID);
 		}
+	}
+	
+	/**
+	 * @post
+	 * @Acl allow blog-writer
+	 * @before findComment $commentID
+	*/
+	public function spam($commentID, $feedback)
+	{
+		$this->_comment->spamStatus = PropertySpamStatus::SPAM;
+		MollomMessage::feedback($this->_comment->spamSessionID, $feedback);
+		$this->_comment->save();
+		$this->notice('Comment marked as spam');
+		$this->redirect('blog/show',
+				            $this->_blog->year,
+				            $this->_blog->month,
+				            $this->_blog->day,
+				            $this->_blog->ID);
+	}
+	
+	/**
+	 * @post
+	 * @Acl allow blog-writer
+	 * @before findComment $commentID
+	*/
+	public function notspam($commentID)
+	{
+		$this->_comment->spamStatus = PropertySpamStatus::OK;
+		$this->_comment->save();
+		$this->notice('Comment unmarked as spam');
+		$this->redirect('blog/show',
+				            $this->_blog->year,
+				            $this->_blog->month,
+				            $this->_blog->day,
+				            $this->_blog->ID);
 	}
 	
 	protected function findBlog($ID, $date, $language)

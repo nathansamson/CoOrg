@@ -25,6 +25,8 @@
  * @property timePosted DateTime('Date posted');
  * @property title String(t('Title'), 128);
  * @property comment String(t('Comment')); required
+ * @property spamStatus SpamStatus('Spam Statu'); required
+ * @property spamSessionID String(t('Spam Session ID'));
 */
 abstract class Comment extends DBModel
 {

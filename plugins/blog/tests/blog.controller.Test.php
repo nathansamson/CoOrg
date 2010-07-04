@@ -135,6 +135,7 @@ class BlogControllerTest extends CoOrgControllerTest
 		$this->assertVarSet('blog');
 		$this->assertFalse(array_key_exists('anonProfile', CoOrgSmarty::$vars));
 		$this->assertRendered('show');
+		$this->assertVarSet('spamOptions');
 	}
 	
 	public function testShowNotFound()

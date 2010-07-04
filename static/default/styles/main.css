@@ -336,6 +336,21 @@ a img {
 	text-decoration: none;
 }
 
+.page-actions form {
+	display: inline;
+}
+
+.page-actions form button {
+	background-color: transparent;
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+.page-actions form button:hover {
+	cursor: pointer;
+}
+
 .twowaypager .next {
 	float: right;
 }

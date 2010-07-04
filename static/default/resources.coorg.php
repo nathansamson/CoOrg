@@ -9,6 +9,8 @@ CoOrg::resreg('/', 'images/icons/list-remove.png', 'd124bbc6f037d0e18713d96aa28f
 CoOrg::resreg('/', 'images/icons/refresh.png', 'd124bbc6f037d0e18713d96aa28f9351');
 CoOrg::resreg('/', 'images/icons/audio-captcha.png', 'd124bbc6f037d0e18713d96aa28f9351');
 CoOrg::resreg('/', 'images/icons/image-captcha.png', 'd124bbc6f037d0e18713d96aa28f9351');
+CoOrg::resreg('/', 'images/icons/spam.png', 'd124bbc6f037d0e18713d96aa28f9351');
+CoOrg::resreg('/', 'images/icons/notspam.png', 'd124bbc6f037d0e18713d96aa28f9351');
 CoOrg::resreg('/', 'ckeditor/ckeditor.js', 'd43da2e9f4cc40b2ad9b384fe5e1f35b');
 CoOrg::resreg('/', 'ckeditor/adapters/jquery.js', 'b53d325e0e9b89ce7f89eb6041510336');
 CoOrg::resreg('/', 'ckeditor/coorgConfig.js', 'a867222d1fc0ad87b87287fc574c8a0c');

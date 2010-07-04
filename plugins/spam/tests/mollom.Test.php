@@ -115,5 +115,55 @@ class MollomTest extends PHPUnit_Framework_TestCase
 		$this->assertNotNull($captcha);
 		$this->assertTrue($captcha instanceof MollomInvalidConfigCaptcha);
 	}
+	
+	public function testCheckContent()
+	{
+		$mollomMessage = new MollomMessage;
+		$mollomMessage->authorEmail = 'someemail@email.com';
+		$mollomMessage->body = 'SPAM BODY';
+		$this->assertEquals(PropertySpamStatus::SPAM, $mollomMessage->check());
+		
+		$this->assertTrue(Session::has('mollom/sessionid'));
+		Session::delete('mollom/sessionid');
+		
+		$mollomMessage = new MollomMessage;
+		$mollomMessage->authorEmail = 'someemail@email.com';
+		$mollomMessage->body = 'GOOD BODY';
+		$this->assertEquals(PropertySpamStatus::OK, $mollomMessage->check());
+		$this->assertTrue(Session::has('mollom/sessionid'));
+	}
+	
+	public function testCheckContentOutDatedServerList()
+	{
+		CoOrg::config()->set('mollom/serverlist', array('outdated'));
+		
+		$mollomMessage = new MollomMessage;
+		$mollomMessage->authorEmail = 'someemail@email.com';
+		$mollomMessage->body = 'SPAM BODY';
+		$this->assertEquals(PropertySpamStatus::SPAM, $mollomMessage->check());
+		
+		$this->assertTrue(Session::has('mollom/sessionid'));
+		Session::delete('mollom/sessionid');
+		Mollom::clear();
+		CoOrg::config()->set('mollom/serverlist', array('outdated'));
+		
+		$mollomMessage = new MollomMessage;
+		$mollomMessage->authorEmail = 'someemail@email.com';
+		$mollomMessage->body = 'GOOD BODY';
+		$this->assertEquals(PropertySpamStatus::OK, $mollomMessage->check());
+		$this->assertTrue(Session::has('mollom/sessionid'));
+	}
+	
+	public function testFeedback()
+	{
+		$this->assertTrue(MollomMessage::feedback('some-sess-id', 'profanity'));
+	}
+	
+	public function testFeedbackProblem()
+	{
+		CoOrg::config()->set('mollom/serverlist', array('outdated'));
+		
+		$this->assertTrue(MollomMessage::feedback('some-sess-id', 'profanity'));
+	}
 }
 ?>
