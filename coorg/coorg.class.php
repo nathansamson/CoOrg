@@ -89,6 +89,11 @@ class CoOrg {
 		DB::open($config->get('dbdsn'), $config->get('dbuser'),
 		         $config->get('dbpass'));
 		
+		if (get_magic_quotes_gpc())
+		{
+			self::clearMessAfterMagicQuotes();
+		}
+		
 		$params = array();
 		$post = false;
 		if (array_key_exists('r', $_GET)) {
@@ -768,6 +773,18 @@ class CoOrg {
 						I18n::addSearchDir($file, $subdir);
 					}
 				}
+			}
+		}
+	}
+	
+	private static function clearMessAfterMagicQuotes()
+	{
+		$cleanups = array($_POST, $_GET, $_COOKIES);
+		foreach ($cleanups as &$array)
+		{
+			foreach ($array as &$val)
+			{
+				$val = stripslashes($val);
 			}
 		}
 	}
