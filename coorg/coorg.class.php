@@ -229,12 +229,12 @@ class CoOrg {
 		}
 	}
 	
-	public static function createFullURL($params, $language = null)
+	public static function createFullURL($params, $language = null, $anchor = null)
 	{
-		return Session::getSite().self::createURL($params, $language);
+		return Session::getSite().self::createURL($params, $language, $anchor);
 	}
 	
-	public static function createURL($params, $language = null)
+	public static function createURL($params, $language = null, $anchor = null)
 	{
 		$urlPrefix = '';
 		if (self::$_config->has('urlPrefix'))
@@ -257,6 +257,10 @@ class CoOrg {
 	
 		$url = self::$_config->get('path').$urlPrefix.implode('/', $params);
 		self::normalizeRequest($url);
+		if ($anchor)
+		{
+			$url .= '#'.$anchor;
+		}
 		return $url;
 	}
 	

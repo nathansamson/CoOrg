@@ -28,13 +28,15 @@ function smarty_block_a($params, $contents, $smarty)
 		unset($params['coorgTitle']);
 		$l = @$params['coorgLanguage'];
 		unset($params['coorgLanguage']);
+		$anchor = array_key_exists('coorgAnchor', $params) ? $params['coorgAnchor'] : null;
+		unset($params['coorgAnchor']);
 		$request = $params['request'];
 		if ($request[0] != '#')
 		{
 			$urlParams = array($request);
 			unset($params['request']);
 			$urlParams = array_merge($urlParams, array_values($params));
-			$url = CoOrg::createURL($urlParams, $l ? $l : null);
+			$url = CoOrg::createURL($urlParams, $l ? $l : null, $anchor);
 		}
 		else
 		{

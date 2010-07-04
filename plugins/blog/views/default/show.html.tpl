@@ -5,7 +5,9 @@
 {/block}
 
 {block name='content'}
-{if Acl::isAllowed(UserSession::get()->username,'admin')}
+<article class="fullpage">
+<header>
+	{if Acl::isAllowed(UserSession::get()->username,'admin')}
 	<span class="page-actions">
 	{a request="blog/edit"
 	   year=$blog->year
@@ -16,8 +18,9 @@
 	   coorgStock="edit"}{/a}
 	</span>
 {/if}
-
-<h1>{$blog->title|escape}</h1>
+	<h1>{$blog->title|escape}</h1>
+	<p>{'By %user @ %date'|_:($blog->authorID|linkyfy:'user/profile/show':$blog->authorID):($blog->timePosted|date_format)}</p>
+</header>
 {$blog->text|format:all}
 
 {if UserSession::get() && Acl::isAllowed(UserSession::get()->username,'blog-writer')}
@@ -27,7 +30,7 @@
 {/if}
 
 {if count($comments)}
-	<h2>{'Comments'|_}</h2>
+	<h2 id="comments">{'Comments'|_}</h2>
 	
 	{foreach $comments as $comment}
 		{if $comment->spamStatus == PropertySpamStatus::OK}
@@ -115,13 +118,10 @@
 		</article>
 	{/foreach}
 {/if}
+</article>
 {if $blog->allowComments()}
 	<h2>
-	{if count($blog->comments)}
-		{'Comment'|_}
-	{else}
-		{'Post first comment'|_}
-	{/if}
+	{'Leave a reply'|_}
 	</h2>
 	{form request="blog/comment/save" instance=$blogComment}
 		{input value=$blog->ID name="blogID"}
@@ -139,9 +139,9 @@
 			</fieldset>
 		{/if}
 		
-		{input for=comment label=comment type=textarea required editor=lite}
+		{input for=comment label="Comment" type=textarea required editor=lite}
 		
-		{input type="submit" label="Comment"}
+		{input type="submit" label="Post comment"}
 	{/form}
 {/if}
 {/block}

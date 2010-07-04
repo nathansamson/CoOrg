@@ -11,6 +11,6 @@
 {/form}
 	<a href="{url request="user/create"}">{'Create an account'|_}</a>
 {else}
-	{'Welcome back %u!'|_:UserSession::get()->username}
+	{'Welcome back %u!'|_:(UserSession::get()->username|linkyfy:'user/profile/show':UserSession::get()->username)}
 {/if}
 </section>

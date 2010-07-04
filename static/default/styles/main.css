@@ -144,6 +144,11 @@ article header h1
 	font-size: 1.4em;
 }
 
+article.fullpage header h1
+{
+	font-size: 2em;
+}
+
 article header p
 {
 	margin: 0;
@@ -156,20 +161,36 @@ article header
 	margin-bottom: 10px;
 }
 
+article footer
+{
+	margin-top: 10px;
+	display: block;
+}
+
 
 article
 {
 	display: block;
 	border-bottom: dashed 1px #666666;
 	padding: 10px 0px;
-}
-
-article
-{
 	text-align: justify;
 }
 
-article:last-child
+article.fullpage {
+	padding: 0;
+	border: none;
+}
+
+article.fullpage header {
+	border-bottom: dashed 1px #666666;
+	padding-bottom: 5px;
+}
+
+article.fullpage > p:first-of-type {
+	margin-top: 4px;
+}
+
+article:last-of-type
 {
 	border-bottom: none;
 }
