@@ -193,8 +193,14 @@ function smarty_function_input($params, $smarty)
 	    	{
 	    		$editor = $params['editor'];
 	    	}
+	    	/* Explantion for "$required && !$editor"
+	    	 *  When required=true for an empty textarea, ckeditor does not get
+	    	 * the chanche to fill the textarea with data in browsers (webkit as of this writing)
+	    	 * validates the input. (and people does not get the chance to post
+	    	 *  comments, blogposts and content pages).
+	    	*/
 	    	$input = '<textarea name="'.$name.'" '. 'id="'.$id.'" '.
-	    	                         ($required ? 'required="required"' : '').
+	    	                         (($required && !$editor) ? 'required="required"' : '').
 	    	                         ($cols ? ' cols='.$cols : '').
 	    	                         ($rows ? ' rows='.$rows : '').
 	    	                         ($editor ? ' class="'.$editor.'-editor"' : '').
