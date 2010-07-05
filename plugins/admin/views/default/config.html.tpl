@@ -8,6 +8,7 @@
 		{input for=subtitle label="Site subtitle"}
 		{input for=siteAuthor label="Site Contact" required}
 		{input for=siteContactEmail label="Site Email Contact" type=email required}
+		{input for=defaultLanguage label="Default language" type=select options=$languages required}
 		
 		{input type=submit label="Save Site configuration"}
 		

@@ -28,6 +28,7 @@ class AdminSystemControllerTest extends CoOrgControllerTest
 		$this->request('admin/system');
 		
 		$this->assertVarSet('config');
+		$this->assertVarSet('languages');
 		$this->assertRendered('config');
 	}
 	
@@ -54,7 +55,8 @@ class AdminSystemControllerTest extends CoOrgControllerTest
 				'UUID' => 'abbaabbaabbabababa',
 				'databaseConnection' => $c->databaseConnection,
 				'databaseUser' => $c->databaseUser,
-				'databasePassword' => $c->databasePassword
+				'databasePassword' => $c->databasePassword,
+				'defaultLanguage' => 'br'
 			));
 		
 		$this->assertRedirected('admin/system');
@@ -66,6 +68,7 @@ class AdminSystemControllerTest extends CoOrgControllerTest
 		$this->assertEquals('xyz@xyz.org', $c->siteContactEmail);
 		$this->assertTrue($c->friendlyURL);
 		$this->assertEquals('abbaabbaabbabababa', $c->UUID);
+		$this->assertEquals('br', $c->defaultLanguage);
 	}
 	
 	public function testUpdateFailure()
@@ -82,10 +85,13 @@ class AdminSystemControllerTest extends CoOrgControllerTest
 				'UUID' => 'abbaabbaabbabababa',
 				'databaseConnection' => $c->databaseConnection,
 				'databaseUser' => $c->databaseUser,
-				'databasePassword' => $c->databasePassword
+				'databasePassword' => $c->databasePassword,
+				'defaultLanguage' => 'br'
 			));
 		
 		$this->assertFlashError('Failed saving configuration');
+		$this->assertVarSet('config');
+		$this->assertVarSet('languages');
 		$this->assertRendered('config');
 	}
 	

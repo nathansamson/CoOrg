@@ -23,6 +23,7 @@
  * @property subtitle String(t('SubTitle'));
  * @property siteAuthor String(t('Site Author')); required
  * @property siteContactEmail Email(t('Site Contact Email')); required
+ * @property defaultLanguage String(t('Default language')); required
  * @property databaseConnection String(t('Database connection')); required
  * @property databaseUser String(t('Database user'));
  * @property databasePassword String(t('Database password'));
@@ -46,6 +47,7 @@ class SiteConfig extends Model
 		$this->friendlyURL = true;
 		$this->sitePath = $config->get('path');
 		$this->UUID = $config->get('site/uuid');
+		$this->defaultLanguage = $config->get('defaultLanguage');
 	}
 	
 	public function save()
@@ -62,6 +64,7 @@ class SiteConfig extends Model
 		$this->friendlyURL = true;
 		$config->set('path', $this->sitePath);
 		$config->set('site/uuid', $this->UUID);
+		$config->set('defaultLanguage', $this->defaultLanguage);
 		$config->save();
 	}
 }

@@ -29,11 +29,12 @@ class AdminSystemController extends AdminBaseController
 	public function index()
 	{
 		$this->config = new SiteConfig;
+		$this->languages = $this->getLanguages();
 		$this->render('config');
 	}
 	
 	public function update($title, $subtitle, $siteAuthor, $siteContactEmail,
-	                       $friendlyURL, $UUID, $sitePath,
+	                       $friendlyURL, $UUID, $sitePath, $defaultLanguage,
 	                       $databaseConnection, $databaseUser, $databasePassword)
 	{
 		$config = new SiteConfig;
@@ -46,7 +47,7 @@ class AdminSystemController extends AdminBaseController
 		$config->sitePath = $sitePath;
 		$config->databaseConnection = $databaseConnection;
 		$config->databaseUser = $databaseUser;
-		$config->databasePassword;
+		$config->defaultLanguage = $defaultLanguage;
 		
 		try
 		{
@@ -58,8 +59,19 @@ class AdminSystemController extends AdminBaseController
 		catch (ValidationException $e)
 		{
 			$this->config = $config;
+			$this->languages = $this->getLanguages();
 			$this->error(t('Failed saving configuration'));
 			$this->render('config');
 		}
+	}
+	
+	private function getLanguages()
+	{
+		$ls = array();
+		foreach (Language::languages() as $lang)
+		{
+			$ls[$lang->language] = $lang->name;
+		}
+		return $ls;
 	}
 }
