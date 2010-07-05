@@ -1,5 +1,5 @@
 <?php
 
-CoOrg::resreg('spam', 'mollom-captcha.css', '9c63129ad5e39058527565b7c83ffb9d');
+CoOrg::resreg('spam', 'mollom-captcha.css', '88a04f9464545edccc525d35200aab7c');
 
 ?>
