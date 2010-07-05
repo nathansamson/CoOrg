@@ -100,7 +100,7 @@ h1, h2, h1 a, h2 a
 	text-decoration: none;
 }
 
-.notice, .error, .warning
+.notice, div.error, .warning
 {
 	padding: 10px;
 	border: dotted 1px #F9A328;
@@ -115,7 +115,7 @@ h1, h2, h1 a, h2 a
 	background-color: #FCBA5C;
 }
 
-.error
+div.error
 {
 	background-color: #FC6B5D;
 }
@@ -231,10 +231,20 @@ label.required {
 	font-weight: bold;
 }
 
+p.form-error {
+	border: dotted 1px red;
+	margin: 2px 0;
+	padding: 4px;
+}
+
 input, textarea, .editor, select {
 	border: solid 1px #666666;
 	font-size: 1em;
 	margin-bottom: 10px;
+}
+
+input.error, textarea.error, .editor.error, select.error {
+	border: solid 1px red;
 }
 
 input[readonly] {

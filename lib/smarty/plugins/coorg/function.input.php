@@ -138,6 +138,14 @@ function smarty_function_input($params, $smarty)
 		if (array_key_exists('class', $params))
 		{
 			$class = $params['class'];
+			if ($errors)
+			{
+				$class .= ' error';
+			}
+		}
+		else if ($errors)
+		{
+			$class .= ' error';
 		}
 		if (array_key_exists('size', $params))
 		{
@@ -227,13 +235,13 @@ function smarty_function_input($params, $smarty)
 	    
 	    if (is_string($errors))
 	    {
-	    	$input .= '<span class="form-error">'.$errors.'</span>';
+	    	$label .= '<p class="form-error">'.$errors.'</p>';
 	    }
 	    else if ($errors != null)
 	    {
 	    	foreach ($errors as $error)
 	    	{
-	    		$input .= '<span class="form-error">'.$errors.'</span>';
+	    		$label .= '<p class="form-error">'.$errors.'</p>';
 	    	}
 	    }
 		return $label . $input;
