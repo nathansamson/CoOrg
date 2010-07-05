@@ -42,6 +42,7 @@ class AdminBlogController extends AdminBaseController
 		$this->_adminTab = 'BlogConfigureAdminTab';
 		
 		$this->openForOptions = BlogConfig::openForOptions();
+		$this->moderationTimeOptions = BlogConfig::moderationTimeOptions();
 		$this->blogConfig = BlogConfig::get();
 		$this->render('admin/config');
 	}
@@ -49,11 +50,14 @@ class AdminBlogController extends AdminBaseController
 	/**
 	 * @Acl allow blog-admin
 	*/
-	public function configsave($enableComments, $enableCommentsFor)
+	public function configsave($enableComments, $enableCommentsFor,
+	                           $moderationEmail, $moderationTime)
 	{
 		$config = BlogConfig::get();
 		$config->enableComments = $enableComments;
 		$config->enableCommentsFor = $enableCommentsFor;
+		$config->moderationEmail = $moderationEmail;
+		$config->moderationTime = $moderationTime;
 		try
 		{
 			$config->save();
@@ -66,6 +70,7 @@ class AdminBlogController extends AdminBaseController
 			$this->_adminTab = 'BlogConfigureAdminTab';
 		
 			$this->openForOptions = BlogConfig::openForOptions();
+			$this->moderationTimeOptions = BlogConfig::moderationTimeOptions();
 			$this->blogConfig = $config;
 			$this->error('Blog configuration not saved');
 			$this->render('admin/config');

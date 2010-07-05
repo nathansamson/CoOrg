@@ -39,6 +39,24 @@ abstract class Comment extends DBModel
 	{
 		$this->timePosted = time();
 	}
+	
+	public static function moderationQueueLength()
+	{
+		$q = DB::prepare('SELECT COUNT(*) AS cnt FROM Comment WHERE
+		                        spamStatus=:moderation');
+		$q->execute(array(':moderation' => PropertySpamStatus::UNKNOWN));
+		
+		$result = $q->fetch();
+		return (int)$result['cnt'];
+	}
+	
+	public static function getModerationQueue($type)
+	{
+		return new CommentPager('SELECT * FROM '.$type.'
+		         NATURAL JOIN Comment
+		         WHERE spamStatus=:moderation',
+			array(':moderation' => PropertySpamStatus::UNKNOWN), $type);
+	}
 }
 
 ?>

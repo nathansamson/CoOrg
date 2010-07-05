@@ -121,6 +121,9 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 	
 	public function testSaveAnonymousUnknown()
 	{
+		CoOrg::config()->set('blog/moderation-email', 'moderation@mail.com');
+		CoOrg::config()->set('blog/moderation-time', 1);
+		CoOrg::config()->set('blog/last-moderation-mail', time()-60*60*13); // Last mail sent 13 hours ago
 		$this->request('blog/comment/save', array(
 			'blogID' => 'some-other-blog',
 			'blogDate' => '2010-04-10',
@@ -144,6 +147,38 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->assertEquals('UNKNOWN BODY', $comment->comment);
 		$this->assertEquals(PropertySpamStatus::UNKNOWN, $comment->spamStatus);
 		$this->assertNotNull($comment->spamSessionID);
+		$this->assertEquals(0, count(Mail::$sentMails));
+	}
+	
+	public function testSaveAnonymousUnknownWithModerationMail()
+	{
+		CoOrg::config()->set('blog/moderation-email', 'moderation@mail.com');
+		CoOrg::config()->set('blog/moderation-time', 1);
+		CoOrg::config()->set('blog/last-moderation-mail', time()-60*60*33); // Last mail sent 33 hours ago
+		$this->request('blog/comment/save', array(
+			'blogID' => 'some-other-blog',
+			'blogDate' => '2010-04-10',
+			'blogLanguage' => 'en',
+			'comment' => 'UNKNOWN BODY',
+			'name' => 'My Anon',
+			'email' => 'myemail@email.com'));
+		
+		$this->assertFlashNotice('Your comment will be moderated, and will appear on a later time on the site');
+		$this->assertRedirected('blog/show/2010/4/10/some-other-blog');
+		
+		$blog = Blog::getBlog('2010', '04', '10', 'some-other-blog', 'en');
+		$this->assertEquals(1, count($blog->comments));
+		$this->assertMailSent('moderation@mail.com', 'The Site: New comment to moderate',
+		                      'mails/newcomment',
+		                      array('totalModerationQueue' => '2', // This new one + 1 in DB
+		                            'title' => 'RE: Some Other Blog',
+		                            'body' => 'UNKNOWN BODY',
+		                            'date' => '**?**',
+		                            'messageURL' => 'http://www.test.info/blog/show/2010/4/10/some-other-blog#comment667',
+		                            'moderationURL' => 'http://www.test.info/admin/comment/queue',
+		                            'site' => 'The Site'));
+		$config = new Config(COORG_TEST_CONFIG);
+		$this->assertLessThan(2, abs(time() - $config->get('blog/last-moderation-mail')));
 	}
 	
 	public function testSaveAnonymousFailure()

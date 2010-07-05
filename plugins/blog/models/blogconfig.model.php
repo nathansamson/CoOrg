@@ -21,6 +21,8 @@
 /**
  * @property enableComments Bool(t('Enable comments'));
  * @property enableCommentsFor Integer(t('Enable comments for'));
+ * @property moderationEmail Email(t('Moderation Email'));
+ * @property moderationTime Integer(t('Minimum time between emails'));
 */
 class BlogConfig extends Model
 {
@@ -29,6 +31,8 @@ class BlogConfig extends Model
 		parent::__construct();
 		$this->enableComments = CoOrg::config()->get('blog/enableComments');
 		$this->enableCommentsFor = CoOrg::config()->get('blog/enableCommentsFor');
+		$this->moderationEmail = CoOrg::config()->get('blog/moderation-email');
+		$this->moderationTime = Coorg::config()->get('blog/moderation-time');
 	}
 	
 	public function save()
@@ -36,6 +40,8 @@ class BlogConfig extends Model
 		parent::validate('');
 		CoOrg::config()->set('blog/enableComments', $this->enableComments);
 		CoOrg::config()->set('blog/enableCommentsFor', $this->enableCommentsFor);
+		CoOrg::config()->set('blog/moderation-email', $this->moderationEmail);
+		CoOrg::config()->set('blog/moderation-time', $this->moderationTime);
 		CoOrg::config()->save();
 	}
 	
@@ -52,6 +58,15 @@ class BlogConfig extends Model
 			'14' => t('a forthnight'),
 			'30' => t('One month'),
 			'365' => t('One year')
+		);
+	}
+	
+	public static function moderationTimeOptions()
+	{
+		return array(
+			'1' => t('One day'),
+			'2' => t('Two days'),
+			'7' => t('A week')
 		);
 	}
 }

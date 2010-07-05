@@ -80,13 +80,17 @@ class AdminBlogControllerTest extends CoOrgControllerTest
 		$this->login('uberadmin');
 		$this->request('admin/blog/configsave', array(
 		                    'enableComments' => 'on',
-		                    'enableCommentsFor' => 14
+		                    'enableCommentsFor' => 14,
+		                    'moderationEmail' => 'somemail@mail.com',
+		                    'moderationTime' => 2
 		));
 		
 		$this->assertFlashNotice('Saved blog configuration');
 		$this->assertRedirected('admin/blog/config');
 		$this->assertTrue(CoOrg::config()->get('blog/enableComments'));
 		$this->assertEquals(14, CoOrg::config()->get('blog/enableCommentsFor'));
+		$this->assertEquals(2, CoOrg::config()->get('blog/moderation-time'));
+		$this->assertEquals('somemail@mail.com', CoOrg::config()->get('blog/moderation-email'));
 	}
 	
 	public function testSaveConfigFailure()
@@ -94,7 +98,9 @@ class AdminBlogControllerTest extends CoOrgControllerTest
 		$this->login('uberadmin');
 		$this->request('admin/blog/configsave', array(
 		                    'enableComments' => 'on',
-		                    'enableCommentsFor' => 'some-invalid-string'
+		                    'enableCommentsFor' => '14',
+		                    'moderationEmail' => 'invalid',
+		                    'moderationTime' => 1
 		));
 		
 		$this->assertFlashError('Blog configuration not saved');

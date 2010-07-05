@@ -73,6 +73,12 @@
 		keyID="blog-admin"
 		allowed="1"
 	/>
+	
+	<Acl
+		groupID="__uberadmin"
+		keyID="blog-moderator"
+		allowed="1"
+	/>
 
 	<Blog 
 	   ID="some-blog"
@@ -211,6 +217,21 @@
 	 	blogDatePosted="2010-04-11"
 	 	blogLanguage="en"
 	 />
+	 
+	 <Comment
+	  	ID="666"
+	  	title="Re: A"
+	  	comment="..."
+	  	spamStatus="3"
+	  	timePosted="2010-04-11 15:30:20"
+	  />
+	  
+	  <BlogComment
+	  	ID="666"
+	  	blogID="a"
+	 	blogDatePosted="2008-05-12"
+	 	blogLanguage="br"
+	  />
 	  <!-- Brasilian posts for archive test -->
 	  
 	  <Blog

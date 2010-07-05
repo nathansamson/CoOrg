@@ -220,12 +220,33 @@ class CoOrg {
 		}
 	}
 	
-	public static function loadModel($name)
+	public static function loadModel($fname)
 	{
-		$name = strtolower($name);
+		$name = strtolower($fname);
 		if (array_key_exists($name, self::$_models))
 		{
 			include_once self::$_models[$name];
+		}
+		else if (preg_match('/(.*)ControllerHelper/', $fname, $matches))
+		{
+			$ID = '';
+			for ($i = 0; $i < strlen($matches[1]); $i++)
+			{
+				$char = $matches[1][$i];
+				if (strtolower($char) == $char || $i == 0)
+				{
+					$ID .= strtolower($char);
+				}
+				else
+				{
+					$ID .= '.'.strtolower($char);
+				}
+			}
+
+			if (array_key_exists($ID, self::$_controllers))
+			{
+				include_once self::$_controllers[$ID]['fullpath'];
+			}
 		}
 	}
 	

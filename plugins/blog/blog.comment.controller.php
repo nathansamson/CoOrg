@@ -68,6 +68,35 @@ class BlogCommentController extends Controller
 					}
 					else
 					{
+						$config = CoOrg::config();
+						
+						if (time() - $config->get('blog/last-moderation-mail') > 60*60*24*$config->get('blog/moderation-time'))
+						{
+							$config->set('blog/last-moderation-mail', time());
+							$config->save();
+							$site = $config->get('site/title');
+							$receiver = $config->get('blog/moderation-email');
+							$mail = $this->mail();
+							$mail->title = $blogComment->title;
+							$mail->body = $blogComment->comment;
+							$mail->date = $blogComment->timePosted;
+							$mail->messageURL = CoOrg::createFullURL(array(
+							        'blog/show',
+							        $this->_blog->year,
+							        $this->_blog->month,
+							        $this->_blog->day,
+							        $this->_blog->ID),
+							        CoOrg::getDefaultLanguage(),
+							        'comment'.$blogComment->ID
+							        );
+							$mail->moderationURL = CoOrg::createFullURL(array('admin/comment/queue'));
+							$mail->totalModerationQueue = Comment::moderationQueueLength();
+							$mail->site = $site;
+							$mail->to($receiver)
+							     ->subject(t('%site: New comment to moderate', array('site' => $site)))
+							     ->send('mails/newcomment');
+						}
+					
 						$this->notice(t('Your comment will be moderated, and will appear on a later time on the site'));	
 					}
 					$this->redirect('blog/show',

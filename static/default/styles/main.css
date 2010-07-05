@@ -145,7 +145,7 @@ article header h1
 	font-size: 1.4em;
 }
 
-article.fullpage header h1
+article.fullpage > header h1
 {
 	font-size: 2em;
 }
@@ -358,18 +358,18 @@ a img {
 	text-decoration: none;
 }
 
-.page-actions form {
+.page-actions form, td form {
 	display: inline;
 }
 
-.page-actions form button {
+.page-actions form button, td form button {
 	background-color: transparent;
 	border: none;
 	padding: 0;
 	margin: 0;
 }
 
-.page-actions form button:hover {
+.page-actions form button:hover, td form button:hover {
 	cursor: pointer;
 }
 

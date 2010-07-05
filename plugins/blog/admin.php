@@ -63,7 +63,7 @@ class BlogManageAdminTab
 	}
 }
 
-/*class BlogCommentsModerateAdminTab
+class BlogCommentsModerateAdminTab
 {
 	public function __construct()
 	{
@@ -74,12 +74,12 @@ class BlogManageAdminTab
 	
 	public function isAllowed($user)
 	{
-		return Acl::isAllowed($user->username, 'blog-writer');
+		return Acl::isAllowed($user->username, 'blog-moderator');
 	}
-}*/
+}
 
 Admin::registerModule('BlogAdminModule');
 Admin::registerTab('BlogConfigureAdminTab', 'BlogAdminModule');
 Admin::registerTab('BlogManageAdminTab', 'BlogAdminModule');
-//Admin::registerTab('BlogCommentsModerateAdminTab', 'BlogAdminModule');
+Admin::registerTab('BlogCommentsModerateAdminTab', 'BlogAdminModule');
 ?>
