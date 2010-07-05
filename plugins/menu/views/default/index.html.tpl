@@ -1,10 +1,7 @@
 {block name='title'}{'Menu'|_}{/block}
 
-{block name='head' append}
-	<link rel="stylesheet" href="{'styles/menu.admin.css'|static:menu}" />
-{/block}
-
 {block name='admin-content'}
+{stylesheet file={'styles/menu.admin.css'|static:'menu'}}
 <h1>{'Menu'|_}</h1>
 
 <ul class="menulist">

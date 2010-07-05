@@ -1,10 +1,7 @@
 {block name='title'}{'Edit %m'|_:$menu->name|escape}{/block}
 
-{block name='head' append}
-	<link rel="stylesheet" href="{'styles/menu.admin.css'|static:menu}" />
-{/block}
-
 {block name='admin-content'}
+	{stylesheet file={'styles/menu.admin.css'|static:'menu'}}
 	<h1>{'Edit %m'|_:$menu->name|escape}</h1>
 	
 	<h2>{'Entries'|_}</h2>

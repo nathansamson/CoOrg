@@ -442,6 +442,16 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		
 		$this->assertEquals('/coorg/tests/mocks/plugins/alpha/static/default/onlydefault.css?v=2010-10-03',
 		                    CoOrg::staticFile('onlydefault.css', 'alpha'));
+		                    
+		$this->assertEquals(array(
+			'/coorg/tests/mocks/plugins/alpha/static/testtheme/extends.css?v=extendsV',
+			'/coorg/tests/mocks/plugins/alpha/static/default/extends.css?v=baseV',),
+		                    CoOrg::staticFile('extends.css', 'alpha'));
+
+		$this->assertEquals(array(
+			'/static/testtheme/extends.css?v=extendsV',
+			'/static/default/extends.css?v=baseV'),
+		                    CoOrg::staticFile('extends.css'));
 	}
 	
 	private function alternativeConfig($config)

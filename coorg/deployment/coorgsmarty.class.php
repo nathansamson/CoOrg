@@ -91,7 +91,17 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 	
 	public function stylesheet($style)
 	{
-		$this->_stylesheets[] = $style;
+		if (is_array($style))
+		{
+			foreach ($style as $s)
+			{
+				$this->_stylesheets[] = $s;
+			}
+		}
+		else
+		{
+			$this->_stylesheets[] = $style;
+		}
 	}
 }
 
@@ -102,10 +112,10 @@ function add_stylesheets($output, &$smarty)
 	$s = array_unique($smarty->_stylesheets);
 	foreach ($s as $stylesheet)
 	{
-		$r .= '<link rel="stylesheet" href="'.$stylesheet.'" />';
+		$r .= '<link rel="stylesheet" href="'.$stylesheet.'" />'."\n";
 	}
 	
-	return str_replace('%%$$EXTRASTYLESHEETSCOMEHERE$$%%</head>', $r, $output);
+	return preg_replace('/^[[:space:]]*<!-- %%\$\$EXTRASTYLESHEETSCOMEHERE\$\$%% -->[[:space:]]*$/m', $r, $output);
 }
 
 ?>

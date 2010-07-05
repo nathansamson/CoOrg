@@ -4,6 +4,12 @@
 	<h1>{'Manage blog'|_}</h1>
 	
 	<table>
+		<tr>
+			<th>{'Title'|_}</th>
+			<th>{'Short fragment'|_}</th>
+			<th>{'Languages'|_}</th>
+			<th>&nbsp;</th>
+		</tr>
 		{foreach $blogs as $blog}
 			<tr>
 				<td>

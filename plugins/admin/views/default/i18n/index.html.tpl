@@ -1,9 +1,5 @@
 {block name="title"}{'Languages'|_}{/block}
 
-{block name="head" append}
-	<link rel="stylesheet" href="{'styles/admin.css'|static:admin}" />
-{/block}
-
 {block name="admin-content"}
 	<h1>{'Languages'|_}</h1>
 	<ul class="languages">

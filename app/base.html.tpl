@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>{block name='title'}Default title{/block}</title>
-		<link rel="stylesheet" href="{'styles/main.css'|static}" />
+		{stylesheet file={'styles/main.css'|static}}
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 		
 		{block name='head'}{/block}
@@ -30,7 +30,8 @@
 				return "{$staticPath}"+file;
 			}
 		</script>
-	%%$$EXTRASTYLESHEETSCOMEHERE$$%%</head>
+	<!-- %%$$EXTRASTYLESHEETSCOMEHERE$$%% -->
+	</head>
 	<body>
 		<header>
 			<h1><a href="{url request='/'}">{Coorg::config()->get('site/title')}</a></h1>

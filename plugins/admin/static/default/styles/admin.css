@@ -1,8 +1,7 @@
 .modules {
 	list-style-type: none;
 	padding: 0;
-	margin-left: -5px; /* Override margins of left and rigth li's  */
-	margin-right: -5px;
+	margin: 0 -5px; /* Override margins of left and rigth li's  */
 }
 
 .modules li {
@@ -45,6 +44,10 @@ a img {
 	float: right;
 }
 
+nav.admin-tabs a {
+	text-decoration: none;
+}
+
 nav.admin-tabs ol li {
 	padding: 0;
 	border: none;
@@ -68,4 +71,50 @@ nav.admin-tabs ol li a:hover {
 nav.admin-tabs {
 	border-bottom: solid 2px #F9A328;
 	padding-bottom: 4px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+tr th {
+	border-bottom: solid 2px #F9A328;
+	text-align: left;
+}
+
+td {
+	padding: 4px;
+}
+
+tr {
+	border: solid 1px #F9A328;
+	border-top: none;
+}
+
+tr:first-child {
+	border: none;
+}
+
+tr:nth-child(2n)
+{
+	background-color: #FBB859;
+}
+
+tr:nth-child(2n + 1)
+{
+	background-color: #F9A328;
+}
+
+tr:hover {
+	background-color: #FAAE42;
+}
+
+tr:first-child, tr:first-child:hover {
+	background-color: transparent;
+}
+
+
+tr a:hover {
+	color: #444 !important;
 }

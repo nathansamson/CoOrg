@@ -1,10 +1,7 @@
 {block name=title}{'Layout'|_}{/block}
 
-{block name=head append}
-	<link rel="stylesheet" href="{'styles/layout.css'|static:admin}" />
-{/block}
-
 {block name=admin-content}
+	{stylesheet file={'styles/layout.css'|static:'admin'}}
 	<div class="page-actions">
 		{a request="#widget-list" coorgStock="list-add"}{'Add a widget'}{/a}
 	</div>

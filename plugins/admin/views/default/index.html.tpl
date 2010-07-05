@@ -1,10 +1,7 @@
 {block name='title'}Admin{/block}
 
-{block name='head' append}
-	<link rel="stylesheet" href="{'styles/admin.css'|static:admin}" />
-{/block}
-
 {block name='content'}
+	{stylesheet file={'styles/admin.css'|static:'admin'}}
 	<h1>Admin</h1>
 	<ol class="modules">
 	{foreach $modules as $m}

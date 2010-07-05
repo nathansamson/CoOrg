@@ -296,6 +296,7 @@ class CoOrg {
 		if (!$theme) $theme = 'default';
 		if ($app == null)
 		{
+			$baseVersion = null;
 			if (! array_key_exists($file, self::$_resources['/']))
 			{
 				$theme = 'default';
@@ -307,18 +308,23 @@ class CoOrg {
 				{
 					$theme = 'default';
 				}
-				$version = self::$_resources['/'][$file][$theme];
+				if (self::$_resources['/'][$file][$theme][1])
+				{
+					$baseVersion = self::$_resources['/'][$file]['default'][0];
+				}
+				$version = self::$_resources['/'][$file][$theme][0];
 			}
-			
-			if ($external)
+			if (!$baseVersion)
 			{
-				$path = $external.'_root/';
+				return self::createStaticPath($file, $version, $theme, $external);
 			}
 			else
 			{
-				$path = self::$_config->get('path').'static/';
+				return array(
+					self::createStaticPath($file, $version, $theme, $external),
+					self::createStaticPath($file, $baseVersion, 'default', $external)
+				);
 			}
-			return $path.$theme.'/'.$file.'?v='.$version;
 		}
 		else
 		{
@@ -342,21 +348,41 @@ class CoOrg {
 			if (array_key_exists($file, self::$_resources[$app]))
 			{
 				$versions = self::$_resources[$app][$file];
+				$defaultVersion = null;
 				if (array_key_exists($theme, $versions))
 				{
-					$version = self::$_resources[$app][$file][$theme];
+					$version = self::$_resources[$app][$file][$theme][0];
+					if (self::$_resources[$app][$file][$theme][1])
+					{
+						$defaultVersion = self::$_resources[$app][$file]['default'][0];
+					}
 				}
 				else
 				{
 					$theme = 'default';
-					$version = self::$_resources[$app][$file][$theme];
+					$version = self::$_resources[$app][$file][$theme][0];
 				}
 			}
 			else
 			{
 				throw new Exception('No version specified for '.$file.'::'.$app);
 			}
-			
+			if (!$defaultVersion)
+			{
+				return self::createStaticPath($file, $version, $theme, $external, $app, $isPlugin);
+			}
+			else
+			{
+				return array(self::createStaticPath($file, $version, $theme, $external, $app, $isPlugin),
+				             self::createStaticPath($file, $defaultVersion, 'default', $external, $app, $isPlugin));
+			}
+		}
+	}
+	
+	private static function createStaticPath($file, $version, $theme, $external, $app = null, $isPlugin = null)
+	{
+		if ($app)
+		{
 			if ($external && self::$_config->get('staticpath/'.$app))
 			{
 				$pluginPath = $external.$app.'/';
@@ -375,6 +401,18 @@ class CoOrg {
 				$pluginPath .= '/static/';
 			}
 			return $pluginPath.$theme.'/'.$file.'?v='.$version;
+		}
+		else
+		{
+			if ($external)
+			{
+				$path = $external.'_root/';
+			}
+			else
+			{
+				$path = self::$_config->get('path').'static/';
+			}
+			return $path.$theme.'/'.$file.'?v='.$version;
 		}
 	}
 	
@@ -550,7 +588,7 @@ class CoOrg {
 		return $stocks[$stock];
 	}
 	
-	public static function resreg($app, $resource, $version)
+	public static function resreg($app, $resource, $version, $extends = false)
 	{
 		if (!array_key_exists($app, self::$_resources))
 		{
@@ -558,11 +596,11 @@ class CoOrg {
 		}
 		if (array_key_exists($resource, self::$_resources[$app]))
 		{
-			self::$_resources[$app][$resource][self::$_resourceTheme] = $version;
+			self::$_resources[$app][$resource][self::$_resourceTheme] = array($version, $extends);
 		}
 		else
 		{
-			self::$_resources[$app][$resource] = array(self::$_resourceTheme => $version);
+			self::$_resources[$app][$resource] = array(self::$_resourceTheme => array($version, $extends));
 		}
 	}
 	

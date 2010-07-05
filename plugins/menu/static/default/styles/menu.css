@@ -1,38 +1,23 @@
-nav a, .vertical .menu a 
+nav .menu a, .vertical .menu a 
 {
 	color: black;
 	text-decoration: none;
 }
 
-nav a:hover {
+nav .menu a:hover {
 	color: #555;
+	text-decoration: none;
 }
 
-nav .current a, .vertical .menu .current a {
-	font-weight: bold;
-}
-
-nav ol
-{
-	display: inline-block;
-	padding: 0;
-	margin: 0;
-}
-
-nav ol li
+nav ol.menu li
 {
 	padding: 0px 10px;
 	border-right: dotted 1px #666666;
 }
 
-nav ol li:last-child
+nav ol.menu li:last-child
 {
 	border-right: none;
-}
-
-nav ol li
-{
-	display: inline;
 }
 
 .vertical .menu {

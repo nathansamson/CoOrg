@@ -1,10 +1,7 @@
 {block name='title'}{$blog->title|escape}{/block}
 
-{block name='head' append}
-	<link rel="stylesheet" href="{'styles/blog.css'|static:'blog'}" />
-{/block}
-
 {block name='content'}
+{stylesheet file={'styles/blog.css'|static:'blog'}}
 <article class="fullpage">
 <header>
 	{if Acl::isAllowed(UserSession::get()->username,'admin')}
