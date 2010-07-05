@@ -55,6 +55,12 @@ class BlogController extends Controller
 	public function save($title, $text)
 	{
 		$blog = new Blog($title, UserSession::get()->username, $text, CoOrg::getLanguage());
+		$config = BlogConfig::get();
+		$blog->commentsAllowed = $config->enableComments;
+		if ($config->enableCommentsFor)
+		{
+			$blog->commentsCloseDate = time()+60*60*24*$config->enableCommentsFor;
+		}
 		
 		try
 		{
@@ -93,13 +99,7 @@ class BlogController extends Controller
 	*/
 	public function edit($year, $month, $day, $id, $language = null)
 	{
-		$this->openFor = array(
-			'0' => t('Unlimited'),
-			'7' => t('One week'),
-			'14' => t('a forthnight'),
-			'30' => t('One month'),
-			'365' => t('One year')
-		);
+		$this->openFor = BlogConfig::openForOptions();
 		$this->blog = $this->_blog;
 		if ($this->_blog->commentsCloseDate === null)
 		{

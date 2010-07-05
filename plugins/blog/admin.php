@@ -18,12 +18,11 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class BlogAdminModule
+class BlogAdminModule extends AdminModule
 {
 	public function __construct()
 	{
 		$this->name = t('Blog');
-		$this->url = CoOrg::createURL(array('admin', 'blog'));
 		$this->image = CoOrg::staticFile('images/blog.png', 'blog');
 		$this->priority = 2;
 	}
@@ -34,5 +33,53 @@ class BlogAdminModule
 	}
 }
 
+class BlogConfigureAdminTab
+{
+	public function __construct()
+	{
+		$this->name = t('blog|Configure');
+		$this->url = CoOrg::createURL(array('admin/blog/config'));
+		$this->priority = 4;
+	}
+	
+	public function isAllowed($user)
+	{
+		return Acl::isAllowed($user->username, 'blog-admin');
+	}
+}
+
+class BlogManageAdminTab
+{
+	public function __construct()
+	{
+		$this->name = t('blog|Manage blogs');
+		$this->url = CoOrg::createURL(array('admin/blog'));
+		$this->priority = 2;
+	}
+	
+	public function isAllowed($user)
+	{
+		return Acl::isAllowed($user->username, 'blog-writer');
+	}
+}
+
+/*class BlogCommentsModerateAdminTab
+{
+	public function __construct()
+	{
+		$this->name = t('blog|Moderate comments');
+		$this->url = CoOrg::createURL(array('admin/blog/comment'));
+		$this->priority = 3;
+	}
+	
+	public function isAllowed($user)
+	{
+		return Acl::isAllowed($user->username, 'blog-writer');
+	}
+}*/
+
 Admin::registerModule('BlogAdminModule');
+Admin::registerTab('BlogConfigureAdminTab', 'BlogAdminModule');
+Admin::registerTab('BlogManageAdminTab', 'BlogAdminModule');
+//Admin::registerTab('BlogCommentsModerateAdminTab', 'BlogAdminModule');
 ?>

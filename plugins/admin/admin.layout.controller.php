@@ -21,10 +21,13 @@
 /**
  * @Acl allow admin-layout
 */
-class AdminLayoutController extends Controller
+class AdminLayoutController extends AdminBaseController
 {
 	private $_panel;
 	private $_widget;
+	
+	protected $_adminModule = 'LayoutAdminModule';
+	protected $_adminTab = 'LayoutAdminTab';
 
 	public function index()
 	{

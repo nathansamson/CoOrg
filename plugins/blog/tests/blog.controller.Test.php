@@ -88,6 +88,8 @@ class BlogControllerTest extends CoOrgControllerTest
 	
 	public function testSave()
 	{
+		CoOrg::config()->set('blog/enableComments', true);
+		CoOrg::config()->set('blog/enableCommentsFor', 14);
 		$this->login();
 		$this->request('blog/save', array('title' => 'My Blog Title',
 		                                  'text' => 'My blog contents'));
@@ -98,7 +100,29 @@ class BlogControllerTest extends CoOrgControllerTest
 		$month = date('m');
 		$day = date('d');
 		$this->assertRedirected('blog/show/'.$year.'/'.$month.'/'.$day.'/my-blog-title');
+		$blog = Blog::getBlog($year, $month, $day, 'my-blog-title', 'en');
+		$this->assertTrue($blog->commentsAllowed);
+		$this->assertLessThan(2, abs(time() - $blog->commentsCloseDate + 60*60*24*14));
 	}
+	public function testSaveOtherConfiguration()
+	{
+		CoOrg::config()->set('blog/enableComments', false);
+		CoOrg::config()->set('blog/enableCommentsFor', 0);
+		$this->login();
+		$this->request('blog/save', array('title' => 'My Blog Title',
+		                                  'text' => 'My blog contents'));
+
+		$this->assertFlashNotice('Your blog item is saved');
+		
+		$year = date('Y');
+		$month = date('m');
+		$day = date('d');
+		$this->assertRedirected('blog/show/'.$year.'/'.$month.'/'.$day.'/my-blog-title');
+		$blog = Blog::getBlog($year, $month, $day, 'my-blog-title', 'en');
+		$this->assertFalse($blog->commentsAllowed);
+		$this->assertNull($blog->commentsCloseDate);
+	}
+	
 	
 	public function testSaveNotLoggedIn()
 	{

@@ -18,13 +18,37 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class PageAdminModule
+class PageAdminModule extends AdminModule
 {
 	public function __construct()
 	{
 		$this->name = t('Content');
-		$this->url = CoOrg::createURL(array('admin', 'page'));
 		$this->image = CoOrg::staticFile('images/page.png', 'page');
+		$this->priority = 2;
+	}
+}
+
+class ManagePagesAdminTab
+{
+	public function __construct()
+	{
+		$this->name = t('Manage pages');
+		$this->url = CoOrg::createURL('admin/page');
+		$this->priority = 1;
+	}
+	
+	public function isAllowed($user)
+	{
+		return Acl::isAllowed($user->username, 'admin-page-edit');
+	}
+}
+
+class CreatePageAdminTab
+{
+	public function __construct()
+	{
+		$this->name = t('Create page');
+		$this->url = CoOrg::createURL('admin/page/create');
 		$this->priority = 2;
 	}
 	
@@ -35,5 +59,7 @@ class PageAdminModule
 }
 
 Admin::registerModule('PageAdminModule');
+Admin::registerTab('ManagePagesAdminTab', 'PageAdminModule');
+Admin::registerTab('CreatePageAdminTab', 'PageAdminModule');
 
 ?>

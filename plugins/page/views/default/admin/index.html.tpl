@@ -1,9 +1,8 @@
 {block name="title"}{'Content'|_}{/block}
 
-{block name="content"}
+{block name="admin-content"}
 	<h1>{'Manage content'|_}</h1>
 	
-	{a request="admin/page/create"}{'Create page'|_}{/a}
 	<table>
 		<tr>
 			<th>{'page|Title'|_}</th>

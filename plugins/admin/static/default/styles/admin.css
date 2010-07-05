@@ -17,6 +17,10 @@
 }
 
 .modules li:hover {
+	overflow: visible;
+}
+
+.modules li:hover {
 	background-color: #123456;
 }
 
@@ -39,4 +43,29 @@ a img {
 
 .languages li .actions {
 	float: right;
+}
+
+nav.admin-tabs ol li {
+	padding: 0;
+	border: none;
+	margin: 0;
+}
+
+nav.admin-tabs ol li a {
+	border-bottom: none;
+	padding: 6px 8px 6px 8px;
+	-moz-border-radius: 5px 5px 0px 0px;
+	margin: 0;
+	/*margin-right: 5px;*/
+	background-color: #F9A328;
+}
+
+nav.admin-tabs ol li a:hover {
+	color: black !important;
+	background-color: #FBB859;
+}
+
+nav.admin-tabs {
+	border-bottom: solid 2px #F9A328;
+	padding-bottom: 4px;
 }

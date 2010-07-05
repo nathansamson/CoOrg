@@ -23,9 +23,13 @@ class ToSiteAdminModule extends AdminModule
 	public function __construct()
 	{
 		$this->name = t('Visit Site');
-		$this->url = CoOrg::createURL(array('home'));
 		$this->priority = 5;
 		$this->image = CoOrg::staticFile('images/home.png', 'admin');
+	}
+	
+	public function url($user)
+	{
+		return CoOrg::createURL('');
 	}
 	
 	public function isAllowed()
@@ -33,15 +37,25 @@ class ToSiteAdminModule extends AdminModule
 		return true;
 	}
 }
+Admin::registerModule('ToSiteAdminModule');
 
 class i18nAdminModule extends AdminModule
 {
 	public function __construct()
 	{
 		$this->name = t('Languages');
-		$this->url = CoOrg::createURL(array('admin/i18n'));
 		$this->priority = 2;
 		$this->image = CoOrg::staticFile('images/locale.png', 'admin');
+	}
+}
+
+class i18nAdminTab
+{
+	public function __construct()
+	{
+		$this->url = CoOrg::createURL('admin/i18n');
+		$this->name = t('Manage language');
+		$this->priority = 1;
 	}
 	
 	public function isAllowed($user)
@@ -50,14 +64,26 @@ class i18nAdminModule extends AdminModule
 	}
 }
 
+Admin::registerModule('i18nAdminModule');
+Admin::registerTab('i18nAdminTab', 'i18nAdminModule');
+
 class LayoutAdminModule extends AdminModule
 {
 	public function __construct()
 	{
 		$this->name = t('Layout');
-		$this->url = CoOrg::createURL(array('admin/layout'));
 		$this->priority = 2;
 		$this->image = CoOrg::staticFile('images/layout.png', 'admin');
+	}
+}
+
+class LayoutAdminTab
+{
+	public function __construct()
+	{
+		$this->url = CoOrg::createURL('admin/layout');
+		$this->name = t('Manage widgets');
+		$this->priority = 1;
 	}
 	
 	public function isAllowed($user)
@@ -66,25 +92,35 @@ class LayoutAdminModule extends AdminModule
 	}
 }
 
+Admin::registerModule('LayoutAdminModule');
+Admin::registerTab('LayoutAdminTab', 'LayoutAdminModule');
+
 class SiteAdminModule extends AdminModule
 {
 	public function __construct()
 	{
-		$this->name = t('General configuration');
-		$this->url = CoOrg::createURL(array('admin/system'));
+		$this->name = t('Site Configuration');
 		$this->priority = 1;
 		$this->image = CoOrg::staticFile('images/system.png', 'admin');
+	}
+}
+
+class GeneralConfigurationAdminTab
+{
+	public function __construct()
+	{
+		$this->url = CoOrg::createURL('admin/system');
+		$this->priority = 1;
+		$this->name = t('General Configuration');
 	}
 	
 	public function isAllowed($user)
 	{
-		return Acl::isAllowed($user->username, 'admin ');
+		return Acl::isAllowed($user->username, 'admin');
 	}
 }
 
-Admin::registerModule('ToSiteAdminModule');
-Admin::registerModule('i18nAdminModule');
-Admin::registerModule('LayoutAdminModule');
 Admin::registerModule('SiteAdminModule');
+Admin::registerTab('GeneralConfigurationAdminTab', 'SiteAdminModule');
 
 ?>

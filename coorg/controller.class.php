@@ -226,7 +226,10 @@ class Controller {
 		$file = $tpl .'.'. $this->_renderType . '.tpl';
 		if ($baseFile != null)
 		{
-			$baseFile = $baseFile.'.'.$this->_renderType.'.tpl';
+			if (!preg_match('/.'.$this->_renderType.'.tpl$/', $baseFile))
+			{
+				$baseFile = $baseFile.'.'.$this->_renderType.'.tpl';
+			}
 			$this->smarty()->display('extends:'.$baseFile.'|'.$file);
 		}
 		else
@@ -258,6 +261,35 @@ class Controller {
 		$smarty = $this->prepareASmarty();
 		$this->addTemplateDirs($smarty);
 		return new Mail($smarty);
+	}
+	
+	public static function getTemplatePath($tpl, $module)
+	{
+		if (in_array($module, CoOrg::config()->get('enabled_plugins')))
+		{
+			$basepath = 'plugins/'.$module.'/views/';
+		}
+		else
+		{
+			$basepath = 'app/'.$module.'/views/';
+		}
+		$theme = CoOrg::getTheme();
+		if ($theme != 'default')
+		{	
+			if (file_exists($basepath.$theme.'/'.$tpl))
+			{
+				$path = $basepath.$theme.'/';
+			}
+			else
+			{
+				$path = $basepath.'default/';
+			}
+		}
+		else
+		{
+			$path = $basepath.'default/';
+		}
+		return $path.$tpl;
 	}
 	
 	private function smarty()

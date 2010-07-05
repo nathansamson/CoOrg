@@ -21,8 +21,11 @@
 /**
  * @Acl allow admin
 */
-class AdminSystemController extends Controller
+class AdminSystemController extends AdminBaseController
 {
+	protected $_adminModule = 'SiteAdminModule';
+	protected $_adminTab = 'GeneralConfigurationAdminTab';
+
 	public function index()
 	{
 		$this->config = new SiteConfig;

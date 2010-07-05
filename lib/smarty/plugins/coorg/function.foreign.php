@@ -7,30 +7,7 @@ function smarty_function_foreign($args, $smarty)
 	unset($args['module']);
 	unset($args['file']);
 	
-	if (in_array($module, CoOrg::config()->get('enabled_plugins')))
-	{
-		$basepath = 'plugins/'.$module.'/views/';
-	}
-	else
-	{
-		$basepath = 'app/'.$module.'/views/';
-	}
-	$theme = CoOrg::getTheme();
-	if ($theme != 'default')
-	{	
-		if (file_exists($basepath.$theme.'/'.$file))
-		{
-			$path = $basepath.$theme.'/';
-		}
-		else
-		{
-			$path = $basepath.'default/';
-		}
-	}
-	else
-	{
-		$path = $basepath.'default/';
-	}
+	$path = Controller::getTemplatePath($file, $module);
 	
 	$data = $smarty->createData($smarty);
 	foreach ($args as $name=>$val)
@@ -38,7 +15,7 @@ function smarty_function_foreign($args, $smarty)
 		$data->assign($name, $val);
 	}
 	
-	$tpl = $smarty->createTemplate($path.$file, $data);
+	$tpl = $smarty->createTemplate($path, $data);
 	return $tpl->fetch();
 }
 

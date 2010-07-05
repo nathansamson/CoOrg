@@ -9,7 +9,8 @@
 	<ol class="modules">
 	{foreach $modules as $m}
 		<li>
-			<a href="{$m->url}">
+			{assign var=url value={$m->url(UserSession::get()->user())}}
+			<a href="{$url}">
 				<h2>{$m->name}</h2>
 				<img src="{$m->image}" alt="" />
 			</a>

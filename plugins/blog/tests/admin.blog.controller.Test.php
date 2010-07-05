@@ -56,6 +56,62 @@ class AdminBlogControllerTest extends CoOrgControllerTest
 		$this->assertNull(CoOrgSmarty::$vars['blogpager']->next());
 	}
 	
+	public function testConfig()
+	{
+		$this->login('uberadmin');
+		$this->request('admin/blog/config');
+		
+		$this->assertRendered('admin/config');
+		$this->assertVarSet('blogConfig');
+		$this->assertVarSet('openForOptions');
+	}
+	
+	public function testConfigNotAllowed()
+	{
+		$this->login('nathan');
+		$this->request('admin/blog/config');
+		
+		$this->assertRedirected('');
+		$this->assertFlashError('You don\'t have the rights to view this page');
+	}
+	
+	public function testSaveConfig()
+	{
+		$this->login('uberadmin');
+		$this->request('admin/blog/configsave', array(
+		                    'enableComments' => 'on',
+		                    'enableCommentsFor' => 14
+		));
+		
+		$this->assertFlashNotice('Saved blog configuration');
+		$this->assertRedirected('admin/blog/config');
+		$this->assertTrue(CoOrg::config()->get('blog/enableComments'));
+		$this->assertEquals(14, CoOrg::config()->get('blog/enableCommentsFor'));
+	}
+	
+	public function testSaveConfigFailure()
+	{
+		$this->login('uberadmin');
+		$this->request('admin/blog/configsave', array(
+		                    'enableComments' => 'on',
+		                    'enableCommentsFor' => 'some-invalid-string'
+		));
+		
+		$this->assertFlashError('Blog configuration not saved');
+		$this->assertRendered('admin/config');
+		$this->assertVarSet('blogConfig');
+		$this->assertVarSet('openForOptions');
+	}
+	
+	public function testSaveConfigNotAllowed()
+	{
+		$this->login('nathan');
+		$this->request('admin/blog/configsave', array('enableComments' => 'on'));
+		
+		$this->assertRedirected('');
+		$this->assertFlashError('You don\'t have the rights to view this page');
+	}
+	
 	private function postBlogs()
 	{
 		for ($i = 0; $i < 95; $i++)

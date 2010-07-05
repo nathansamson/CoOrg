@@ -21,12 +21,15 @@
 /**
  * @Acl allow admin-menu-edit
 */
-class AdminMenuController extends Controller
+class AdminMenuController extends AdminBaseController
 {
 	private $_menu;
+	
+	protected $_adminModule = 'MenuAdminModule';
 
 	public function index()
 	{
+		$this->_adminTab = 'MenuAdminTab';
 		$this->menus = Menu::all();
 		$this->newMenu = new Menu;
 		$this->render('index');

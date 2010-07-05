@@ -21,10 +21,55 @@
 class Admin
 {
 	static private $_modules = array();
-
-	public static function registerModule($module)
+	static private $_orphanTabs = array();
+	
+	public static function tabs($moduleName, $current)
 	{
-		self::$_modules[] = $module;
+		$module = self::$_modules[$moduleName];
+		
+		$session = UserSession::get();
+		if ($session)
+		{
+			$user = $session->user();
+		}
+		else
+		{
+			return null;
+		}
+		
+		return $module->tabs($user, $current);
+	}
+
+	public static function registerModule($moduleName)
+	{
+		$module = new $moduleName;
+		self::$_modules[$moduleName] = $module;
+		if (array_key_exists($moduleName, self::$_orphanTabs))
+		{
+			$tabs = self::$_orphanTabs[$moduleName];
+			foreach ($tabs as $tab)
+			{
+				$module->addTab($tab);
+			}
+			unset(self::$_orphanTabs[$moduleName]);
+		}
+	}
+
+	public static function registerTab($tabName, $moduleName)
+	{
+		if (array_key_exists($moduleName, self::$_modules))
+		{
+			self::$_modules[$moduleName]->addTab($tabName);
+		}
+		else if (array_key_exists($moduleName, self::$_orphanTabs))
+		{
+			self::$_orphanTabs[$moduleName][] = $tabName;
+		}
+		else
+		{
+			self::$_orphanTabs[$moduleName] = array($tabName);
+		}
+		
 	}
 
 	public static function modules()
@@ -47,10 +92,9 @@ class Admin
 		$modules = array();
 		foreach (self::$_modules as $m)
 		{
-			$mi = new $m;
-			if ($mi->isAllowed($user))
+			if ($m->isAllowed($user))
 			{
-				$modules[] = $mi;
+				$modules[] = $m;
 			}
 		}
 		usort($modules, array('Admin', 'cmpModule'));

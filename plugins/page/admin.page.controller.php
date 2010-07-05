@@ -21,12 +21,15 @@
 /**
  * @Acl allow admin-page-edit
 */
-class AdminPageController extends Controller
+class AdminPageController extends AdminBaseController
 {
 	private $_page;	
 	
+	protected $_adminModule = 'PageAdminModule';
+	
 	public function index($page = 1)
 	{
+		$this->_adminTab = 'ManagePagesAdminTab';
 		$this->pager = Page::pages(CoOrg::getLanguage());
 		$this->pages = $this->pager->execute($page, 20);
 		$this->render('admin/index');
@@ -36,7 +39,8 @@ class AdminPageController extends Controller
 	 * @before find $originalID $originalLanguage
 	*/
 	public function create($originalID = null, $originalLanguage = null, $trLanguage = null)
-	{	
+	{
+		$this->_adminTab = 'CreatePageAdminTab';
 		$page = new Page;
 		$page->language = $trLanguage ? $trLanguage : CoOrg::getLanguage();
 		
@@ -53,6 +57,7 @@ class AdminPageController extends Controller
 	
 	public function save($title, $language, $content, $originalID = null, $originalLanguage = null, $preview = null)
 	{
+		$this->_adminTab = 'CreatePageAdminTab';
 		$page = new Page;
 		$page->title = $title;
 		$page->language = $language;

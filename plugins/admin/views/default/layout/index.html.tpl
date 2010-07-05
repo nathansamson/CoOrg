@@ -4,7 +4,7 @@
 	<link rel="stylesheet" href="{'styles/layout.css'|static:admin}" />
 {/block}
 
-{block name=content}
+{block name=admin-content}
 	<div class="page-actions">
 		{a request="#widget-list" coorgStock="list-add"}{'Add a widget'}{/a}
 	</div>

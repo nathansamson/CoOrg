@@ -4,10 +4,8 @@
 	<link rel="stylesheet" href="{'styles/menu.admin.css'|static:menu}" />
 {/block}
 
-{block name='content'}
+{block name='admin-content'}
 	<h1>{'Edit %m'|_:$menu->name|escape}</h1>
-	
-	{a request="admin/menu"}{'Go back'|_}{/a}
 	
 	<h2>{'Entries'|_}</h2>
 	<ol class="adminmenu">

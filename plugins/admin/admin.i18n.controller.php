@@ -18,9 +18,12 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class AdminI18nController extends Controller
+class AdminI18nController extends AdminBaseController
 {
 	private $_l;
+	
+	protected $_adminModule = 'i18nAdminModule';
+	protected $_adminTab = 'i18nAdminTab';
 
 	/**
 	 * @Acl allow admin-language

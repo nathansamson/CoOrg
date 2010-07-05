@@ -1,6 +1,6 @@
 {block name=title}{'Site configuration'|_}{/block}
 
-{block name=content}
+{block name=admin-content}
 	<h1>{'Site configuration'|_}</h1>
 	
 	{form request="admin/system/update" instance=$config}

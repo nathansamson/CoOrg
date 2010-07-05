@@ -4,7 +4,7 @@
 	<link rel="stylesheet" href="{'styles/admin.css'|static:admin}" />
 {/block}
 
-{block name="content"}
+{block name="admin-content"}
 	<h1>{'Languages'|_}</h1>
 	<ul class="languages">
 	{foreach $languages as $language}

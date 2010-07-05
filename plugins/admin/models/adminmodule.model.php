@@ -20,6 +20,74 @@
 
 class AdminModule
 {
+	private $_tabs = array();
+	
+	public function url($user)
+	{
+		$tabs = $this->tabs($user, null);
+		return $tabs[0]->url;
+	}
+
+	public function isAllowed($user)
+	{
+		foreach ($this->_tabs as $tabClass)
+		{
+			$tab = new $tabClass;
+			if ($tab->isAllowed($user))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function tabs($user, $current)
+	{
+		$tabs = array();
+		foreach ($this->_tabs as $tabName)
+		{
+			$tab = new $tabName;
+			$tab->current = $current == $tabName;
+			if ($tab->isAllowed($user))
+			{
+				$tabs[] = $tab;
+			}
+		}
+		usort($tabs, array('AdminModule', 'cmpTab'));
+		return $tabs;
+	}
+
+	public function addTab($tabName)
+	{
+		$this->_tabs[] = $tabName;
+	}
+	
+	public static function cmpTab($m1, $m2)
+	{
+		if ($m1->priority < $m2->priority)
+		{
+			return -1;
+		}
+		elseif ($m1->priority == $m2->priority)
+		{
+			if ($m1->name < $m2->name)
+			{
+				return -1;
+			}
+			elseif ($m1->name == $m2->name)
+			{
+				return 0;
+			}
+			else
+			{
+				return 1;
+			}
+		}
+		else
+		{
+			return 1;
+		}
+	}
 }
 
 ?>

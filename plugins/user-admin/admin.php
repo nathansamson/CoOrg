@@ -18,14 +18,23 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class UserAdminModule
+class UserAdminModule extends AdminModule
 {
 	public function __construct()
 	{
 		$this->name = t('Users');
-		$this->url = CoOrg::createURL(array('admin', 'user'));
 		$this->image = CoOrg::staticFile('images/user.png', 'user-admin');
 		$this->priority = 2;
+	}
+}
+
+class UserAdminTab
+{
+	public function __construct()
+	{
+		$this->name = t('Manage users');
+		$this->url = CoOrg::createURL('admin/user');
+		$this->priority = 1;
 	}
 	
 	public function isAllowed($user)
@@ -35,4 +44,7 @@ class UserAdminModule
 }
 
 Admin::registerModule('UserAdminModule');
+Admin::registerTab('UserAdminTab', 'UserAdminModule');
+
+?>
 

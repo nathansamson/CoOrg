@@ -236,6 +236,10 @@ class CoOrg {
 	
 	public static function createURL($params, $language = null, $anchor = null)
 	{
+		if (is_string($params))
+		{
+			$params = array($params);
+		}
 		$urlPrefix = '';
 		if (self::$_config->has('urlPrefix'))
 		{

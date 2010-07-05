@@ -1,6 +1,6 @@
 {block name="title"}{'Edit %p'|_:$page->title|escape}{/block}
 
-{block name="content"}
+{block name="admin-content"}
 	{if $page->untranslated()}
 	<div class="page-actions">
 		{form request="admin/page/create" method="get"}

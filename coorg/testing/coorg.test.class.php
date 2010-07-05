@@ -72,16 +72,24 @@ class CoOrgControllerTest extends CoOrgModelTest
 		$this->assertEquals($ct, Header::$contentType);
 	}
 	
-	protected function assertRendered($tpl, $type = 'html',  $baseFile = 'base')
+	protected function assertRendered($tpl, $type = null,  $baseFile = 'base')
 	{
 		$otpl = $tpl;
 		$tpl = str_replace('/', '\/', $tpl);
-		if ($baseFile)
+		if ($type != null)
 		{
-			$match = preg_match('/^extends:'.$baseFile.'.'.$type.'.tpl\|'.$tpl.'.'.$type.'.tpl$/', CoOrgSmarty::$renderedTemplate) == 1;
+			if ($baseFile)
+			{
+				$match = preg_match('/^extends:'.$baseFile.'.'.$type.'.tpl\|'.$tpl.'.'.$type.'.tpl$/', CoOrgSmarty::$renderedTemplate) == 1;
+			}
+			else
+			{
+				$match = preg_match('/'.$tpl.'.'.$type.'.tpl$/', CoOrgSmarty::$renderedTemplate) == 1;
+			}
 		}
 		else
 		{
+			$type = 'html';
 			$match = preg_match('/'.$tpl.'.'.$type.'.tpl$/', CoOrgSmarty::$renderedTemplate) == 1;
 		}
 		$this->assertTrue($match, "'$otpl' rendered");

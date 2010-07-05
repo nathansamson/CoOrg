@@ -18,16 +18,57 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/**
- * @Acl allow blog-writer
-*/
-class AdminBlogController extends Controller
+class AdminBlogController extends AdminBaseController
 {
+	protected $_adminModule = 'BlogAdminModule';
+
+	/**
+	 * @Acl allow blog-writer
+	*/
 	public function index($page = 1)
 	{
+		$this->_adminTab = 'BlogManageAdminTab';
 		$blogPager = Blog::blogs(CoOrg::getLanguage());
 		$this->blogs = $blogPager->execute($page, 15);
 		$this->blogpager = $blogPager;
 		$this->render('admin/index');
+	}
+	
+	/**
+	 * @Acl allow blog-admin
+	*/
+	public function config()
+	{
+		$this->_adminTab = 'BlogConfigureAdminTab';
+		
+		$this->openForOptions = BlogConfig::openForOptions();
+		$this->blogConfig = BlogConfig::get();
+		$this->render('admin/config');
+	}
+	
+	/**
+	 * @Acl allow blog-admin
+	*/
+	public function configsave($enableComments, $enableCommentsFor)
+	{
+		$config = BlogConfig::get();
+		$config->enableComments = $enableComments;
+		$config->enableCommentsFor = $enableCommentsFor;
+		try
+		{
+			$config->save();
+		
+			$this->notice(t('Saved blog configuration'));
+			$this->redirect('admin/blog/config');
+		}
+		catch (ValidationException $e)
+		{
+			$this->_adminTab = 'BlogConfigureAdminTab';
+		
+			$this->openForOptions = BlogConfig::openForOptions();
+			$this->blogConfig = $config;
+			$this->error('Blog configuration not saved');
+			$this->render('admin/config');
+		}
 	}
 }

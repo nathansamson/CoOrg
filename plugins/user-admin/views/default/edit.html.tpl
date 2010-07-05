@@ -1,6 +1,6 @@
 {block name="title"}{'Edit %u'|_:$user->username}{/block}
 
-{block name="content"}
+{block name="admin-content"}
 	{if $from}
 		<div class="page-actions">
 			{a request=$from}{'⬅ Go back to index'|_}{/a}

@@ -4,7 +4,7 @@
 	<link rel="stylesheet" href="{'styles/menu.admin.css'|static:menu}" />
 {/block}
 
-{block name='content'}
+{block name='admin-content'}
 <h1>{'Menu'|_}</h1>
 
 <ul class="menulist">

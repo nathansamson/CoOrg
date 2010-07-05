@@ -18,14 +18,23 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class MenuAdminModule
+class MenuAdminModule extends AdminModule
 {
 	public function __construct()
 	{
 		$this->name = t('Menu');
-		$this->url = CoOrg::createURL(array('admin', 'menu'));
 		$this->image = CoOrg::staticFile('images/menu.png', 'menu');
 		$this->priority = 2;
+	}
+}
+
+class MenuAdminTab
+{
+	public function __construct()
+	{
+		$this->name = t('Manage menus');
+		$this->url = CoOrg::createURL(array('admin', 'menu'));
+		$this->priority = 1;
 	}
 	
 	public function isAllowed($user)
@@ -35,5 +44,6 @@ class MenuAdminModule
 }
 
 Admin::registerModule('MenuAdminModule');
+Admin::registerTab('MenuAdminTab', 'MenuAdminModule');
 
 ?>

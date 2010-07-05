@@ -1,6 +1,6 @@
 {block name="title"}{'Create new page'|_}{/block}
 
-{block name="content"}
+{block name="admin-content"}
 	<h1>{'New page'|_}</h1>
 	
 	{if $originalPage}

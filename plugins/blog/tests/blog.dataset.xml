@@ -35,6 +35,13 @@
 	/>
 	
 	<User
+	  username="uberadmin"
+	  email="uberadmin"
+	  passwordHashKey="google"
+	  passwordHash="52bfade4defa7d5665509ba0cf9c6172fb256d9ef597e6cda654144d0340af15a1b7dcbbc02cc9be70f1e2766ff88d89cc79bfc3b3201879f1cfc63c15796221"
+	/>
+	
+	<User
 	  username="nele"
 	  email="nele..."
 	  passwordHashKey="google"
@@ -53,6 +60,17 @@
 	<Acl
 		groupID="__nathan"
 		keyID="blog-writer"
+		allowed="1"
+	/>
+	
+	<UserGroupMember
+		groupID="__uberadmin"
+		userID="uberadmin"
+	/>
+
+	<Acl
+		groupID="__uberadmin"
+		keyID="blog-admin"
 		allowed="1"
 	/>
 

@@ -21,10 +21,13 @@
 /**
  * @Acl allow admin-user
 */
-class AdminUserController extends Controller
+class AdminUserController extends AdminBaseController
 {
+	protected $_adminModule = 'UserAdminModule';
+
 	public function index($page = 1)
 	{
+		$this->_adminTab = 'UserAdminTab';
 		$users = User::users();
 		$this->users = $users->execute($page, 20);
 		$this->userPager = $users;

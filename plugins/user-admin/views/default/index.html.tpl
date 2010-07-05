@@ -1,6 +1,6 @@
 {block name="title"}{'User admin'|_}{/block}
 
-{block name="content"}
+{block name="admin-content"}
 	<h1>{'User admin'|_}</h1>
 	<table>
 		<tr>
