@@ -37,10 +37,10 @@ class Config
 		
 		foreach ($this->_config as $key => $value)
 		{
-			$output .= '$_config[\'' . $key . '\'] = ' . $this->normalize($value) . ';';
+			$output .= '$_config[\'' . $key . '\'] = ' . $this->normalize($value) . ";\n";
 		}
 		
-		$output .= "?>\n";
+		$output .= "?>";
 		
 		if (is_writable($this->_file))
 		{

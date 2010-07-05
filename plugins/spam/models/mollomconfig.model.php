@@ -57,11 +57,21 @@ class MollomConfig extends Model
 		catch (ServerListException $e)
 		{
 			CoOrg::config()->set('mollom/serverlist', Mollom::getServerList());
-			if (!Mollom::verifyKey())
+			try
 			{
-				$this->publicKey_error = t('Invalid keys');
-				CoOrg::config()->save(); // Save the new serverlist
-				throw new ValidationException($this);
+				if (!Mollom::verifyKey())
+				{
+					$this->publicKey_error = t('Invalid keys');
+					CoOrg::config()->save(); // Save the new serverlist
+					throw new ValidationException($this);
+				}
+			}
+			catch (InternalException $e)
+			{
+				
+			}
+			catch (ServerListException $e)
+			{
 			}
 		}
 		CoOrg::config()->set('mollom/public', $this->publicKey);

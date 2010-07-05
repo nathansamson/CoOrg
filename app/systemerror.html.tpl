@@ -15,4 +15,9 @@
 <p>
 	An exception was thrown with message <q>{$exception->getMessage()}</q>
 </p>
+
+<h4>Stack trace</h4>
+<code>
+	{$exception->getTraceAsString()|nl2br}
+</code>
 {/block}

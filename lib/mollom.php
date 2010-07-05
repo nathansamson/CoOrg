@@ -807,7 +807,14 @@ class Mollom
 	public static function verifyKey()
 	{
 		// do the call
-		$responseString = self::doCall('verifyKey');
+		try
+		{
+			$responseString = self::doCall('verifyKey');
+		}
+		catch (InternalException $e)
+		{
+			return false;
+		}
 
 		// validate
 		if(!isset($responseString->params->param->value->boolean)) throw new Exception('Invalid response in verifyKey.');
