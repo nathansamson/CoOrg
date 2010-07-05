@@ -18,6 +18,7 @@ if (array_key_exists('COORG_CONFIGFILE', $_SERVER))
 }
 copy($configFile, 'config/temp.config.tests.php');
 $configFile = 'config/temp.config.tests.php';
+define('COORG_TEST_CONFIG_CLEAN', $configFile.'.clean');
 define('COORG_TEST_CONFIG', $configFile);
 
 $config = new Config($configFile);
@@ -27,6 +28,7 @@ $config->set('mollom/serverlist', array('valid-server-list'));
 $config->set('enabled_plugins', array('spam', 'admin', 'menu', 'user', 'comments', 'user-admin', 'blog', 'page'));
 $config->set('site/title', 'The Site');
 $config->save();
+copy($configFile, 'config/temp.config.tests.php.clean');
 DB::open($config->get('dbdsn'), $config->get('dbuser'), $config->get('dbpass'));
 
 CoOrg::init($config, 'coorg/testing/plugins-app', 'plugins'); // Load the models

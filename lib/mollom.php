@@ -1,6 +1,7 @@
 <?php
-class OutdatedServerListException extends Exception {}
-class NoServerListException extends Exception {}
+class ServerListException extends Exception {}
+class OutdatedServerListException extends ServerListException {}
+class NoServerListException extends ServerListException {}
 class KeyNotSetException extends Exception {}
 class InternalException extends Exception {}
 

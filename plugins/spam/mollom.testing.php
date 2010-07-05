@@ -18,8 +18,9 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class OutdatedServerListException extends Exception {}
-class NoServerListException extends Exception {}
+class ServerListException extends Exception {}
+class OutdatedServerListException extends ServerListException {}
+class NoServerListException extends ServerListException {}
 class KeyNotSetException extends Exception {}
 class InternalException extends Exception {}
 
@@ -153,6 +154,19 @@ class Mollom
 	{
 		self::$_serverList = array('valid-server-list');
 		return array('retrieved-list');
+	}
+	
+	public static function verifyKey()
+	{
+		if (self::$_serverList == array())
+		{
+			throw new NoServerListException('');
+		}
+		else if (self::$_serverList != array('valid-server-list'))
+		{
+			throw new OutdatedServerListException('');
+		}
+		return self::$_publicKey == 'valid-pub-key';
 	}
 	
 	private static function check()

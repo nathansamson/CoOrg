@@ -46,6 +46,8 @@ class CoOrgControllerTest extends CoOrgModelTest
 		}
 		Session::$site = 'http://www.test.info/';
 		Session::$referrer = 'http://www.test.info/some/part/of/the/site';
+		unlink(COORG_TEST_CONFIG);
+		copy(COORG_TEST_CONFIG_CLEAN, COORG_TEST_CONFIG);
 		$config = new Config(COORG_TEST_CONFIG);
 		$config->set('site/title', 'The Site');
 		$config->set('defaultLanguage', '');
