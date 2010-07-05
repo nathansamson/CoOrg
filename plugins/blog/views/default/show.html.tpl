@@ -87,7 +87,7 @@
 					{/if}
 				</h2>
 			</header>
-			{$comment->comment|format:'none'}
+			{$comment->comment|format:'small'}
 			{else}
 				<header>
 				<h1>{$comment->title}</h1>
