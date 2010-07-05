@@ -76,6 +76,7 @@ class Menu extends DBModel
 	public static function getProviders()
 	{
 		Coorg::loadPluginInfo('menu');
+		usort(self::$_providers, array('Menu', 'cmpProvider'));
 		return self::$_providers;
 	}
 	
@@ -125,6 +126,25 @@ class Menu extends DBModel
 			}
 		}
 		return $urls;
+	}
+	
+	public static function cmpProvider($p1, $p2)
+	{
+		$n1 = call_user_func(array($p1, 'name'));
+		$n2 = call_user_func(array($p2, 'name'));
+	
+		if ($n1 < $n2)
+		{
+			return -1;
+		}
+		else if ($n1 == $n2)
+		{
+			return 0;
+		}
+		else
+		{
+			return 1;
+		}
 	}
 }
 

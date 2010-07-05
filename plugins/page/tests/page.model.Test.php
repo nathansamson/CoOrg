@@ -323,6 +323,27 @@ class PageTest extends CoOrgModelTest
 		$this->assertEquals('toedeloedoe', $languages[0]->pageID);
 	}
 	
+	public function testMenuIntegration()
+	{
+		CoOrg::loadPluginInfo('menu', 'page');
+		
+		$this->assertEquals(array('show', 'create'),
+		                    array_keys(PageMenuEntryProvider::listActions()));
+
+		$this->assertNull(PageMenuEntryProvider::listData('create', 'en'));
+		
+		$pages = PageMenuEntryProvider::listData('show', 'en');
+		$this->assertEquals(3, count($pages));
+		$this->assertEquals('Some Page', $pages['some-page']);
+		$this->assertEquals('AA BB CC', $pages['aabbcc']);
+		$this->assertEquals('Tidelodoo', $pages['tidelodoo']);
+		
+		$pages = PageMenuEntryProvider::listData('show', 'nl');
+		$this->assertEquals(2, count($pages));
+		$this->assertEquals('Tidelodoe', $pages['tidelodoe']);
+		$this->assertEquals('AA BB CC', $pages['aabbcc']);
+	}
+	
 	private static function today()
 	{
 		return mktime(0, 0, 0, date('m'), date('d'), date('Y'));

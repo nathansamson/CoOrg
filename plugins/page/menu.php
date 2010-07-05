@@ -36,7 +36,7 @@ class PageMenuEntryProvider implements IMenuEntryProvider
 		{
 			$pages = Page::pages($language);
 			$menu = array();
-			foreach ($pages as $page)
+			foreach ($pages->execute(0, 0) as $page)
 			{
 				$menu[$page->ID] = $page->title;
 			}

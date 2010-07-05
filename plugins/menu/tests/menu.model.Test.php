@@ -164,9 +164,12 @@ class MenuTest extends CoOrgModelTest
 	{
 		$providers = Menu::getProviders();
 		
-		$this->assertEquals('Mock', $providers[0]::name());
-		$this->assertEquals('Blog', $providers[1]::name());
-		$this->assertEquals('URL', $providers[2]::name());
+		$this->assertEquals(5, count($providers));
+		$this->assertEquals('Blog', $providers[0]::name());
+		$this->assertEquals('Content', $providers[1]::name());
+		$this->assertEquals('Home', $providers[2]::name());
+		$this->assertEquals('Mock', $providers[3]::name());
+		$this->assertEquals('URL', $providers[4]::name());
 	}
 }
 
