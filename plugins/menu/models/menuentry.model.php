@@ -63,12 +63,12 @@ class MenuEntry extends DBModel
 				{
 					$this->data = null;
 				}
-				$this->url = $p[0]::url($this->action, $this->language, $this->data);
+				$this->url = call_user_func(array($p[0], 'url'), $this->action, $this->language, $this->data);
 			}
 			else
 			{
 				$this->action = 'do';
-				$this->url = $p[0]::url($this->data, $this->language);
+				$this->url = call_user_func(array($p[0], 'url'), $this->data, $this->language);
 			}
 		}
 		parent::__set($name, $value);

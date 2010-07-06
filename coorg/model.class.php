@@ -70,7 +70,7 @@ class Model
 			{
 				$property = $this->_properties[$variantInfo['property']]['property'];
 				$variantClass = $variantInfo['class'];
-				$var =  $variantClass::instance($property, $variantInfo['args']);
+				$var = call_user_func(array($variantClass, 'instance'), $property, $variantInfo['args']);
 				$property->attachVariant($var);
 				$this->_variants[$name] = array('propertyName' => $variantInfo['property'] ,
 					                            'variant' => $var);
@@ -78,7 +78,7 @@ class Model
 			foreach (self::$_modelInfo[$aClass]['collections'] as $name => $collectionInfo)
 			{
 				$collClass = $collectionInfo['class'];
-				$this->_collections[$name] = $collClass::instance($collectionInfo, $this);
+				$this->_collections[$name] = call_user_func(array($collClass, 'instance'), $collectionInfo, $this);
 			}
 		}
 	}

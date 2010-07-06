@@ -11,8 +11,8 @@ CoOrg::resreg('/', 'images/icons/audio-captcha.png', '6f7621a02161e347e66d99d8ac
 CoOrg::resreg('/', 'images/icons/image-captcha.png', 'd50522754f0bc7cc44d2f5231a467fe8');
 CoOrg::resreg('/', 'images/icons/spam.png', '74d395779b9e0c2672852531f1d800a9');
 CoOrg::resreg('/', 'images/icons/notspam.png', '884d265d50ed0116eb41fccc50629243');
-CoOrg::resreg('/', 'ckeditor/ckeditor.js', 'd43da2e9f4cc40b2ad9b384fe5e1f35b');
-CoOrg::resreg('/', 'ckeditor/adapters/jquery.js', 'b53d325e0e9b89ce7f89eb6041510336');
+CoOrg::resreg('/', 'ckeditor/ckeditor.js', 'fee9a6179471bf88e0ea4b6bc03042d7');
+CoOrg::resreg('/', 'ckeditor/adapters/jquery.js', '7adb098ba9310fca2f864b7dd6d798de');
 CoOrg::resreg('/', 'ckeditor/coorgConfig.js', 'a867222d1fc0ad87b87287fc574c8a0c');
 
 // Keep this one for unittests.

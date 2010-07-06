@@ -37,7 +37,7 @@ class GenericModelVariant implements IPropertyVariant
 		if ($this->_i === false)
 		{
 			$class = $this->_c;
-			$this->_i = $class::get($this->_p->get());
+			$this->_i = call_user_func(array($class, 'get'), $this->_p->get());
 		}
 		return $this->_i;
 	}
