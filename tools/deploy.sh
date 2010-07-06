@@ -1,5 +1,9 @@
+if [ -f 'deployment.config' ]; then
+	. deployment.config
+fi
+
 updates=1
-php tools/generateresource.php && updates=0
+php tools/generateresource.php $COORGNG_DEPLOY_THEMES && updates=0
 
 if [ $updates -eq 1 ]; then
 	echo "Update versions"
@@ -42,14 +46,22 @@ function prepare {
 	cd $cwd
 }
 
-if [ ! -d "__tmpstaticoutput" ]; then
-	mkdir __tmpstaticoutput
+if [ ! -d ".tmpstaticoutput" ]; then
+	mkdir .tmpstaticoutput
 fi
 
-prepare './' "__tmpstaticoutput/_root/"
+prepare './' ".tmpstaticoutput/_root/"
 
 for i in `ls plugins`; do
 	if [ -d "plugins/$i/static" ]; then	
-		prepare "plugins/$i" "__tmpstaticoutput/$i/"
+		prepare "plugins/$i" ".tmpstaticoutput/$i/"
 	fi
 done
+
+if [ "$COORGNG_DEPLOY_SERVER" != "" ]; then
+	echo "Mirroring"
+	cd .tmpstaticoutput
+	lftp -c "open $COORGNG_DEPLOY_USER@$COORGNG_DEPLOY_SERVER; cd $COORGNG_DEPLOY_PATH; mirror -R . ."
+else
+	echo "No deployment destination"
+fi
