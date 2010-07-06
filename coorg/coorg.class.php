@@ -846,12 +846,22 @@ class CoOrg {
 	
 	private static function clearMessAfterMagicQuotes()
 	{
-		$cleanups = array($_POST, $_GET, $_COOKIES);
+		$cleanups = array(&$_POST, &$_GET, &$_COOKIE);
 		foreach ($cleanups as &$array)
 		{
 			foreach ($array as &$val)
 			{
-				$val = stripslashes($val);
+				if (is_array($val))
+				{
+					foreach ($val as &$r)
+					{
+						$r = stripslashes($r);
+					}
+				}
+				else
+				{
+					$val = stripslashes($val);
+				}
 			}
 		}
 	}
