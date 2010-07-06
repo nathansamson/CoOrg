@@ -1,6 +1,6 @@
 <?php
 
-CoOrg::resreg('/', 'styles/main.css', '943d7f4c5522ee9eb1af5efafee1f76f');
+CoOrg::resreg('/', 'styles/main.css', 'c0d8dc88bf48c15ad4611473bc7cd4b1');
 CoOrg::resreg('/', 'images/icons/edit.png', '4f42aa2ffc34687a2fcca84a0d3b770c');
 CoOrg::resreg('/', 'images/icons/edit-delete.png', '4ffa89fcb62f4e072c0e390af68f55c4');
 CoOrg::resreg('/', 'images/icons/go-down.png', '01fa0d3883e00b914cc36bc8bf0b2b98');
