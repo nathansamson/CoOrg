@@ -321,8 +321,8 @@ class CoOrg {
 			else
 			{
 				return array(
-					self::createStaticPath($file, $version, $theme, $external),
-					self::createStaticPath($file, $baseVersion, 'default', $external)
+					self::createStaticPath($file, $baseVersion, 'default', $external),
+					self::createStaticPath($file, $version, $theme, $external)
 				);
 			}
 		}
@@ -373,8 +373,8 @@ class CoOrg {
 			}
 			else
 			{
-				return array(self::createStaticPath($file, $version, $theme, $external, $app, $isPlugin),
-				             self::createStaticPath($file, $defaultVersion, 'default', $external, $app, $isPlugin));
+				return array(self::createStaticPath($file, $defaultVersion, 'default', $external, $app, $isPlugin),
+				             self::createStaticPath($file, $version, $theme, $external, $app, $isPlugin));
 			}
 		}
 	}

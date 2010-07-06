@@ -57,21 +57,23 @@ nav {
 
 body > header nav
 {
-	padding: 5px;
 	background-color: #FCBA5C;
 	background-image: -moz-linear-gradient(#FCBA5C, #F9A328);
 	margin-top: 10px;
-	height: 1.2em;
+	text-align: left;
 }
 
 header nav .navigation-left
 {
-	float: left;
+	display: inline-block;
+	width: 60%;
 }
 
 header nav .navigation-right
 {
-	float: right;
+	text-align: right;
+	display: inline-block;
+	width: 39%;
 }
 
 header nav a

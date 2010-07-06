@@ -20,7 +20,16 @@
 
 function smarty_modifier_static($param, $plugin = null)
 {
-	return CoOrg::staticFile($param, $plugin);
+	$static = CoOrg::staticFile($param, $plugin);
+	if (is_array($static))
+	{
+		CoOrgSmarty::$_static_array = $static;
+		return $static[0];
+	}
+	else
+	{
+		return $static;
+	}
 }
 
 ?>

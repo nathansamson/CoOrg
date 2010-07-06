@@ -26,6 +26,8 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 	private $_errors = array();
 	private $_notices = array();
 	
+	public static $_static_array = null;
+	
 	// public because handler must access it
 	public $_stylesheets = array();
 
@@ -91,12 +93,13 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 	
 	public function stylesheet($style)
 	{
-		if (is_array($style))
+		if (self::$_static_array)
 		{
-			foreach ($style as $s)
+			foreach (self::$_static_array as $s)
 			{
 				$this->_stylesheets[] = $s;
 			}
+			self::$_static_array = null;
 		}
 		else
 		{
