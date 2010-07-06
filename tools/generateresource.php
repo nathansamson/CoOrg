@@ -25,8 +25,12 @@ function update($p, $dir, $theme, &$dirUpdates)
 	{
 		include_once 'static/'.$theme.'/resources.coorg.php';
 	}
+	else
+	{
+		return;
+	}
 	
-	$updated = false;
+	$updated = array();
 	foreach ($res[$p] as $file => $version)
 	{
 		$nfile = $dir.'/static/'.$theme.'/'.$file;
@@ -35,8 +39,7 @@ function update($p, $dir, $theme, &$dirUpdates)
 			$newversion = md5(file_get_contents($nfile));
 			if ($newversion != $version)
 			{
-				$updated = true;
-				$res[$p][$file] = $newversion;
+				$updated[$file] = $newversion;
 			}
 		}
 	}
@@ -44,20 +47,36 @@ function update($p, $dir, $theme, &$dirUpdates)
 	if ($updated)
 	{
 		$dirUpdates = true;
-		print_r($res[$p]);
+		print_r($updated);
 	}
 }
 
 $updates = false;
-update('/', '.', 'default', $updates);
-
-foreach (scandir('plugins') as $p)
+$themes = array('default');
+if (count($_SERVER['argv']) > 1)
 {
-	if ($p[0] == '.') continue;
-	if (!is_dir('plugins/'.$p)) continue;
-	echo 'Scanning ' . $p."\n";
+	$args = $_SERVER['argv'];
+	array_shift($args); // Path
+	foreach ($args as $theme)
+	{
+		$themes[] = $theme;
+	}
+}
+foreach ($themes as $theme)
+{
+	echo $theme . "\n------\n";
+	update('/', '.', $theme, $updates);
+
+
+	foreach (scandir('plugins') as $p)
+	{
+		if ($p[0] == '.') continue;
+		if (!is_dir('plugins/'.$p)) continue;
+		echo 'Scanning ' . $p."\n";
 	
-	update($p, 'plugins/'.$p, 'default', $updates);
+		update($p, 'plugins/'.$p, $theme, $updates);
+	}
+	echo "\n\n";
 }
 
 if ($updates)
