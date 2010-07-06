@@ -1,0 +1,5 @@
+.htaccess
+.tmpstaticoutput/
+deployment.config
+config/config.php
+
