@@ -24,6 +24,7 @@ require_once 'coorg/controller.class.php';
 require_once 'coorg/asidecontroller.class.php';
 require_once 'coorg/config.class.php';
 require_once 'coorg/db.class.php';
+require_once 'coorg/files.class.php';
 require_once 'coorg/model.class.php';
 require_once 'coorg/i18n.class.php';
 require_once 'coorg/pager.class.php';
