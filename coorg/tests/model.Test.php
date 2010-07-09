@@ -400,6 +400,31 @@ class ModelTest extends CoOrgModelTest
 		$rbase = MockModel::getByName('base-mock');
 		$this->assertNull($rbase);
 	}
+	
+	public function testBatchSave()
+	{
+		$nathan = new MockModel('nathan', null, 'email@email.com');
+		$nathan->shadowProperty = 'Some Value';
+		$nathan->someRandomValue = 2;
+		$nele = new MockModel('nele', null, 'email2@email.com');
+		$nele->shadowProperty = 'Some Value';
+		
+		try
+		{
+			DBModel::batchSave(array($nathan, $nele));
+			$this->fail('Exception expected');
+		}
+		catch (ValidationException $e)
+		{
+			$this->assertEquals('Integer is required', $nele->someRandomValue_error);
+			$this->assertNull(MockModel::getByName('nathan'));
+		}
+		$nele->someRandomValue = 3;
+		
+		DBModel::batchSave(array($nathan, $nele));
+		$this->assertNotNull(MockModel::getByName('nathan'));
+		$this->assertNotNull(MockModel::getByName('nele'));
+	}
 }
 
 ?>

@@ -469,6 +469,60 @@ class DBModel extends Model
 {
 	protected $_saved = false;
 	protected $_inDB = false;
+	
+	public function batchSave($batch)
+	{
+		foreach ($batch as $key => $b)
+		{
+			if (!$b->_saved)
+			{
+				try
+				{
+					$b->prepareInsert();
+				}
+				catch (ValidationException $e)
+				{
+					$invalid = true;
+				}
+			}
+			else
+			{
+				unset($batch[$key]);
+			}
+		}
+		if ($invalid) throw new ValidationException(null);
+		$rs = array();
+		foreach ($batch as $b)
+		{
+			$rs[] = $b->insert();
+			$b->_inDB = true;
+		}
+		
+		foreach ($batch as $b)
+		{
+			$b->afterInsert();
+		}
+		return $rs;
+	}
+	
+	private function prepareInsert()
+	{
+		$this->beforeInsert();
+		foreach ($this->extensions() as $ext)
+		{
+			$ext->beforeInsert();
+		}
+		$this->validate('insert');
+		foreach ($this->variants() as $name=>$variant)
+		{
+			$i = $variant['variant']->get();
+			if ($i != null && $i instanceof DBModel && !$i->inDB())
+			{
+				$i->save();
+				$variant['variant']->set($i);
+			}
+		}
+	}
 
 	public function save()
 	{
@@ -485,21 +539,7 @@ class DBModel extends Model
 		}
 		else
 		{
-			$this->beforeInsert();
-			foreach ($this->extensions() as $ext)
-			{
-				$ext->beforeInsert();
-			}
-			$this->validate('insert');
-			foreach ($this->variants() as $name=>$variant)
-			{
-				$i = $variant['variant']->get();
-				if ($i != null && $i instanceof DBModel && !$i->inDB())
-				{
-					$i->save();
-					$variant['variant']->set($i);
-				}
-			}
+			$this->prepareInsert();
 			$r = $this->insert();
 			$this->_inDB = true;
 			$this->afterInsert();
