@@ -22,10 +22,15 @@
 /**
  * @property primary; ID String(' ', 20); required
  * @property barID String(' ', 10);
- * @property foofoo String(' ', 20); required
+ * @property foofoo String('FooFoo', 20); required
 */
 class Foo extends DBModel
 {
+	public function __construct()
+	{
+		parent::__construct();
+	}
+
 	public function get($name)
 	{
 		$q = DB::prepare('SELECT * FROM Foo WHERE ID=:ID');
@@ -42,6 +47,11 @@ class Foo extends DBModel
 */
 class Bar extends DBModel
 {
+	public function __construct()
+	{
+		parent::__construct();
+	}
+
 	public function get($name)
 	{
 		$q = DB::prepare('SELECT * FROM Bar WHERE ID=:ID');
@@ -106,6 +116,33 @@ class One2OneTest extends CoOrgModelTest
 		$bar->foo = $foo;
 		//$this->assertEquals('someBar', $foo->barID);
 		$this->assertEquals('someFoo', $bar->fooID);
+	}
+	
+	public function testBatchSave()
+	{
+		$foo = new Foo;
+		$foo->ID = 'SomeFoo';
+		// No foofoo -> invalid
+		
+		$bar = new Bar;
+		$bar->ID = 'Somebar';
+		$bar->barbar = '...';
+		$bar->foo = $foo;
+		
+		try
+		{
+			DBModel::batchSave(array($foo, $bar));
+			$this->fail('Expected exception');
+		}
+		catch (ValidationException $e)
+		{
+			$bar2 = Bar::get('Somebar');
+			$foo2 = Foo::get('SomeFoo');
+			$this->assertNull($bar2);
+			$this->assertNull($foo2);
+			
+			$this->assertEquals('FooFoo is required', $foo->foofoo_error);
+		}
 	}
 }
 ?>

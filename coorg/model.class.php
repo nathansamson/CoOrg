@@ -212,7 +212,7 @@ class Model
 		foreach ($this->_variants as $variant)
 		{
 			$i = $variant['variant']->get();
-			if ($i != null && $type == 'insert' && $i instanceof DBModel && !$i->inDB())
+			if ($i != null && $type == 'insert' && $i instanceof DBModel && !$i->inDB() && !$i->_isSaving)
 			{
 				try
 				{
@@ -469,9 +469,14 @@ class DBModel extends Model
 {
 	protected $_saved = false;
 	protected $_inDB = false;
+	protected $_isSaving = false;
 	
 	public function batchSave($batch)
 	{
+		foreach ($batch as $key => $b)
+		{
+			$b->_isSaving = true;
+		}
 		foreach ($batch as $key => $b)
 		{
 			if (!$b->_saved)
@@ -516,7 +521,7 @@ class DBModel extends Model
 		foreach ($this->variants() as $name=>$variant)
 		{
 			$i = $variant['variant']->get();
-			if ($i != null && $i instanceof DBModel && !$i->inDB())
+			if ($i != null && $i instanceof DBModel && !$i->inDB() && !$i->_isSaving)
 			{
 				$i->save();
 				$variant['variant']->set($i);
