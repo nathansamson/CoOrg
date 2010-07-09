@@ -29,6 +29,12 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 	public static $errors = array();
 	public static $stylesheets = array();
 
+	public function __construct()
+	{
+		parent::__construct();
+		$this->setCompileDir('.tests-tpl-output');
+	}
+
 	public static function clearAll()
 	{
 		self::$renderedOutput = null;

@@ -76,9 +76,11 @@
 				<h1>{$comment->title}</h1>
 				<h2>
 					{if $comment->author}
+						{if $comment->author->profile}
 						<div class="author-avatar">
 							<img src="{$comment->author->profile->avatar()}" />
 						</div>
+						{/if}
 						{'By %name on %date'|_:($comment->author->username|linkyfy:'user/profile/show':$comment->author->username):($comment->timePosted|date_format:'Y-m-d H:i:s')}
 					{else}
 						<div class="author-avatar">
