@@ -38,9 +38,10 @@ class UserProfileController extends Controller
 	/**
 	 * @Acl allow :loggedIn
 	*/
-	public function edit()
+	public function edit($from = null)
 	{
 		$this->profile = UserSession::get()->user()->profile;
+		$this->from = $from;
 		$this->render('profile/edit');
 	}
 	
@@ -48,7 +49,7 @@ class UserProfileController extends Controller
 	 * @Acl allow :loggedIn
 	*/
 	public function update($firstName, $lastName, $birthDate, $gender,
-	                       $intrests, $biography, $website)
+	                       $intrests, $biography, $website, $from = null)
 	{
 		$profile = UserSession::get()->user()->profile;
 		$profile->firstName = $firstName;
@@ -66,12 +67,20 @@ class UserProfileController extends Controller
 			$avatar->setAutoStore($profile->username, $profile->avatar_extension);
 			$profile->save();
 			$this->notice(t('Profile updated'));
-			$this->redirect('user/profile/show', $profile->username);
+			if ($from)
+			{
+				$this->redirect($from);
+			}
+			else
+			{
+				$this->redirect('user/profile/show', $profile->username);
+			}
 		}
 		catch (ValidationException $e)
 		{
 			$avatar->persist();
 			$this->error(t('Profile not updated'));
+			$this->from = $from;
 			$this->profile = $profile;
 			$this->render('profile/edit');
 		}

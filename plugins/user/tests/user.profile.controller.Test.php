@@ -50,6 +50,17 @@ class UserProfileControllerTest extends CoOrgControllerTest
 		$this->assertRendered('profile/edit');
 	}
 	
+	public function testEditFrom()
+	{
+		$this->login('azerty');
+		$this->request('user/profile/edit/some$2fother$2fpage');
+		
+		$p = CoOrgSmarty::$vars['profile'];
+		$this->assertEquals('azerty', $p->username);
+		$this->assertVarIs('from', 'some/other/page');
+		$this->assertRendered('profile/edit');
+	}
+	
 	public function testEditNotLoggedIn()
 	{
 		$this->request('user/profile/edit');
@@ -76,6 +87,19 @@ class UserProfileControllerTest extends CoOrgControllerTest
 		$this->assertEquals('My Bio', $profile->biography);
 	}
 	
+	public function testUpdateFrom()
+	{
+		$this->login('azerty');
+		$this->request('user/profile/update', array(
+			'firstName' => 'Keyboard',
+			'lastName' => 'layout',
+			'birthDate' => '1900-04-28',
+			'biography' => 'My Bio',
+			'from' => 'some/page'));
+
+		$this->assertRedirected('some/page');
+	}
+	
 	public function testUpdateFailure()
 	{
 		$this->login('azerty');
@@ -84,11 +108,13 @@ class UserProfileControllerTest extends CoOrgControllerTest
 			'firstName' => 'Keyboard',
 			'lastName' => 'layout',
 			'birthDate' => '04-28', /* Ceci ne pas une date */
-			'biography' => 'My Bio'));
+			'biography' => 'My Bio',
+			'from' => 'some/page'));
 
 		$this->assertRendered('profile/edit');
 		$this->assertFlashError('Profile not updated');
 		$this->assertVarSet('profile');
+		$this->assertVaris('from', 'some/page');
 	}
 	
 	public function testUpdateNotLoggedIn()

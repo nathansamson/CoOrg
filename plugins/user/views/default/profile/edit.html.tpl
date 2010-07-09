@@ -5,6 +5,7 @@
 	<h1>{'Edit Profile'}</h1>
 	
 	{form request="user/profile/update" instance=$profile}
+		{input name=from value=$from}
 		{input for=firstName label="First Name"}
 		{input for=lastName label="Last Name"}
 		{input for=birthDate label="Birth Date" type="date"}
