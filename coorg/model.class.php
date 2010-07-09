@@ -473,6 +473,7 @@ class DBModel extends Model
 	
 	public function batchSave($batch)
 	{
+		$invalid = false;
 		foreach ($batch as $key => $b)
 		{
 			$b->_isSaving = true;
