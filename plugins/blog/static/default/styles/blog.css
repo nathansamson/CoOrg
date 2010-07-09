@@ -70,6 +70,18 @@ article.comment {
 	-moz-border-radius: 10px 0;
 }
 
+article.comment .author-avatar {
+	width: 50px;
+	margin-right: 5px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+article.comment .author-avatar img {
+	max-width: 50px;
+	max-height: 50px;
+}
+
 article.comment.moderation {
 	background-color: #BBB;
 	border: solid 1px black;

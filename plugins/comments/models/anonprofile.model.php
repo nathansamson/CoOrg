@@ -32,6 +32,11 @@ class AnonProfile extends DBModel
 		parent::__construct();
 	}
 
+	public function avatar()
+	{
+		return 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?d=identicon';
+	}
+
 	public function get($ID)
 	{
 		$q = DB::prepare('Select * FROM AnonProfile WHERE ID=:ID');

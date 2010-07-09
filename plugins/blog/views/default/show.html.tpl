@@ -76,11 +76,19 @@
 				<h1>{$comment->title}</h1>
 				<h2>
 					{if $comment->author}
+						<div class="author-avatar">
+							<img src="{$comment->author->profile->avatar()}" />
+						</div>
 						{'By %name on %date'|_:($comment->author->username|linkyfy:'user/profile/show':$comment->author->username):($comment->timePosted|date_format:'Y-m-d H:i:s')}
-					{else if $comment->anonAuthor->website}
-						{'By %name on %date'|_:($comment->anonAuthor->name|linkyfy:'e':$comment->anonAuthor->website):($comment->timePosted|date_format:'Y-m-d H:i:s')}
 					{else}
-						{'By %name on %date'|_:$comment->anonAuthor->name:($comment->timePosted|date_format:'Y-m-d H:i:s')}
+						<div class="author-avatar">
+							<img src="{$comment->anonAuthor->avatar()}" />
+						</div>
+						{if $comment->anonAuthor->website}
+							{'By %name on %date'|_:($comment->anonAuthor->name|linkyfy:'e':$comment->anonAuthor->website):($comment->timePosted|date_format:'Y-m-d H:i:s')}
+						{else}
+							{'By %name on %date'|_:$comment->anonAuthor->name:($comment->timePosted|date_format:'Y-m-d H:i:s')}
+						{/if}
 					{/if}
 				</h2>
 			</header>
@@ -92,7 +100,7 @@
 					{*{'By %name on %date'|_:$comment->author->username:($comment->timePosted|date_format:'Y-m-d H:i:s')}*}
 				</h2>
 				</header>
-				{form request="blog/comment/update" instance=$blogCommentEdit}
+				{form request="blog/comment/update" instance=$blogCommentEdit id="comment_edit"}
 					{input for=ID}
 					
 					{if $anonProfileEdit}
@@ -120,7 +128,7 @@
 	<h2>
 	{'Leave a reply'|_}
 	</h2>
-	{form request="blog/comment/save" instance=$blogComment}
+	{form request="blog/comment/save" instance=$blogComment id="comment_new"}
 		{input value=$blog->ID name="blogID"}
 		{input value=$blog->datePosted|date_format:'Y-m-d' name="blogDate"}
 		{input value=$blog->language name="blogLanguage"}

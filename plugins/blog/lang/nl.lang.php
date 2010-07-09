@@ -58,5 +58,5 @@ $_['Name'] = 'Naam';
 $_['Email'] = 'Email';
 $_['Website'] = 'Website';
 $_['IP'] = 'IP';
-$_['Save comment'] = 'Reactie plaatsen';
+$_['Save comment'] = 'Reactie opslaan';
 ?>

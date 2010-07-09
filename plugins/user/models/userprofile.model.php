@@ -35,6 +35,18 @@ class UserProfile extends DBModel
 	{
 		parent::__construct();
 	}
+	
+	public function avatar()
+	{
+		if ($this->avatar != null)
+		{
+			return $this->avatar;
+		}
+		else
+		{
+			return 'http://www.gravatar.com/avatar/'.md5(strtolower(trim($this->user->email))).'?d=identicon';
+		}
+	}
 
 	public function get($username)
 	{
