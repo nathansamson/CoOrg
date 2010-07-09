@@ -334,6 +334,7 @@ class Model
 				$writeonly = false;
 				$protected = false;
 				$autoincrement = false;
+				$nodb = false;
 				
 				$desc = explode(';', $pDesc, 3);
 				$descFirst = explode(' ', trim($desc[count($desc)-2]), 2);
@@ -353,7 +354,8 @@ class Model
 				{
 					$option = $options[$i];
 					if ($option == 'primary' || $option == 'writeonly' ||
-					    $option == 'protected' || $option == 'autoincrement')
+					    $option == 'protected' || $option == 'autoincrement' ||
+					    $option == 'nodb')
 					{
 						$$option = true;
 					}
@@ -376,6 +378,7 @@ class Model
 				                             'writeonly' => $writeonly,
 				                             'protected' => $protected,
 				                             'auto-increment' => $autoincrement,
+				                             'nodb' => $nodb,
 				                             'class' => $class);
 			}
 			else if ($pCommand == '@extends')
@@ -387,6 +390,15 @@ class Model
 				
 				foreach ($ext->properties() as $name => $p)
 				{
+					$options = array('primary', 'writeonly', 'protected',
+					                 'auto-increment', 'nodb');
+					foreach ($options as $opt)
+					{
+						if (!array_key_exists($opt, $p))
+						{
+							$p[$opt] = false;
+						}
+					}
 					$propertyInfo[$name] = $p;
 				}
 				$extensions[] = $ext;
@@ -423,7 +435,7 @@ class Model
 
 	static public function filterDB($f)
 	{
-		return !$f['writeonly'];
+		return !($f['writeonly'] || $f['nodb']);
 	}
 
 	static public function filterPrimary($f)
@@ -637,6 +649,8 @@ class DBModel extends Model
 	{
 	}
 	
+	protected function afterFetch() {}
+	
 	public static function fetch($row, $model)
 	{
 		if ($row == null) return null;
@@ -645,12 +659,13 @@ class DBModel extends Model
 		{
 			foreach (self::$_modelInfo[$class]['properties'] as $pName => $pInfo)
 			{
-				if (!$pInfo['writeonly'])
+				if (!($pInfo['writeonly'] || $pInfo['nodb']))
 				{
 					$instance->$pName = $row[$pName];
 				}
 			}
 		}
+		$instance->afterFetch();
 		$instance->setSaved();
 		$instance->_inDB = true;
 		return $instance;

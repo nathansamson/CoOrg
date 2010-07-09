@@ -45,7 +45,8 @@ foreach ($config->get('enabled_plugins') as $plugin)
 	{
 		include_once $path;
 		
-		call_user_func($plugin.'_install_db');
+		$f = str_replace('-', '_', $plugin);
+		call_user_func($f.'_install_db');
 	}
 }
 
@@ -59,7 +60,8 @@ foreach (scandir('app') as $plugin)
 	{
 		include_once $path;
 		
-		call_user_func($plugin.'_install_db');
+		$f = str_replace('-', '_', $plugin);
+		call_user_func($f.'_install_db');
 	}
 }
 

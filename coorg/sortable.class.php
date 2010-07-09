@@ -54,10 +54,6 @@ class Sortable
 	{
 		return array('sequence' =>
 						array('property' => new PropertyInteger('Seq'),
-		                      'primary' => false,
-		                      'writeonly' => false,
-		                      'protected' => false,
-		                      'auto-increment' => false,
 		                      'class' => $this->_class));
 	}
 	

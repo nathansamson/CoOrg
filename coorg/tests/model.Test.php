@@ -53,6 +53,7 @@ class Rot13Variant implements IPropertyVariant
  * @property writeonly; shadowProperty String('Shadow'); required only('insert')
  * @property protected; rot13name String('Name', 64); required
  * @variant rot13 rot13 name
+ * @property nodb; someRandomValue Integer('Integer'); required
 */
 class MockModel extends DBModel
 {
@@ -99,6 +100,11 @@ class MockModel extends DBModel
 	{
 		$this->rot13name = str_rot13($this->name);
 	}
+	
+	protected function afterFetch()
+	{
+		$this->someRandomValue = rand();
+	}
 }
 
 /**
@@ -125,6 +131,7 @@ class ModelTest extends CoOrgModelTest
 	{
 		$m = new MockModel('nathan', null, 'email@email.com');
 		$m->shadowProperty = 'Some Value';
+		$m->someRandomValue = 222;
 		$m->save();
 		
 		$m = MockModel::getByName('nathan');
@@ -132,6 +139,7 @@ class ModelTest extends CoOrgModelTest
 		$this->assertEquals('nathan', $m->name);
 		$this->assertNull($m->description);
 		$this->assertEquals('email@email.com', $m->email);
+		$this->assertTrue($m->someRandomValue > 0);
 
 		$m = MockModel::getByName('whatsup');
 		$this->assertNull($m);
@@ -141,9 +149,11 @@ class ModelTest extends CoOrgModelTest
 	{
 		$m = new MockModel('nathan', null, 'email@email.com');
 		$m->shadowProperty = 'Some Value';
+		$m->someRandomValue = 222;
 		$m->save();
 		$m = new MockModel('nele', null, 'email2@email.com');
 		$m->shadowProperty = 'Some Value';
+		$m->someRandomValue = 222;
 		$m->save();
 		
 		$m = MockModel::getByName('nathan');
@@ -168,9 +178,11 @@ class ModelTest extends CoOrgModelTest
 	{
 		$nathan = new MockModel('nathan', null, 'email@email.com');
 		$nathan->shadowProperty = 'Some Value';
+		$nathan->someRandomValue = 2;
 		$nathan->save();
 		$nele = new MockModel('nele', null, 'email2@email.com');
 		$nele->shadowProperty = 'Some Value';
+		$nele->someRandomValue = 2;
 		$nele->save();
 		
 		$nathan->name = 'someothername';
@@ -197,6 +209,7 @@ class ModelTest extends CoOrgModelTest
 	{
 		$n = new MockModel('', '', 'email@email.com');
 		$n->shadowProperty = '...';
+		$n->someRandomValue = 221;
 		try
 		{
 			$n->save();
@@ -212,6 +225,7 @@ class ModelTest extends CoOrgModelTest
 	{
 		$n = new MockModel('a', 'b', 'email@mail.com');
 		$n->shadowProperty = '...';
+		$n->someRandomValue = 221;
 		$n->save();
 		
 		try
@@ -244,6 +258,23 @@ class ModelTest extends CoOrgModelTest
 		}
 	}
 	
+	public function testValidateNoDB()
+	{
+		$n = new MockModel('a', 'b', 'cccc@bcc.com');
+		$n->shadowProperty = '...';
+		$n->someRandomValue = 'abba';
+		
+		try
+		{
+			$n->save();
+			$this->fail('Expected exception');
+		}
+		catch (ValidationException $e)
+		{
+			$this->assertEquals('Integer is not a valid number', $n->someRandomValue_error);
+		}
+	}
+	
 	public function testShadowProperty()
 	{
 		$n = new MockModel('a', '', 'cccc@bcc.com');
@@ -263,6 +294,7 @@ class ModelTest extends CoOrgModelTest
 	{
 		$n = new MockModel('abczyx', '', 'cccc@bcc.com');
 		$n->shadowProperty = '...';
+		$n->someRandomValue = 22;
 		$n->save();
 		
 		$n = MockModel::getByName('abczyx');
@@ -280,6 +312,7 @@ class ModelTest extends CoOrgModelTest
 	{
 		$n = new MockModel('abczyx', '', 'cccc@bcc.com');
 		$n->shadowProperty = '...';
+		$n->someRandomValue = '33';
 		$n->save();
 		
 		$n = MockModel::getByName('abczyx');
@@ -294,14 +327,17 @@ class ModelTest extends CoOrgModelTest
 	{
 		$n = new MockModel('abczyx', '', 'cccc@bcc.com');
 		$n->shadowProperty = '...';
+		$n->someRandomValue = 33;
 		$n->save();
 		
 		$n = new MockModel('dvorak', '', 'sdsd@bcc.com');
 		$n->shadowProperty = '...';
+		$n->someRandomValue = 33;
 		$n->save();
 		
 		$n = new MockModel('qwerty', '', 'ssf@bcc.com');
 		$n->shadowProperty = '...';
+		$n->someRandomValue = 33;
 		$n->save();
 		
 		$n->delete();
@@ -327,6 +363,7 @@ class ModelTest extends CoOrgModelTest
 		$isa->shadowProperty = 'shadow';
 		$isa->email = 'isa@isa.com';
 		$isa->isaExtension = 'Ext';
+		$isa->someRandomValue = 21;
 		$isa->save();
 		
 		$base = MockModel::getByName('Some ISA Name');

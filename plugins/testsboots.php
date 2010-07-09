@@ -26,7 +26,7 @@ $config = new Config($configFile);
 $config->set('mollom/public', 'valid-pub-key');
 $config->set('mollom/private', 'valid-priv-key');
 $config->set('mollom/serverlist', array('valid-server-list'));
-$config->set('enabled_plugins', array('spam', 'admin', 'menu', 'user', 'comments', 'user-admin', 'blog', 'page'));
+$config->set('enabled_plugins', array('spam', 'admin', 'menu', 'user', 'comments', 'user-admin', 'blog', 'page', 'puntstudio-users'));
 $config->set('site/title', 'The Site');
 $config->save();
 copy($configFile, 'config/temp.config.tests.php.clean');
@@ -43,7 +43,8 @@ function prepare($plugins)
 		{
 			include_once 'plugins/'.$p.'/install.php';
 			
-			call_user_func($p.'_delete_db', true);
+			$f = str_replace('-', '_', $p);
+			call_user_func($f.'_delete_db', true);
 		}
 	}
 	
@@ -53,7 +54,8 @@ function prepare($plugins)
 		{
 			include_once 'plugins/'.$p.'/install.php';
 			
-			call_user_func($p.'_install_db', true);
+			$f = str_replace('-', '_', $p);
+			call_user_func($f.'_install_db', true);
 		}
 	}
 }
