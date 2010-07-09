@@ -161,13 +161,35 @@ function smarty_function_input($params, $smarty)
 		
 		if ($type != 'textarea' && $type != 'select' && $type != 'checkbox')
 		{
+			$p = '';
+			if ($type == 'file' && $params['preview'] && $params['preview'] == 'image' && $value)
+			{
+				$pClass = '';
+				if (array_key_exists('previewClass', $params))
+				{
+					$pClass = $params['previewClass'];
+				}
+				if ($pClass)
+				{
+					$p = '<div class="'.$pClass.'"><img src="'.$value.'" /></div>';
+				}
+				else
+				{
+					$p = '<img src="'.$value.'" />';
+				}
+			}
+			if ($type == 'file')
+			{
+				$smarty->_coorg_form->file_upload = true;
+				$value = null;
+			}
 			$input = '<input type="'.$type.'" value="'.$value.'" name="'.$name.'" '. 'id="'.$id.'"'.
 	               ($required ? ' required="required"' : '').
 	               ($disabled ? ' disabled="disabled"' : '').
 	               ($class ? ' class="'.$class.'"' : '').
 	               ($size ? ' size="'.$size.'"' : '').
 	               ($readonly ? ' readonly="readonly"' : '').
-	        '/>'.$br;
+	        '/>'.$p.$br;
 	    }
 	    else if ($type == 'textarea')
 	    {

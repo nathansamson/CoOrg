@@ -58,15 +58,19 @@ class UserProfileController extends Controller
 		$profile->intrests = $intrests;
 		$profile->biography = $biography;
 		$profile->website = $website;
+		$avatar = Session::getFileUpload('avatar');
+		$profile->avatar = $avatar;
 		
 		try
 		{
+			$avatar->setAutoStore($profile->username, $profile->avatar_extension);
 			$profile->save();
 			$this->notice(t('Profile updated'));
 			$this->redirect('user/profile/show', $profile->username);
 		}
 		catch (ValidationException $e)
 		{
+			$avatar->persist();
 			$this->error(t('Profile not updated'));
 			$this->profile = $profile;
 			$this->render('profile/edit');

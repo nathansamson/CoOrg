@@ -32,7 +32,7 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 	{
 		$s = new PropertyString('Name', 10);
 		$s->set('azerty');
-		$s->setUnchanged();
+		$s->postsave();
 		
 		$this->assertEquals('azerty', $s->old());
 		$this->assertEquals('azerty', $s->get());
@@ -120,7 +120,7 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 	{
 		$s = new PropertyEmail('Email');
 		$s->set('valid@valid.com ');
-		$s->setUnchanged();
+		$s->postsave();
 		
 		$this->assertEquals('valid@valid.com', $s->old());
 		$this->assertEquals('valid@valid.com', $s->get());
@@ -327,7 +327,7 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 	{
 		$i = new PropertyInteger('Value');
 		$i->set(24);
-		$i->setUnchanged();
+		$i->postsave();
 		
 		$this->assertEquals(24, $i->old());
 		$this->assertEquals(24, $i->get());
@@ -457,7 +457,7 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(1271109600, $d->get());
 		$this->assertEquals('2010-04-13', $d->db());
 		$this->assertNull($d->old());
-		$d->setUnchanged();
+		$d->postsave();
 		$this->assertEquals('2010-04-13', $d->old());
 		$this->assertTrue($d->validate(''));
 		
@@ -546,7 +546,7 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(1271176500, $d->get());
 		$this->assertEquals('2010-04-13 18:35:00', $d->db());
 		$this->assertNull($d->old());
-		$d->setUnchanged();
+		$d->postsave();
 		$this->assertEquals('2010-04-13 18:35:00', $d->old());
 		$this->assertTrue($d->validate(''));
 		
@@ -727,6 +727,169 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 		
 		$u->set('https://google.be/some/link');
 		$this->assertEquals('https://google.be/some/link', $u->get());
+	}
+	
+	public function testFileProperty()
+	{
+		$f = new PropertyFile('File name', 'some/path');
+		$this->assertNull($f->get());
+		$this->assertNull($f->db());
+		$this->assertNull($f->old());
+		$f->set('some/string/to/file.png');
+		$this->assertEquals('data/some/path/some/string/to/file.png', $f->get());
+		$this->assertEquals('some/string/to/file.png', $f->db());
+		$this->assertEquals('png', $f->extension());
+		$this->assertNull($f->old());
+		$f->postsave();
+		
+		$this->assertFalse($f->changed());
+		$upload = new FileUpload('some/upload/file', 2400, UPLOAD_ERR_OK);
+		$f->set($upload);
+		$upload->setStoreName('some/string/to/file'); // Same name, but still its changed
+		$this->assertTrue($f->changed());
+		$this->assertEquals('some/upload/file', $f->get());
+		$this->assertEquals('some/upload/file', $f->raw());
+		$this->assertEquals('some/string/to/file', $f->db());
+		$this->assertEquals('some/string/to/file.png', $f->old());
+		$this->assertNull($f->extension());
+	}
+	
+	public function testDeleteOldFileOnSave()
+	{
+		$f = new PropertyFile('File name', 'some/path');
+		$f->set('some/string/to/file');
+		$f->postsave();
+		
+		
+		$upload = new FileUpload('some/upload/file', 2400, UPLOAD_ERR_OK);
+		$f->set($upload);
+		$this->assertTrue($f->validate(''));
+		$upload->setStoreName('some/string/to/file'); // Same name, but still its changed
+		
+		$this->assertFalse(MockCoOrgFile::isDeleted('data/some/path/some/string/to/file'));
+		$f->postsave();
+		$this->assertTrue(MockCoOrgFile::isDeleted('data/some/path/some/string/to/file'));
+		
+		
+		
+		
+		$f = new PropertyFile('File name', 'some/path');
+		$f->set('some/string/to/otherfile');
+		$f->postsave();
+		
+		
+		$upload = new FileUpload('', 0, UPLOAD_ERR_NO_FILE);
+		$f->set($upload);
+		$this->assertTrue($f->validate(''));
+		$upload->setStoreName('some/string/to/file');
+		
+		$this->assertFalse(MockCoOrgFile::isDeleted('data/some/path/some/string/to/otherfile'));
+		$this->assertEquals('some/string/to/otherfile', $f->db());
+		$f->postsave();
+		$this->assertFalse(MockCoOrgFile::isDeleted('data/some/path/some/string/to/otherfile'));
+	}
+	
+	public function testRequiredFile()
+	{
+		$f = new PropertyFile('File name', 'some/path');
+		$f->required();
+		
+		$upload = new FileUpload('', 0, UPLOAD_ERR_NO_FILE);
+		$f->set($upload);
+		$this->assertFalse($f->validate(''));
+		$this->assertEquals('You have to upload a file', $f->errors());
+		$f->error(null);
+		
+		
+		$upload = new FileUpload('', 0, UPLOAD_ERR_NO_FILE, 'some/session/file');
+		$f->set($upload);
+		$this->assertTrue($f->validate(''));
+		$this->assertEquals('data/.session/some/session/file', $f->get());
+	}
+	
+	public function testErrorInFile()
+	{
+		$f = new PropertyFile('File name', 'some/path');
+		$this->assertTrue($f->validate(''));
+		
+		$upload = new FileUpload('some/new/file', 500, UPLOAD_ERR_PARTIAL, 'some/older/session/file.ext');
+		$f->set($upload);
+		$this->assertFalse($f->validate(''));
+		$this->assertEquals('The file transfer was not complete, please try again', $f->errors());
+		$this->assertEquals('data/.session/some/older/session/file.ext', $f->get());
+		$this->assertEquals('ext', $f->extension());
+		$f->error(null);
+		
+		
+		$upload = new FileUpload('some/new/file', 500, UPLOAD_ERR_INI_SIZE, 'some/older/session/file');
+		$f->set($upload);
+		$this->assertFalse($f->validate(''));
+		$this->assertEquals('The filesize is too large', $f->errors());
+		$this->assertEquals('data/.session/some/older/session/file', $f->get());
+		$f->error(null);
+		
+		$upload = new FileUpload('some/new/file', 500, UPLOAD_ERR_CANT_WRITE, 'some/older/session/file');
+		$f->set($upload);
+		$this->assertFalse($f->validate(''));
+		$this->assertEquals('The file upload failed, please try again', $f->errors());
+		$this->assertEquals('data/.session/some/older/session/file', $f->get());
+		$f->error(null);
+	}
+	
+	public function testImageIsValid()
+	{
+		$f = new PropertyImage('File name', 'some/path');
+		$this->assertTrue($f->validate(''));
+		
+		$upload = new FileUpload('', 500, UPLOAD_ERR_NO_FILE);
+		$f->set($upload);
+		$this->assertTrue($f->validate(''));
+		
+		$upload = new FileUpload('./coorg/tests/mocks/noimage.txt', 500, UPLOAD_ERR_OK, 'some/older/session/file');
+		$f->set($upload);
+		$this->assertFalse($f->validate(''));
+		$this->assertEquals('This is not a valid image file (only png, jpeg and gif are supported)', $f->errors());
+		$this->assertEquals('data/.session/some/older/session/file', $f->get());
+		$f->error(null);
+		
+		$upload = new FileUpload('./coorg/tests/mocks/image150x80.png', 500, UPLOAD_ERR_OK, 'some/older/session/file');
+		$f->set($upload);
+		$this->assertTrue($f->validate(''));
+		$this->assertEquals('png', $f->extension());
+		
+		$upload = new FileUpload('./coorg/tests/mocks/image150x80png.jpg', 500, UPLOAD_ERR_OK, 'some/older/session/file');
+		$f->set($upload);
+		$this->assertTrue($f->validate(''));
+		$this->assertEquals('png', $f->extension()); // The file is a png, but has extension jpg
+		
+		$f = new PropertyImage('File name', 'some/path');
+		$upload = new FileUpload('./coorg/tests/mocks/image.bmp', 500, UPLOAD_ERR_OK);
+		$f->set('some/original/file');
+		$f->postsave();
+		$f->set($upload);
+		$this->assertFalse($f->validate(''));
+		$this->assertEquals('This is not a valid image file (only png, jpeg and gif are supported)', $f->errors());
+		$this->assertEquals('data/some/path/some/original/file', $f->get());
+	}
+	
+	public function testImageMaxResolution()
+	{
+		$f = new PropertyImage('File name', 'some/path', 200, 50);
+		$upload = new FileUpload('./coorg/tests/mocks/image150x80.png', 500, UPLOAD_ERR_OK, 'some/older/session/file');
+		$f->set($upload);
+		$this->assertFalse($f->validate(''));
+		$this->assertEquals('The file resolution is too large, maximum is 200 x 50', $f->errors());
+		
+		$f = new PropertyImage('File name', 'some/path', 100, 100);
+		$upload = new FileUpload('./coorg/tests/mocks/image150x80.png', 500, UPLOAD_ERR_OK, 'some/older/session/file');
+		$f->set($upload);
+		$this->assertFalse($f->validate(''));
+		$this->assertEquals('The file resolution is too large, maximum is 100 x 100', $f->errors());
+		
+		$f = new PropertyImage('File name', 'some/path', 150, 80);
+		$upload = new FileUpload('./coorg/tests/mocks/image150x80.png', 500, UPLOAD_ERR_OK, 'some/older/session/file');
+		$f->set($upload);
+		$this->assertTrue($f->validate(''));
 	}
 }
 

@@ -27,6 +27,7 @@
  * @property website URL(t('Website'));
  * @property intrests String(t('Intrests'), 1024);
  * @property biography String(t('Biography'));
+ * @property avatar Image(t('Avatar'), 'user/avatars', 200, 200);
 */
 class UserProfile extends DBModel
 {

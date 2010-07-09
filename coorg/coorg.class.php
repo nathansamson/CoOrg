@@ -546,6 +546,23 @@ class CoOrg {
 		return $theme ? $theme : 'default';
 	}
 	
+	public static function getDataPath($sub)
+	{
+		return 'data/'.$sub;
+	}
+	
+	public static function getDataManager($sub)
+	{
+		if (! defined('COORG_UNIT_TEST'))
+		{
+			return new DataManager(self::getDataPath($sub));
+		}
+		else
+		{
+			return new MockDataManager(self::getDataPath($sub));
+		}
+	}
+	
 	public static function config()
 	{
 		return self::$_config;

@@ -43,7 +43,8 @@ interface IProperty
 	
 	public function old();
 	public function changed();
-	public function setUnchanged();
+	public function presave();
+	public function postsave();
 	
 	public function attachVariant(IPropertyVariant $var);
 }
@@ -141,7 +142,11 @@ abstract class Property
 		return $this->db() !== $this->old();
 	}
 	
-	public function setUnchanged()
+	public function presave()
+	{
+	}
+	
+	public function postsave()
 	{
 		$this->_oldValue = $this->_value;
 	}

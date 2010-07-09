@@ -43,6 +43,7 @@ function user_install_db()
 				website VARCHAR(1024),
 				intrests VARCHAR(1024),
 				biography TEXT,
+				avatar VARCHAR(128),
 				FOREIGN KEY (username) REFERENCES User(username) ON DELETE CASCADE
 			)';
 

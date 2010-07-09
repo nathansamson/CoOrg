@@ -1,0 +1,5 @@
+<?php
+
+CoOrg::resreg('user', 'profile.css', '252d98cce983ffdf7f6f5b346529f3a9');
+
+?>

@@ -114,6 +114,28 @@ class DatamanagerTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('dir1/subdir', $d->path());
 	}
 	
+	public function testFullPath()
+	{
+		$m = $this->_m;
+		
+		$f = $m->get('dir1/someimage.png');
+		$this->assertEquals('.test-path/dir1/someimage.png', $f->fullpath());
+		
+		$d = $m->get('dir1/subdir/test');
+		$this->assertEquals('.test-path/dir1/subdir/test', $d->fullpath());
+	}
+	
+	public function testURI()
+	{
+		$m = $this->_m;
+		
+		$f = $m->get('dir1/someimage.png');
+		$this->assertEquals('dir1/someimage.png', $f->uri());
+		
+		$d = $m->get('dir1/subdir/test');
+		$this->assertEquals('dir1/subdir/test', $d->uri());
+	}
+	
 	public function testExtension()
 	{
 		$m = $this->_m;
@@ -129,6 +151,16 @@ class DatamanagerTest extends PHPUnit_Framework_TestCase
 		
 		$f = $m->get('dir1/.noextension');
 		$this->assertNull($f->extension());
+	}
+	
+	public function testFindFree()
+	{
+		$m = $this->_m;
+		
+		$this->assertEquals('someimage.png', $m->findFree('someimage.png'));
+		$this->assertEquals('someimage.png', $m->findFree('someimage', 'png'));
+		$this->assertEquals('dir1/someimage1.png', $m->findFree('dir1/someimage.png'));
+		$this->assertEquals('dir1/someimage1.png', $m->findFree('dir1/someimage', 'png'));
 	}
 	
 	public function tearDown()

@@ -18,28 +18,39 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-interface ICookies
+class MockCoOrgFile extends CoOrgFile
 {
-	static function has($key);
-	static function get($key);
-	static function set($key, $value, $lifeTime = 0);
-	static function delete($key);
+	static $_deleted = array();
+
+	public function __construct($base, $name, $manager)
+	{
+		parent::__construct($base, $name, $manager);
+	}
+
+	public function delete()
+	{
+		self::$_deleted[] = $this->fullpath();
+	}
+	
+	public static function isDeleted($name)
+	{
+		return in_array($name, self::$_deleted);
+	}
 }
 
-interface ISession
+class MockDataManager
 {
-	static function has($key);
-	static function get($key);
-	static function set($key, $value);
-	static function delete($key);
-	
-	static function destroy();
-	
-	static function IP();
-	static function getSite();
-	static function getReferrer();
-	static function getFileUpload($name);
+	private $_base;
+
+	public function __construct($base)
+	{
+		$this->_base = $base;
+	}
+
+	public function get($name)
+	{
+		return new MockCoOrgFile($this->_base, $name, $this);
+	}
 }
 
 ?>

@@ -28,7 +28,15 @@ class UserProfileTest extends CoOrgModelTest
 		$profile->user = User::getUserByName('no-profile');
 		$profile->gender = PROPERTY_GENDER_MALE;
 		$profile->birthDate = '2010-3-21';
+		try
+		{
+		
 		$profile->save();
+		}
+		catch (ValidationException $e)
+		{
+			var_dump($profile->avatar_error);
+		}
 		
 		$user = User::getUserByName('no-profile');
 		$userP = $user->profile;

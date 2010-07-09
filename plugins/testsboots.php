@@ -10,6 +10,7 @@ require_once 'coorg/testing/coorgsmarty.test.class.php';
 require_once 'coorg/testing/header.test.class.php';
 require_once 'coorg/testing/state.test.class.php';
 require_once 'coorg/testing/mail.test.class.php';
+require_once 'coorg/testing/files.test.class.php';
 
 $configFile = 'config/tests.config.php';
 if (array_key_exists('COORG_CONFIGFILE', $_SERVER))

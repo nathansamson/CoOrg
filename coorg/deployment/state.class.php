@@ -38,6 +38,160 @@ class Cookies implements ICookies
 	}
 }
 
+class FileUpload
+{
+	private $_upload;
+	private $_persist;
+	private $_tempManager;
+	
+	private $_storeName;
+	private $_storeManager;
+	
+	private $_invalid = false;
+
+	public function __construct($name, $tempManager)
+	{
+		$this->_tempManager = $tempManager;
+		$this->_name = $name;
+		if (array_key_exists($name, $_FILES) && $_FILES[$name]['error'] != UPLOAD_ERR_NO_FILE)
+		{
+			$this->_upload = $_FILES[$name];
+		}
+		else if ($tempManager->has($this->persistFile()))
+		{
+			$this->_persist = $tempManager->get($this->persistFile());
+		}
+	}
+	
+	public function error()
+	{
+		if ($this->_upload)
+		{
+			$this->_upload['error'];
+		}
+		else if ($this->_persist)
+		{
+			return UPLOAD_ERR_OK;
+		}
+		else
+		{
+			return UPLOAD_ERR_NO_FILE;
+		}
+	}
+	
+	public function temppath()
+	{
+		if ($this->_persist)
+		{
+			return $this->_persist->fullpath();
+		}
+		else if ($this->_upload && !$this->_invalid)
+		{
+			return $this->_upload['tmp_name'];
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	public function storedname()
+	{
+		return $this->_storeName;
+	}
+	
+	public function persist()
+	{
+		if ($this->_upload && $this->_upload['error'] == UPLOAD_ERR_OK && !$this->_invalid)
+		{
+			if ($this->findOldPersist())
+			{
+				$this->_persist->delete();
+				$this->_persist = null;
+			}
+			$this->_persist = $this->_tempManager->createFromUpload($this->temppath(), null, $this->_upload['name']);
+			Session::set('.session-uploads/'.$this->_name, $this->_persist->uri());
+		}
+	}
+	
+	public function setStoreName($path)
+	{
+		$this->_storeName = $path;
+	}
+	
+	public function setAutoStore($baseName, $extension = null)
+	{
+		$this->_storeName = $this->_storeManager->findFree($baseName, $extension);
+	}
+	
+	public function setStoreManager($manager)
+	{
+		$this->_storeManager = $manager;
+	}
+	
+	public function store()
+	{
+		if ($this->findOldPersist())
+		{
+			$this->_storeManager->createFrom($this->temppath(), $this->_storeName);
+			$this->_persist->delete();
+			$this->_persist = null;
+		}
+		else if ($this->_upload)
+		{
+			$this->_storeManager->createFromUpload($this->temppath(), $this->_storeName);
+		}
+		else
+		{
+		}
+	}
+	
+	public function isValid()
+	{
+		if ($this->_upload && $this->_upload['error'] == UPLOAD_ERR_OK && !$this->_invalid)
+		{
+			return true;
+		}
+		else if ($this->_persist)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	public function invalidUpload()
+	{
+		$this->_invalid = true;
+		$this->findOldPersist();
+	}
+	
+	private function findOldPersist()
+	{
+		if ($this->_persist)
+		{
+			return true;
+		}
+		if ($this->_tempManager->has($this->persistFile()))
+		{
+			$this->_persist = $this->_tempManager->get($this->persistFile());
+			return true;
+		}
+		return false;
+	}
+	
+	private function persistFile()
+	{
+		if (Session::has('.session-uploads/'.$this->_name))
+		{
+			return Session::get('.session-uploads/'.$this->_name);
+		}
+		else
+		{
+			return null;
+		}
+	}
+}
+
 class Session implements ISession
 {
 	private static $_keys = array();
@@ -79,6 +233,14 @@ class Session implements ISession
 		return $_SERVER['REMOTE_ADDR'];
 	}
 	
+	public static function stop()
+	{
+		if (self::$_started)
+		{
+			session_write_close();
+		}
+	}
+	
 	private static function start()
 	{
 		if (!self::$_started)
@@ -116,6 +278,13 @@ class Session implements ISession
 	public static function getSite()
 	{
 		return 'http://'.$_SERVER['HTTP_HOST'];
+	}
+	
+	public static function getFileUpload($name)
+	{
+	
+		self::start();
+		return new FileUpload($name, new DataManager(CoOrg::getDataPath('.session-uploads/'.session_id())));
 	}
 }
 

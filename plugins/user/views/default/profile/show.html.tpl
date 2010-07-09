@@ -1,6 +1,8 @@
 {block name="title"}{'Profile of %u'|_:$profile->username}{/block}
 
 {block name="content"}
+	{stylesheet file='profile.css'|static:'user'}
+
 	{if $profile->username == UserSession::get()->username}
 		<div class="page-actions">
 			{a request="user/profile/edit"
@@ -8,6 +10,11 @@
 		</div>
 	{/if}
 	<h1>{'Profile of %u'|_:$profile->username}</h1>
+	{if $profile->avatar}
+		<div class="profile-avatar">
+			<img src="{$profile->avatar}" />
+		</div>
+	{/if}
 	
 	{if $profile->firstName || $profile->lastName}
 		<h2>Naam</h2>

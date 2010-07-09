@@ -38,9 +38,110 @@ class Cookies implements ICookies
 	}
 }
 
+class FileUpload
+{
+	private $_storeManager;
+	private $_storeName;
+	private $_upload;
+	private $_session;
+	private $_invalid = false;
+
+	public function __construct($name, $size, $error, $session = null)
+	{
+		// Go look in the session
+		if ($session)
+		{
+			$this->_session = $session;
+		}
+		if ($error != UPLOAD_ERR_NO_FILE)
+		{
+			$this->_upload = array($name, $size, $error);
+		}
+	}
+	
+	public function error()
+	{
+		if ($this->_upload)
+		{
+			return $this->_upload[2];
+		}
+		else
+		{
+			return UPLOAD_ERR_NO_FILE;
+		}
+	}
+	
+	public function temppath()
+	{
+		if ($this->_upload && $this->_upload[2] == UPLOAD_ERR_OK && !$this->_invalid)
+		{
+			return $this->_upload[0];
+		}
+		else if ($this->_session)
+		{
+			return 'data/.session/'.$this->_session;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	public function storedname()
+	{
+		return $this->_storeName;
+	}
+	
+	public function setStoreName($path)
+	{
+		$this->_storeName = $path;
+	}
+	
+	public function setAutoStore($baseName, $extension = null)
+	{
+		$this->_storeName = $baseName . '.' . $extension;
+	}
+	
+	public function setStoreManager($manager)
+	{
+		$this->_storeManager = $manager;
+	}
+	
+	public function persist()
+	{
+	}
+	
+	public function store()
+	{
+	}
+	
+	public function isValid()
+	{
+		if ($this->_upload && $this->_upload[2] == UPLOAD_ERR_OK && !$this->_invalid)
+		{
+			return true;
+		}
+		else if ($this->_session)
+		{
+			return true;
+		}
+		else
+		{	
+			return false;
+		}
+	}
+	
+	public function invalidUpload()
+	{
+		$this->_invalid = true;
+	}
+}
+
+
 class Session implements ISession
 {
 	private static $_keys = array();
+	private static $_uploads = array();
 	public static $referrer = '';
 	public static $site =  '';
 
@@ -82,6 +183,27 @@ class Session implements ISession
 	public static function getSite()
 	{
 		return self::$site;
+	}
+	
+	public static function setFileUpload($name, $filename, $filesize, $error)
+	{
+		self::$_uploads[$name] = array('file' => $filename,
+		                               'filesize' => $filesize,
+		                               'error' => $error);
+	}
+	
+	public static function getFileUpload($name)
+	{
+		if (array_key_exists($name, self::$_uploads))
+		{
+			return new FileUpload(self::$_uploads[$name]['file'],
+				                  self::$_uploads[$name]['filesize'],
+				                  self::$_uploads[$name]['error']);
+		}
+		else
+		{
+			return new FileUpload(null, null, UPLOAD_ERR_NO_FILE);
+		}
 	}
 }
 

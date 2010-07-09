@@ -1,0 +1,19 @@
+.avatar-preview, .profile-avatar {
+	width: 200px;
+	height: 200px;
+}
+
+.profile-avatar img, .avatar-preview img {
+	max-width: 200px;
+	max-height: 200px;
+}
+
+.profile-avatar {
+	float: right;
+}
+
+.avatar-preview {
+	display: inline-block;
+	vertical-align: top;
+	margin: 0px 10px;
+}

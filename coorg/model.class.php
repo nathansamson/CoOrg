@@ -26,6 +26,7 @@ require_once 'coorg/properties/date.class.php';
 require_once 'coorg/properties/bool.class.php';
 require_once 'coorg/properties/enum.class.php';
 require_once 'coorg/properties/url.class.php';
+require_once 'coorg/properties/file.class.php';
 
 class Model
 {
@@ -616,7 +617,7 @@ class DBModel extends Model
 		$this->_saved = true;
 		foreach ($this->dbproperties(null) as $p)
 		{
-			$p['property']->setUnchanged();
+			$p['property']->postsave();
 		}
 	}
 	

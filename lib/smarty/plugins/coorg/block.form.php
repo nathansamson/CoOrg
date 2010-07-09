@@ -28,6 +28,7 @@ function smarty_block_form($params, $content, $smarty)
 		$form->formID = array_key_exists('id', $params) ? $params['id'] : null;
 		$form->nestedInstances = array();
 		$form->nobreaks = array_key_exists('nobreaks', $params);
+		$form->file_upload = false;
 		
 		$smarty->_coorg_form = $form;
 		return;
@@ -47,7 +48,10 @@ function smarty_block_form($params, $content, $smarty)
 		$method = 'post';
 	}
 	
-	return '<form method="'.$method.'" action="'.$URL.'" '.($form->formID ? 'id="'.$form->formID.'"': '').'>'.$content.'</form>';
+	return '<form method="'.$method.'" action="'.$URL.'"'.
+	          ($form->formID ? ' id="'.$form->formID.'"': '').
+	          ($form->file_upload ? ' enctype="multipart/form-data"' : '').
+	          '>'.$content.'</form>';
 }
 
 ?>

@@ -34,12 +34,17 @@ abstract class CoOrgBaseFile
 	
 	public function name()
 	{
-		return basename($this->fullpath());
+		return basename($this->_path);
 	}
 	
 	public function path()
 	{
 		return dirname($this->_path);
+	}
+	
+	public function uri()
+	{
+		return $this->_path;
 	}
 	
 	public abstract function delete();
@@ -49,7 +54,7 @@ abstract class CoOrgBaseFile
 		return $this->_manager->get($file);
 	}
 	
-	protected function fullpath()
+	public function fullpath()
 	{
 		return $this->_basePath.'/'.$this->_path;
 	}
@@ -71,20 +76,25 @@ class CoOrgFile extends CoOrgBaseFile
 	
 	public function extension()
 	{
-		$dotPos = strrpos($this->name(), '.');
-		if ($dotPos != false) /* != and not !== because .hiddenfiles is not an extension */
-		{
-			return substr($this->name(), $dotPos + 1);
-		}
-		else
-		{
-			return null;
-		}
+		return CoOrgFile::getExtension($this->name());
 	}
 	
 	public function delete()
 	{
 		unlink($this->fullpath());
+	}
+	
+	public static function getExtension($name)
+	{
+		$dotPos = strrpos($name, '.');
+		if ($dotPos != false) /* != and not !== because .hiddenfiles is not an extension */
+		{
+			return substr($name, $dotPos + 1);
+		}
+		else
+		{
+			return null;
+		}
 	}
 }
 
@@ -116,10 +126,15 @@ class CoOrgDirectory extends CoOrgBaseFile
 class DataManager
 {
 	private $_basePath;
+	private $_freeN = 0;
 
 	public function __construct($basePath)
 	{
 		$this->_basePath = $basePath;
+		if (!is_dir($this->_basePath))
+		{
+			mkdir($this->_basePath, 0777, true);
+		}
 	}
 	
 	public function get($file)
@@ -136,6 +151,92 @@ class DataManager
 		{
 			return null;
 		}
+	}
+	
+	public function createFromUpload($upload, $destination = null, $base = null, $baseExtension = null)
+	{
+		if ($destination)
+		{
+			move_uploaded_file($upload, $this->_basePath.'/'.$destination);
+			return $this->get($destination);
+		}
+		else
+		{
+			return $this->createFromUpload($upload, $this->findFree($base, $baseExtension));
+		}
+	}
+	
+	public function createFrom($source, $destination = null, $base = null, $baseExtension = null)
+	{
+		if ($destination)
+		{
+			copy($source, $this->_basePath.'/'.$destination);
+			return $this->get($destination);
+		}
+		else
+		{
+			return $this->createFrom($source, $this->findFree($base, $baseExtension));
+		}
+	}
+	
+	public function findFree($base, $baseExtension = null)
+	{
+		$fileName = basename($base);
+		$dir = dirname($base);
+		if ($dir == '.')
+		{
+			$dir = '';
+		}
+		else
+		{
+			$dir .= '/';
+		}
+		
+		if (!$baseExtension)
+		{
+			$dotPos = strrpos($fileName, '.');
+			if ($dotPos != false) /* != and not !== because .hiddenfiles is not an extension */
+			{
+				$suffix = substr($fileName, $dotPos);
+				$prefix = substr($fileName, 0, $dotPos);
+			}
+			else
+			{
+				$prefix = $fileName;
+			}
+		}
+		else
+		{
+			$prefix = $fileName;
+			$suffix = '.'.$baseExtension;
+		}
+		
+		$name = $dir.$prefix.$suffix;
+		while ($this->has($name))
+		{
+			$name = $dir.$prefix.$this->next().$suffix;
+		}
+		$this->_nextN = 0;
+		return $name;
+	}
+	
+	private function next()
+	{
+		if (defined('COORG_UNIT_TEST'))
+		{
+			$this->_nextN++;
+			return $this->_nextN;
+		}
+		else
+		{
+			return rand();
+		}
+	}
+	
+	public function has($file)
+	{
+		if ($file == null) return false;
+		return $this->get($file) != null;
 	}
 }
 

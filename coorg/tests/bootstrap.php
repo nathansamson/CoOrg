@@ -1,7 +1,7 @@
 <?php
 
 require_once 'PHPUnit/Framework.php';
-
+define('COORG_UNIT_TEST', true);
 require_once 'coorg/testing/domainexists.test.php';
 require_once 'coorg/coorg.class.php';
 require_once 'coorg/testing/model.test.class.php';
@@ -10,6 +10,7 @@ require_once 'coorg/testing/coorgsmarty.test.class.php';
 require_once 'coorg/testing/header.test.class.php';
 require_once 'coorg/testing/mail.test.class.php';
 require_once 'coorg/testing/state.test.class.php';
+require_once 'coorg/testing/files.test.class.php';
 
 DB::open('sqlite::memory:');
 
