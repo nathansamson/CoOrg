@@ -26,7 +26,7 @@ $config = new Config($configFile);
 $config->set('mollom/public', 'valid-pub-key');
 $config->set('mollom/private', 'valid-priv-key');
 $config->set('mollom/serverlist', array('valid-server-list'));
-$config->set('enabled_plugins', array('spam', 'admin', 'menu', 'user', 'comments', 'user-admin', 'blog', 'page', 'puntstudio-users'));
+$config->set('enabled_plugins', array('search', 'spam', 'admin', 'menu', 'user', 'comments', 'user-admin', 'blog', 'page', 'puntstudio-users'));
 $config->set('site/title', 'The Site');
 $config->save();
 copy($configFile, 'config/temp.config.tests.php.clean');

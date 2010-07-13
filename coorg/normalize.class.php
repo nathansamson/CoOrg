@@ -56,13 +56,13 @@ class Normalize
 		$this->_object->$n = $this->findFree();
 	}
 	
-	public function beforeUpdate()
-	{
-	}
+	public function afterInsert() {}
 	
-	public function afterDelete()
-	{
-	}
+	public function beforeUpdate() {}
+	
+	public function afterUpdate() {}
+	
+	public function afterDelete() {}
 	
 	private function findFree()
 	{

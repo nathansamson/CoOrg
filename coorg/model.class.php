@@ -448,6 +448,31 @@ class Model
 		self::$_relations[] = $class;
 	}
 	
+	static public function getExtension($extension, $class)
+	{
+		if (!array_key_exists($class, self::$_modelInfo))
+		{
+			self::$_modelInfo[$class] = self::parseProperties($class);
+		}
+		
+		$instances = array();
+		foreach (self::$_modelInfo[$class]['extensions'] as $ext)
+		{
+			if ($ext instanceof $extension)
+			{
+				$instances[] = $ext;
+			}
+		}
+		if (count($instances) > 1)
+		{
+			return $instances;
+		}
+		else
+		{
+			return array_shift($instances);
+		}
+	}
+	
 	static protected function callStatic($class, $fnc, $arguments)
 	{
 		if (! array_key_exists($class, self::$_modelInfo))
@@ -506,7 +531,7 @@ class DBModel extends Model
 		
 		foreach ($batch as $b)
 		{
-			$b->afterInsert();
+			$b->finishInsert();
 		}
 		return $rs;
 	}
@@ -530,6 +555,15 @@ class DBModel extends Model
 		}
 	}
 
+	private function finishInsert()
+	{
+		$this->afterInsert();
+		foreach ($this->extensions() as $ext)
+		{
+			$ext->afterInsert();
+		}
+	}
+
 	public function save()
 	{
 		if ($this->_saved)
@@ -542,13 +576,17 @@ class DBModel extends Model
 			$this->validate('update');
 			$r = $this->update();
 			$this->afterUpdate();
+			foreach ($this->extensions() as $ext)
+			{
+				$ext->afterUpdate();
+			}
 		}
 		else
 		{
 			$this->prepareInsert();
 			$r = $this->insert();
 			$this->_inDB = true;
-			$this->afterInsert();
+			$this->finishInsert();
 		}
 		$this->setSaved();
 		return $r;
