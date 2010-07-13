@@ -68,10 +68,10 @@ function comments_delete_db($test = false)
 	$s = DB::prepare('DROP TABLE IF EXISTS MeCommentMock');
 	$s->execute();
 
-	$s = DB::prepare('DROP TABLE IF EXISTS AnonProfile');
+	$s = DB::prepare('DROP TABLE IF EXISTS Comment');
 	$s->execute();
 
-	$s = DB::prepare('DROP TABLE IF EXISTS Comment');
+	$s = DB::prepare('DROP TABLE IF EXISTS AnonProfile');
 	$s->execute();
 }
 

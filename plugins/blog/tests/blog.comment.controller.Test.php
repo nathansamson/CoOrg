@@ -174,7 +174,7 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		                            'title' => 'RE: Some Other Blog',
 		                            'body' => 'UNKNOWN BODY',
 		                            'date' => '**?**',
-		                            'messageURL' => 'http://www.test.info/blog/show/2010/4/10/some-other-blog#comment667',
+		                            'messageURL' => 'http://www.test.info/blog/show/2010/4/10/some-other-blog#comment'.$blog->comments[0]->ID,
 		                            'moderationURL' => 'http://www.test.info/admin/comment/queue',
 		                            'site' => 'The Site'));
 		$config = new Config(COORG_TEST_CONFIG);
