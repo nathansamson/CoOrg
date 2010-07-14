@@ -457,11 +457,14 @@ class Model
 		}
 		
 		$instances = array();
-		foreach (self::$_modelInfo[$class]['extensions'] as $ext)
+		foreach (self::$_modelInfo[$class]['classes'] as $aClass)
 		{
-			if ($ext instanceof $extension)
+			foreach (self::$_modelInfo[$aClass]['extensions'] as $ext)
 			{
-				$instances[] = $ext;
+				if ($ext instanceof $extension)
+				{
+					$instances[] = $ext;
+				}
 			}
 		}
 		if (count($instances) > 1)

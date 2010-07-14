@@ -391,6 +391,12 @@ class ModelTest extends CoOrgModelTest
 		$this->assertEquals('nopmlk', $n->name);
 	}
 	
+	public function testGetExtension()
+	{
+		$this->assertTrue(DBModel::getExtension('MockExtends', 'MockModel') instanceof MockExtends);
+		$this->assertTrue(DBModel::getExtension('MockExtends', 'IsAMockModel') instanceof MockExtends);
+	}
+	
 	public function testCreateISA()
 	{
 		$isa = new IsAMockModel;
