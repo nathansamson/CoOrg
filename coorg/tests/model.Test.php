@@ -60,6 +60,16 @@ class MockExtends
 		self::$before = true;
 	}
 	
+	public function hasMethod($f)
+	{
+		return $f == 'staticExample';
+	}
+	
+	public function staticExample()
+	{
+		return 'ABBA';
+	}
+	
 	public function afterInsert() {}
 	public function beforeUpdate() {}
 	public function afterUpdate() {}
@@ -148,6 +158,11 @@ class IsAMockModel extends MockModel
 		                  WHERE name=:name');
 		$q->execute(array(':name' => $name));
 		return self::fetch($q->fetch(), 'IsAMockModel');
+	}
+	
+	public static function staticExample()
+	{
+		return DBModel::callStatic('IsAMockModel', 'staticExample', array());
 	}
 }
 
@@ -395,6 +410,11 @@ class ModelTest extends CoOrgModelTest
 	{
 		$this->assertTrue(DBModel::getExtension('MockExtends', 'MockModel') instanceof MockExtends);
 		$this->assertTrue(DBModel::getExtension('MockExtends', 'IsAMockModel') instanceof MockExtends);
+	}
+	
+	public function testStaticCall()
+	{
+		$this->assertEquals('ABBA', IsAMockModel::staticExample());
 	}
 	
 	public function testCreateISA()

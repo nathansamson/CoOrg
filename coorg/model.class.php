@@ -483,12 +483,15 @@ class Model
 		{
 			self::$_modelInfo[$class] = self::parseProperties($class);
 		}
-		$modelInfo = self::$_modelInfo[$class];
-		foreach ($modelInfo['extensions'] as $ext)
+		foreach (self::$_modelInfo[$class]['classes'] as $aClass)
 		{
-			if ($ext->hasMethod($fnc))
+			$modelInfo = self::$_modelInfo[$aClass];
+			foreach ($modelInfo['extensions'] as $ext)
 			{
-				return call_user_func_array(array($ext, $fnc), $arguments);
+				if ($ext->hasMethod($fnc))
+				{
+					return call_user_func_array(array($ext, $fnc), $arguments);
+				}
 			}
 		}
 	}
