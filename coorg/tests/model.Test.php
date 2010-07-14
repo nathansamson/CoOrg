@@ -45,6 +45,33 @@ class Rot13Variant implements IPropertyVariant
 	}
 }
 
+class MockExtends
+{
+	public static $before = false;
+	public static $class;
+	
+	public function __construct($args)
+	{
+		self::$class = $args[0];
+	}
+
+	public function beforeInsert()
+	{
+		self::$before = true;
+	}
+	
+	public function afterInsert() {}
+	public function beforeUpdate() {}
+	public function afterUpdate() {}
+	public function afterDelete() {}
+	public function connect() {}
+	
+	public function properties()
+	{
+		return array();
+	}
+}
+
 /**
  * @property primary; name String('Name', 64); required
  * @property description String('Description');
@@ -54,6 +81,7 @@ class Rot13Variant implements IPropertyVariant
  * @property protected; rot13name String('Name', 64); required
  * @variant rot13 rot13 name
  * @property nodb; someRandomValue Integer('Integer'); required
+ * @extends MockExtends
 */
 class MockModel extends DBModel
 {
@@ -126,6 +154,13 @@ class IsAMockModel extends MockModel
 class ModelTest extends CoOrgModelTest
 {
 	const dataset = 'modeltest.dataset.xml';
+	
+	public function setUp()
+	{
+		parent::setUp();
+		MockExtends::$before = false;
+		MockExtends::$class = '';
+	}
 
 	public function testModelCreate()
 	{
@@ -364,7 +399,9 @@ class ModelTest extends CoOrgModelTest
 		$isa->email = 'isa@isa.com';
 		$isa->isaExtension = 'Ext';
 		$isa->someRandomValue = 21;
+		$this->assertFalse(MockExtends::$before);
 		$isa->save();
+		$this->assertTrue(MockExtends::$before);
 		
 		$base = MockModel::getByName('Some ISA Name');
 		$this->assertEquals('isa@isa.com', $base->email);

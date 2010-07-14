@@ -59,14 +59,15 @@ class Model
 			}
 		}
 		
-		foreach (self::$_modelInfo[$class]['extensions'] as $name => $extension)
-		{
-			$ext  = clone $extension;
-			$ext->connect($this);
-			$this->_extensions[$name] = $ext;
-		}
 		foreach (self::$_modelInfo[$class]['classes'] as $aClass)
 		{
+			foreach (self::$_modelInfo[$aClass]['extensions'] as $name => $extension)
+			{
+				$ext  = clone $extension;
+				$ext->connect($this);
+				$this->_extensions[$name] = $ext;
+			}
+		
 			foreach (self::$_modelInfo[$aClass]['variants'] as $name => $variantInfo)
 			{
 				$property = $this->_properties[$variantInfo['property']]['property'];
