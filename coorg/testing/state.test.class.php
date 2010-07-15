@@ -38,7 +38,7 @@ class Cookies implements ICookies
 	}
 }
 
-class FileUpload
+class MockFileUpload implements IFileUpload
 {
 	private $_storeManager;
 	private $_storeName;
@@ -196,13 +196,13 @@ class Session implements ISession
 	{
 		if (array_key_exists($name, self::$_uploads))
 		{
-			return new FileUpload(self::$_uploads[$name]['file'],
+			return new MockFileUpload(self::$_uploads[$name]['file'],
 				                  self::$_uploads[$name]['filesize'],
 				                  self::$_uploads[$name]['error']);
 		}
 		else
 		{
-			return new FileUpload(null, null, UPLOAD_ERR_NO_FILE);
+			return new MockFileUpload(null, null, UPLOAD_ERR_NO_FILE);
 		}
 	}
 }

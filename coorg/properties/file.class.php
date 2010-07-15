@@ -31,7 +31,7 @@ class PropertyFile extends Property
 	public function set($val)
 	{
 		parent::set($val);
-		if ($val instanceof FileUpload)
+		if ($val instanceof IFileUpload)
 		{
 			$this->_value->setStoreManager(CoOrg::getDataManager($this->_dataPath));
 		}
@@ -44,7 +44,7 @@ class PropertyFile extends Property
 			$dataP = CoOrg::getDataPath($this->_dataPath);
 			return CoOrg::config()->get('path').$dataP.'/'.$this->_value;
 		}
-		else if ($this->_value && $this->_value->isValid())
+		else if ($this->_value && $this->_value instanceof IFileUpload && $this->_value->isValid())
 		{
 			return CoOrg::config()->get('path').$this->_value->temppath();
 		}
@@ -67,7 +67,7 @@ class PropertyFile extends Property
 	
 	public function postsave()
 	{
-		if ($this->_value instanceof FileUpload && $this->_value->error() == UPLOAD_ERR_OK)
+		if ($this->_value instanceof IFileUpload && $this->_value->error() == UPLOAD_ERR_OK)
 		{
 			$dataM = CoOrg::getDataManager($this->_dataPath);
 			if ($this->_oldValue)
@@ -104,7 +104,7 @@ class PropertyFile extends Property
 			$this->error(t('You have to upload a file'));
 			return false;
 		}
-		else if ($this->isrequired($for) && $this->_value instanceof FileUpload)
+		else if ($this->isrequired($for) && $this->_value instanceof IFileUpload)
 		{
 			if ($this->_value->error() == UPLOAD_ERR_NO_FILE)
 			{
@@ -151,11 +151,11 @@ class PropertyFile extends Property
 	
 	protected function toDB($value)
 	{
-		if ($value instanceof FileUpload && $value->error() != UPLOAD_ERR_NO_FILE)
+		if ($value instanceof IFileUpload && $value->error() != UPLOAD_ERR_NO_FILE)
 		{
 			return $value->storedname();
 		}
-		else if ($value instanceof FileUpload)
+		else if ($value instanceof IFileUpload)
 		{
 			if ($value != $this->_oldValue)
 			{
@@ -187,7 +187,7 @@ class PropertyImage extends PropertyFile
 		
 		if ($v == true)
 		{
-			if ($this->_value instanceof FileUpload && $this->_value->error() == UPLOAD_ERR_OK)
+			if ($this->_value instanceof IFileUpload && $this->_value->error() == UPLOAD_ERR_OK)
 			{
 				$size = @getimagesize($this->_value->temppath());
 				if ($size == false)

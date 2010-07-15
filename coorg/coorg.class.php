@@ -45,6 +45,7 @@ require_once 'coorg/header.interface.php';
 require_once 'coorg/coorgsmarty.interface.php';
 require_once 'coorg/state.interface.php';
 require_once 'coorg/mail.interface.php';
+require_once 'coorg/fileupload.interface.php';
 
 
 class CoOrg {
