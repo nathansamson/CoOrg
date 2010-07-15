@@ -18,7 +18,16 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class Controller {
+abstract class ControllerBase
+{
+	abstract protected function notice($msg);
+	abstract protected function error($msg);
+	abstract protected function render($tpl, $app = false, $baseFile = 'base');
+	abstract protected function mail();
+}
+
+class Controller extends ControllerBase
+{
 
 	private $_smarty = null;
 	private $_renderType = 'html';
@@ -80,6 +89,7 @@ class Controller {
 		$this->render('systemerror', true);
 	}
 	
+	//TODO: deprecate this function
 	public function createURL($request)
 	{
 		$params = func_get_args();

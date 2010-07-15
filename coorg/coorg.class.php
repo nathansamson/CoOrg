@@ -425,7 +425,13 @@ class CoOrg {
 			
 		include_once(self::$_asides[$p[0]][$p[1]]);
 			
-		$className = ucfirst($p[0]).ucfirst($p[1]).'Aside';
+		$pluginName = '';
+		foreach (explode('-',$p[0]) as $pluginNamePart)
+		{
+			$pluginName .= ucfirst($pluginNamePart);
+		}
+		
+		$className = $pluginName.ucfirst($p[1]).'Aside';
 		return new $className(null, null);
 	}
 	
@@ -476,7 +482,12 @@ class CoOrg {
 			
 			include_once(self::$_asides[$p[0]][$p[1]]);
 			
-			$className = ucfirst($p[0]).ucfirst($p[1]).'Aside';
+			$pluginName = '';
+			foreach (explode('-',$p[0]) as $pluginNamePart)
+			{
+				$pluginName .= ucfirst($pluginNamePart);
+			}
+			$className = $pluginName.ucfirst($p[1]).'Aside';
 			$i = new $className($smarty, dirname(self::$_asides[$p[0]][$p[1]]).'/../views/');
 			
 			if (!$preview)

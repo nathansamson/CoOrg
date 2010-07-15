@@ -20,7 +20,7 @@
 
 class MockController extends Controller
 {
-	public function render($t, $app = false)
+	public function render($t, $app = false, $base = 'base')
 	{
 		if ($t == 'fake')
 		{
