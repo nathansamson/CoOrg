@@ -28,6 +28,23 @@ require_once 'coorg/properties/enum.class.php';
 require_once 'coorg/properties/url.class.php';
 require_once 'coorg/properties/file.class.php';
 
+interface IModelExtension
+{
+	public function beforeInsert();
+	public function afterInsert();
+	
+	public function beforeUpdate();
+	public function afterUpdate();
+	
+	public function beforeDelete();
+	public function afterDelete();
+	
+	public function properties();
+	public function connect($instance);
+	public function hasPublicMethod($name);
+	public function hasMethod($name);
+}
+
 class Model
 {
 	protected static $_modelInfo = array();
@@ -449,6 +466,15 @@ class Model
 		self::$_relations[] = $class;
 	}
 	
+	static public function getISATree($class)
+	{
+		if (! array_key_exists($class, self::$_modelInfo))
+		{
+			self::$_modelInfo[$class] = self::parseProperties($class);
+		}
+		return self::$_modelInfo[$class]['classes'];
+	}
+	
 	static public function getExtension($extension, $class)
 	{
 		if (!array_key_exists($class, self::$_modelInfo))
@@ -474,6 +500,17 @@ class Model
 		else
 		{
 			return array_shift($instances);
+		}
+	}
+	
+	public function __call($fnc, $args)
+	{
+		foreach ($this->_extensions as $ext)
+		{
+			if ($ext->hasPublicMethod($fnc))
+			{
+				return call_user_func_array(array($ext, $fnc), $args);
+			}
 		}
 	}
 	
@@ -690,6 +727,10 @@ class DBModel extends Model
 	
 	public function delete()
 	{
+		foreach ($this->extensions() as $ext)
+		{
+			$ext->beforeDelete();
+		}
 		foreach (self::$_modelInfo[get_class($this)]['classes'] as $class)
 		{
 			$qs = 'DELETE FROM ' . $class . ' WHERE ';

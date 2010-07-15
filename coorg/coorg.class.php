@@ -52,7 +52,7 @@ class CoOrg {
 	const PANEL_ORIENT_VERTICAL = 2;
 
 	private static $_controllers = array();
-	private static $_models = array();
+	public static $_models = array();
 	private static $_asides = array();
 	private static $_beforeFilters = array();
 	private static $_extras = array();
@@ -224,9 +224,10 @@ class CoOrg {
 	public static function loadModel($fname)
 	{
 		$name = strtolower($fname);
+		
 		if (array_key_exists($name, self::$_models))
 		{
-			include_once self::$_models[$name];
+			require_once self::$_models[$name];
 		}
 		else if (preg_match('/(.*)ControllerHelper/', $fname, $matches))
 		{

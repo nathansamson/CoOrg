@@ -4,4 +4,8 @@
 	<SearchFooIndex />
 	<SearchBar />
 	<SearchBarIndex />
+	<SearchFooISA />
+	
+	<Tagging />
+	<TaggingIndex />
 </dataset>

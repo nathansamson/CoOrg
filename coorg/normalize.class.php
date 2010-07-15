@@ -19,7 +19,7 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class Normalize
+class Normalize implements IModelExtension
 {
 	private $_toNormalize;
 	private $_normalized;
@@ -36,6 +36,11 @@ class Normalize
 	}
 	
 	public function hasMethod($m)
+	{
+		return false;
+	}
+	
+	public function hasPublicMethod($n)
 	{
 		return false;
 	}
@@ -61,6 +66,8 @@ class Normalize
 	public function beforeUpdate() {}
 	
 	public function afterUpdate() {}
+	
+	public function beforeDelete() {}
 	
 	public function afterDelete() {}
 	

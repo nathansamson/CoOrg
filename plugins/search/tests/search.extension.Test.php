@@ -50,6 +50,18 @@ class SearchFoo extends DBModel
 }
 
 /**
+ * @property someISAVar String('Isa var'); required
+ * @property otherVar Integer('Integer'); required
+*/
+class SearchFooISA extends SearchFoo
+{
+	public static function search($terms, $language)
+	{
+		return self::callStatic('SearchFooISA', 'search', array($terms, $language, 'SearchFooISA'));
+	}
+}
+
+/**
  * @property primary; title String('Title', 64); required
  * @property primary; someOtherPrimary String('Primary', 64); required
  * @property language String('language', 6); required
@@ -123,6 +135,15 @@ class SearchableTest extends CoOrgModelTest
 		$foo->body = 'Dit is mijn nederlandse tekst, om te zien of het goed werkt. Put some english here (title) so it matches with title, but not when searching for english texts...';
 		$foo->language = 'nl';
 		$foo->save();
+		
+		$isa = new SearchFooISA;
+		$isa->title = 'Some Dodo';
+		$isa->someOtherPrimary = 'some-primary';
+		$isa->body = 'I want you to search this ISA for me...';
+		$isa->language = 'en';
+		$isa->someISAVar = '...';
+		$isa->otherVar = 10;
+		$isa->save();
 	}
 	
 	public function testNormalSearch()
@@ -203,6 +224,18 @@ class SearchableTest extends CoOrgModelTest
 		$this->assertEquals(0, count($results));
 	}
 	
+	public function testISASearch()
+	{	
+		$pager = SearchFooISA::search('search', 'en');
+		$results = $pager->execute(1, 10);
+		$this->assertEquals(1, count($results));
+		
+		$this->assertEquals('Some Dodo', $results[0]->title);
+		$this->assertEquals('some-primary', $results[0]->someOtherPrimary);
+		$this->assertEquals(10, $results[0]->otherVar);
+		$this->assertEquals('...', $results[0]->someISAVar);
+	}
+	
 	public function testIdentitySearch()
 	{
 		$pager = SearchFoo::search('keep', 'en');
@@ -272,14 +305,27 @@ class SearchableTest extends CoOrgModelTest
 	
 	public function testDelete()
 	{
+		// Look up the SIDS
+		// Ok, we cant really test this, so we use implementation knowledge
+		$q = DB::prepare('SELECT SID FROM SearchFooIndex
+		                   WHERE title=:title AND someOtherPrimary=:primary');
+		$q->execute(array(':title' => 'My Title', ':primary' => 'other-primary'));
+		$SIDS = $q->fetchAll();
+	
 		$someFoo = SearchFoo::get('My Title', 'other-primary');
 		$someFoo->delete();
 		
+		// See if it is completely removed
 		// Ok, we cant really test this, so we use implementation knowledge
 		$q = DB::prepare('SELECT * FROM SearchFooIndex
 		                   WHERE title=:title AND someOtherPrimary=:primary');
 		$q->execute(array(':title' => 'My Title', ':primary' => 'other-primary'));
-		$this->assertNull(null, $q->fetch());
+		$this->assertFalse($q->fetch());
+		
+		$q = DB::prepare('SELECT * FROM SearchIndex
+		                   WHERE SID=:SID');
+		$q->execute(array(':SID' => $SIDS[0]['SID']));
+		$this->assertFalse($q->fetch());
 		
 		$pager = SearchFoo::search('rainbow', 'en');
 		$results = $pager->execute(1, 10);

@@ -19,7 +19,7 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class Sortable
+class Sortable implements IModelExtension
 {
 	private $_retriever;
 	private $_groupProps = array();
@@ -42,6 +42,11 @@ class Sortable
 		{
 			return true;
 		}
+		return false;
+	}
+	
+	public function hasPublicMethod($name)
+	{
 		return false;
 	}
 	
@@ -112,6 +117,8 @@ class Sortable
 		}
 	}
 	
+	public function afterInsert() {}
+	
 	public function beforeUpdate()
 	{
 		list($queryExpressions, $queryArgs) = $this->params();
@@ -146,6 +153,10 @@ class Sortable
 		$queryArgs[':newSequence'] = $this->_object->sequence_db;
 		$q->execute($queryArgs);
 	}
+	
+	public function afterUpdate() {}
+	
+	public function beforeDelete() {}
 	
 	public function afterDelete()
 	{

@@ -45,7 +45,7 @@ class Rot13Variant implements IPropertyVariant
 	}
 }
 
-class MockExtends
+class MockExtends implements IModelExtension
 {
 	public static $before = false;
 	public static $class;
@@ -65,6 +65,11 @@ class MockExtends
 		return $f == 'staticExample';
 	}
 	
+	public function hasPublicMethod($f)
+	{
+		return false;
+	}
+	
 	public function staticExample()
 	{
 		return 'ABBA';
@@ -73,8 +78,9 @@ class MockExtends
 	public function afterInsert() {}
 	public function beforeUpdate() {}
 	public function afterUpdate() {}
+	public function beforeDelete() {}
 	public function afterDelete() {}
-	public function connect() {}
+	public function connect($i) {}
 	
 	public function properties()
 	{

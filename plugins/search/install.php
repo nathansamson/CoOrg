@@ -70,11 +70,42 @@ function search_install_db()
 			FOREIGN KEY(SID) REFERENCES SearchIndex(SID) ON DELETE CASCADE
 		)');
 		$q->execute();
+		
+		$s = DB::prepare('CREATE TABLE SearchFooISA (
+		   title VARCHAR(64),
+		   someOtherPrimary VARCHAR(64),
+		   someISAVar VARCHAR(32),
+		   otherVar INTEGER,
+		   FOREIGN KEY(title, someOtherPrimary) REFERENCES SearchFOO(title, someOtherPrimary) ON DELETE CASCADE,
+		   PRIMARY KEY(title, someOtherPrimary)
+		)');
+		$s->execute();
+		
+		$s = DB::prepare('CREATE TABLE Tagging (
+		   title VARCHAR(64) PRIMARY KEY,
+		   body TEXT,
+		   language VARCHAR(6)
+		)');
+		$s->execute();
+		
+		$q = DB::prepare('CREATE TABLE TaggingIndex (
+			SID INTEGER PRIMARY KEY,
+			title VARCHAR(64),
+			FOREIGN KEY(title) REFERENCES Tagging(title) ON DELETE CASCADE,
+			FOREIGN KEY(SID) REFERENCES SearchIndex(SID) ON DELETE CASCADE
+		)');
+		$q->execute();
 	}
 }
 
 function search_delete_db()
 {
+	$s = DB::prepare('DROP TABLE IF EXISTS Tagging');
+	$s->execute();
+
+	$s = DB::prepare('DROP TABLE IF EXISTS SearchFooISA');
+	$s->execute();
+
 	$s = DB::prepare('DROP TABLE IF EXISTS SearchFooIndex');
 	$s->execute();
 	
