@@ -805,6 +805,18 @@ class PropertiesTest extends PHPUnit_Framework_TestCase
 		$f->set($upload);
 		$this->assertTrue($f->validate(''));
 		$this->assertEquals('data/.session/some/session/file', $f->get());
+		
+		
+		$f = new PropertyFile('File name', 'some/path');
+		$f->required();
+		$f->set('some/old/value');
+		$f->postsave();
+		
+		$upload = new FileUpload('', 0, UPLOAD_ERR_NO_FILE);
+		$f->set($upload);
+		$this->assertTrue($f->validate(''));
+		$this->assertNull($f->errors());
+		$this->assertEquals('data/some/path/some/old/value', $f->get());
 	}
 	
 	public function testErrorInFile()

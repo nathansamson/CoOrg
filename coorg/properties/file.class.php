@@ -108,8 +108,8 @@ class PropertyFile extends Property
 		{
 			if ($this->_value->error() == UPLOAD_ERR_NO_FILE)
 			{
-				// See if there is a session
-				if (!$this->_value->temppath())
+				// See if there is a session or an old file
+				if (!$this->_oldValue && !$this->_value->temppath())
 				{
 					$this->error(t('You have to upload a file'));
 					return false;
