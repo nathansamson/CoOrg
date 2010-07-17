@@ -4,23 +4,23 @@
 {stylesheet file={'styles/blog.css'|static:'blog'}}
 <article class="fullpage">
 <header>
-	{if Acl::isAllowed(UserSession::get()->username,'admin')}
-	<span class="page-actions">
-	{a request="blog/edit"
-	   year=$blog->year
-	   month=$blog->month
-	   day=$blog->day
-	   id=$blog->ID
-	   language=$blog->language
-	   coorgStock="edit"}{/a}
-	</span>
-{/if}
+	{if Acl::owns(UserSession::get()->username, $blog)}
+		<span class="page-actions">
+		{a request="blog/edit"
+		   year=$blog->year
+		   month=$blog->month
+		   day=$blog->day
+		   id=$blog->ID
+		   language=$blog->language
+		   coorgStock="edit"}{/a}
+		</span>
+	{/if}
 	<h1>{$blog->title|escape}</h1>
 	<p>{'By %user @ %date'|_:($blog->authorID|linkyfy:'user/profile/show':$blog->authorID):($blog->timePosted|date_format)}</p>
 </header>
 {$blog->text|format:all}
 
-{if UserSession::get() && Acl::isAllowed(UserSession::get()->username,'blog-writer')}
+{if Acl::owns(UserSession::get()->username, $blog)}
 	{assign var=comments value=$blog->comments}
 {else}
 	{assign var=comments value=$blog->comments->filter(PropertySpamStatus::OK)}
@@ -37,10 +37,9 @@
 		{/if}
 			{if !($blogCommentEdit && $blogCommentEdit->ID == $comment->ID)}
 			<header>
-				{if UserSession::get() && ($comment->authorID == UserSession::get()->username ||
-				    Acl::isAllowed(UserSession::get()->username,'admin'))}
+				{if Acl::owns(UserSession::get()->username, $comment) || Acl::owns(UserSession::get()->username, $blog)}
 					<div class="page-actions">
-						{if Acl::isAllowed(UserSession::get()->username,'blog-writer')}
+						{if Acl::owns(UserSession::get()->username, $blog)}
 							{if $comment->spamStatus == PropertySpamStatus::OK}
 								{form request="blog/comment/spam" nobreaks id="comment_{$comment->ID}"}
 									{input name=commentID value=$comment->ID}

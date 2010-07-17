@@ -148,7 +148,15 @@ class Controller extends ControllerBase
 							$p = $parts[$i];
 							if ($p[0] == '$')
 							{
-								$params[] = $pNamesToValue[substr($p, 1)];
+								if ($p[1] != ':')
+								{
+									$params[] = $pNamesToValue[substr($p, 1)];
+								}
+								else
+								{
+									$pName = substr($p, 2);
+									$params[] = $this->$pName;
+								}
 							}
 							else
 							{
@@ -183,7 +191,15 @@ class Controller extends ControllerBase
 					{
 						if ($part[0] == '$')
 						{
-							$params[] = $pNamesToValue[substr($part, 1)];
+							if ($part[1] != ':')
+							{
+								$params[] = $pNamesToValue[substr($part, 1)];
+							}
+							else
+							{
+								$pName = substr($part, 2);
+								$params[] = $this->$pName;
+							}
 						}
 						else
 						{

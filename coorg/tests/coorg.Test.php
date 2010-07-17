@@ -326,6 +326,13 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('stopped', CoOrgSmarty::$vars['status']);
 	}
 	
+	public function testBeforeFilterAccessProperties()
+	{
+		CoOrg::process('alpha/moreAdvancedBefore/myName/myStopCode');
+		
+		$this->assertEquals('myNamemyStopCode', CoOrgSmarty::$vars['combined']);
+	}
+	
 	public function testPropagationOfBeforeFilter()
 	{
 		AlphaSubController::$set = array();

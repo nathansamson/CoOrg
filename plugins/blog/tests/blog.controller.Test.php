@@ -203,8 +203,8 @@ class BlogControllerTest extends CoOrgControllerTest
 	{
 		$this->login('nele');
 		$this->request('blog/edit/2010/4/9/blog-post');
-		$this->assertFlashError('Blog item is not found');
-		$this->assertRendered('notfound');
+		$this->assertFlashError('You don\'t have the rights to view this page');
+		$this->assertRedirected('');
 	}
 	
 	public function testEditOtherLanguage()
@@ -256,8 +256,8 @@ class BlogControllerTest extends CoOrgControllerTest
 		                                'title' => 'Some New Title',
 		                                'text' => 'Some new Content'));
 
-		$this->assertFlashError('Blog item is not found');
-		$this->assertRendered('notfound');
+		$this->assertFlashError('You don\'t have the rights to view this page');
+		$this->assertRedirected('');
 	}
 	
 	public function testUpdateOtherLanguage()

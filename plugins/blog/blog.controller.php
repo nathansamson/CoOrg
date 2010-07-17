@@ -20,7 +20,7 @@
 
 class BlogController extends Controller
 {
-	private $_blog;
+	protected $_blog;
 
 	/**
 	 * @before fetchLatest $page
@@ -40,7 +40,7 @@ class BlogController extends Controller
 
 	/**
 	 * @Acl allow blog-writer
-	 * @Acl allow admin
+	 * @Acl allow blog-admin
 	*/
 	public function create()
 	{
@@ -50,7 +50,7 @@ class BlogController extends Controller
 	
 	/**
 	 * @Acl allow blog-writer
-	 * @Acl allow admin
+	 * @Acl allow blog-admin
 	*/
 	public function save($title, $text)
 	{
@@ -95,7 +95,8 @@ class BlogController extends Controller
 	}
 	
 	/**
-	 * @before get $year $month $day $id $language edit
+	 * @before get $year $month $day $id $language
+	 * @Acl owns $:_blog
 	*/
 	public function edit($year, $month, $day, $id, $language = null)
 	{
@@ -113,7 +114,8 @@ class BlogController extends Controller
 	}
 	
 	/**
-	 * @before get $year $month $day $id $language true
+	 * @before get $year $month $day $id $language
+	 * @Acl owns $:_blog
 	*/
 	public function update($year, $month, $day, $id, $title, $text, $language,
 	                       $commentsAllowed = false, $commentsOpenFor = null)
@@ -154,8 +156,8 @@ class BlogController extends Controller
 
 	/**
 	 * @before get $year $month $day $id $fromLanguage
-	 * @Acl allow blog-writer
 	 * @Acl allow blog-translator
+	 * @Acl owns $:_blog
 	*/
 	public function translate($year, $month, $day, $id, $fromLanguage, $toLanguage)
 	{
@@ -169,8 +171,8 @@ class BlogController extends Controller
 	/**
 	 * @post
 	 * @before get $year $month $day $id $fromLanguage
-	 * @Acl allow blog-writer
 	 * @Acl allow blog-translator
+	 * @Acl owns $:_blog
 	*/
 	public function translateSave($year, $month, $day, $id, $fromLanguage,
 	                              $title, $text, $language)
@@ -209,12 +211,11 @@ class BlogController extends Controller
 		$this->render('archive');
 	}
 	
-	protected function get($year, $month, $day, $id, $language = null, $author = false)
+	protected function get($year, $month, $day, $id, $language = null)
 	{
-		if ($language == null)
-			$language = CoOrg::getLanguage();
+		if ($language == null) $language = CoOrg::getLanguage();
 		$this->_blog = Blog::getBlog($year, $month, $day, $id, $language);
-		if (!$this->_blog || ($author == true && $this->_blog->authorID != UserSession::get()->username))
+		if (!$this->_blog)
 		{
 			$this->error(t('Blog item is not found'));
 			$this->notFound();

@@ -71,6 +71,10 @@ class AclBeforeController extends Controller
 				}
 			}
 		}
+		else if ($what == 'owns')
+		{
+			$this->_allowed = Acl::owns(UserSession::get()->username, $key);
+		}
 	}
 	
 	public function out()

@@ -20,6 +20,8 @@ class AlphaController extends Controller {
 	
 	public static $objectRetrieve = null;
 	
+	protected $_something;
+	
 	public function index($p1 = '', $p2 = '') {
 		self::$indexExecuted = true;
 		self::$indexParams = array($p1, $p2);
@@ -91,6 +93,15 @@ class AlphaController extends Controller {
 		$this->status = 'ran';
 	}
 	
+	/**
+	 * @before createSomething $name $value
+	 * @before reverse $:_something
+	 * @Alpha reverse $:_something
+	*/
+	public function moreAdvancedBefore($name, $value)
+	{
+	}
+	
 	public function doredirect()
 	{
 		$this->redirect('some/redirect', 'to', 'a/pagewith?strangechars');
@@ -111,6 +122,18 @@ class AlphaController extends Controller {
 			$this->status = 'stopped';
 			return false;
 		}
+	}
+	
+	protected function createSomething($a, $b)
+	{
+		$this->_something = $a.$b;
+		return true;
+	}
+	
+	protected function reverse($a)
+	{
+		$this->_something = strrev($a);
+		return true;
 	}
 }
 

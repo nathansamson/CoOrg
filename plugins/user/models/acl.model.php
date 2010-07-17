@@ -25,12 +25,36 @@
 */
 class Acl extends DBModel
 {
+	private static $_ownerMethods = array();
+
 	protected function __construct($group, $key, $allowed)
 	{
 		parent::__construct();
 		$this->groupID = $group;
 		$this->keyID = $key;
 		$this->allowed = $allowed;
+	}
+	
+	public static function registerOwnsClass($ownsObjectName, $ownsChecker)
+	{
+		self::$_ownerMethods[$ownsObjectName] = $ownsChecker;
+	}
+	
+	public static function owns($user, $object)
+	{
+		CoOrg::loadPluginInfo('acl');
+		$class = get_class($object);
+		while ($class && ! array_key_exists($class, self::$_ownerMethods)) {
+			$class = get_parent_class($class);
+		}
+		if ($class)
+		{
+			return self::$_ownerMethods[$class]->owns($user, $object);
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	public static function set($group, $key, $allowed)

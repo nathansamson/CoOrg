@@ -4,12 +4,19 @@ class AlphaBeforeController extends Controller
 {
 	private $_stopped;
 
-	public function in($value, $a, $name)
+	public function in($value, $a, $name = null)
 	{
-		$this->_stopped = ($value == 'myStopCode');
-		$this->value = $value;
-		$this->name = $name;
-		$this->arbitraryValue = $a;
+		if ($value != 'reverse')
+		{
+			$this->_stopped = ($value == 'myStopCode');
+			$this->value = $value;
+			$this->name = $name;
+			$this->arbitraryValue = $a;
+		}
+		else
+		{
+			$this->combined = strrev($a);
+		}
 	}
 
 	public function out()

@@ -24,6 +24,7 @@ class AdminBlogController extends AdminBaseController
 
 	/**
 	 * @Acl allow blog-writer
+	 * @Acl allow blog-admin
 	*/
 	public function index($page = 1)
 	{
