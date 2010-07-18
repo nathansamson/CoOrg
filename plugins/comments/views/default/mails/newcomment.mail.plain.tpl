@@ -1,6 +1,6 @@
 {'Hi,
 
-A new comment was posted for the blog at %URL'|_:$messageURL}
+A new comment was posted at %URL'|_:$messageURL}
 
 {if $totalModerationQueue > 1}
 {'Notice that their are  in total %X messages waiting to be moderated.'|_:$totalModerationQueue}

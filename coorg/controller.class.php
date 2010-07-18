@@ -24,6 +24,8 @@ abstract class ControllerBase
 	abstract protected function error($msg);
 	abstract protected function render($tpl, $app = false, $baseFile = 'base');
 	abstract protected function mail();
+	
+	abstract public function __set($name, $value);
 }
 
 class Controller extends ControllerBase
@@ -225,12 +227,12 @@ class Controller extends ControllerBase
 		$this->smarty()->saveState();
 	}
 	
-	protected function notice($msg)
+	public function notice($msg)
 	{
 		$this->smarty()->notice($msg);
 	}
 	
-	protected function error($msg)
+	public function error($msg)
 	{
 		$this->smarty()->error($msg);
 	}
@@ -242,7 +244,7 @@ class Controller extends ControllerBase
 		call_user_func_array(array('Header', 'redirect'), $args);
 	}
 
-	protected function render($tpl, $app = false, $baseFile = 'base')
+	public function render($tpl, $app = false, $baseFile = 'base')
 	{
 		$this->addTemplateDirs($this->smarty());
 		if (array_key_exists($this->_renderType, $this->_contentTypes))
@@ -346,6 +348,41 @@ class Controller extends ControllerBase
 		//TODO: Use anonymous functions/closures (only available in PHP 5.3)
 		$smarty->_coorg_createURL = array($this, 'createURL');
 		return $smarty;
+	}
+}
+
+class ControllerHelper extends ControllerBase
+{
+	protected $_controller;
+
+	public function __construct($controller)
+	{
+		$this->_controller = $controller;
+	}
+
+	public function __set($name, $value)
+	{
+		$this->_controller->$name = $value;
+	}
+	
+	protected function notice($n)
+	{
+		$this->_controller->notice($n);
+	}
+	
+	protected function error($n)
+	{
+		$this->_controller->error($n);
+	}
+	
+	protected function render($tpl, $app = false, $base = 'base')
+	{
+		$this->_controller->render($tpl, $app, $base);
+	}
+	
+	protected function mail()
+	{
+		return $this->_controller->mail();
 	}
 }
 

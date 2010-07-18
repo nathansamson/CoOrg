@@ -53,6 +53,7 @@ class CoOrgControllerTest extends CoOrgModelTest
 		$config->set('defaultLanguage', '');
 		CoOrg::init($config, 'app', 'plugins');
 		CoOrgSmarty::clearAll();
+		Header::$redirect = '__none__';
 	}
 
 	protected function request($request, $postParams = array())

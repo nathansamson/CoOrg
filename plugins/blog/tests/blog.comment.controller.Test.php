@@ -54,8 +54,8 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->assertRendered('show');
 		$this->assertVarSet('spamOptions');
 		$this->assertVarSet('blog');
-		$this->assertVarSet('blogComment');
-		$c = CoOrgSmarty::$vars['blogComment'];
+		$this->assertVarSet('newComment');
+		$c = CoOrgSmarty::$vars['newComment'];
 		$this->assertEquals('', $c->comment);
 		$this->assertFlashError('Your comment was not posted');
 	}
@@ -169,7 +169,7 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$blog = Blog::getBlog('2010', '04', '10', 'some-other-blog', 'en');
 		$this->assertEquals(1, count($blog->comments));
 		$this->assertMailSent('moderation@mail.com', 'The Site: New comment to moderate',
-		                      'mails/newcomment',
+		                      'plugins/comments/views/default/mails/newcomment',
 		                      array('totalModerationQueue' => '2', // This new one + 1 in DB
 		                            'title' => 'RE: Some Other Blog',
 		                            'body' => 'UNKNOWN BODY',
@@ -193,12 +193,11 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		
 		$this->assertRendered('show');
 		$this->assertVarSet('blog');
-		$this->assertVarSet('blogComment');
-		$c = CoOrgSmarty::$vars['blogComment'];
+		$this->assertVarSet('newComment');
+		$c = CoOrgSmarty::$vars['newComment'];
 		$this->assertEquals('My very first comment', $c->comment);
-		$this->assertVarSet('anonProfile');
-		$p = CoOrgSmarty::$vars['anonProfile'];
-		$this->assertEquals('My Anon', $p->name);
+		$this->assertNotNull($c->anonAuthor);
+		$this->assertEquals('My Anon', $c->anonAuthor->name);
 		$this->assertFlashError('Your comment was not posted');
 	}
 	
@@ -209,9 +208,9 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		
 		$this->assertRendered('show');
 		$this->assertVarSet('blog');
-		$this->assertVarSet('blogComment');
-		$this->assertVarSet('blogCommentEdit');
-		$c = CoOrgSmarty::$vars['blogCommentEdit'];
+		$this->assertVarSet('newComment');
+		$this->assertVarSet('editComment');
+		$c = CoOrgSmarty::$vars['editComment'];
 		$this->assertEquals(1, $c->ID);
 	}
 	
@@ -222,12 +221,12 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		
 		$this->assertRendered('show');
 		$this->assertVarSet('spamOptions');
+		$this->assertVarSet('newComment');
+		$this->assertVarSet('editComment');
+		$c = CoOrgSmarty::$vars['editComment'];
 		$this->assertVarSet('blog');
-		$this->assertVarSet('blogComment');
-		$this->assertVarSet('blogCommentEdit');
-		$c = CoOrgSmarty::$vars['blogCommentEdit'];
-		$blog = CoOrgSmarty::$vars['blog'];
 		$this->assertEquals(1, $c->ID);
+		$blog = CoOrgSmarty::$vars['blog'];
 		$this->assertEquals('xyzer', $blog->ID);
 	}
 	
@@ -236,8 +235,10 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->login('nele');
 		$this->request('blog/comment/edit/2');
 		
-		$this->assertFlashError(t('You are not allowed to edit this comment'));
-		$this->assertRedirected('blog/show/2010/4/11/xyz');
+		//$this->assertFlashError(t('You are not allowed to edit this comment'));
+		$this->assertFlashError('You don\'t have the rights to view this page');
+		//$this->assertRedirected('blog/show/2010/4/11/xyz');
+		$this->assertRedirected('');
 	}
 	
 	public function testEditAnonymous()
@@ -248,12 +249,12 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->assertRendered('show');
 		$this->assertVarSet('spamOptions');
 		$this->assertVarSet('blog');
-		$this->assertVarSet('blogComment');
-		$this->assertVarSet('blogCommentEdit');
-		$c = CoOrgSmarty::$vars['blogCommentEdit'];
 		$blog = CoOrgSmarty::$vars['blog'];
-		$this->assertVarSet('anonProfileEdit');
-		$p = CoOrgSmarty::$vars['anonProfileEdit'];
+		$this->assertVarSet('newComment');
+		$this->assertVarSet('editComment');
+		$c = CoOrgSmarty::$vars['editComment'];
+		$this->assertNotNull($c->anonAuthor);
+		$p = $c->anonAuthor;
 		$this->assertEquals(1, $p->ID);
 		$this->assertEquals(3, $c->ID);
 		$this->assertEquals('xyz', $blog->ID);
@@ -264,8 +265,10 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->login('nele');
 		$this->request('blog/comment/edit/2');
 		
-		$this->assertFlashError(t('You are not allowed to edit this comment'));
-		$this->assertRedirected('blog/show/2010/4/11/xyz');
+		//$this->assertFlashError(t('You are not allowed to edit this comment'));
+		$this->assertFlashError('You don\'t have the rights to view this page');
+		//$this->assertRedirected('blog/show/2010/4/11/xyz');
+		$this->assertRedirected('');
 	}
 	
 	public function testUpdate()
@@ -292,9 +295,9 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->assertRendered('show');
 		$this->assertVarSet('spamOptions');
 		$this->assertVarSet('blog');
-		$this->assertVarSet('blogComment');
-		$this->assertVarSet('blogCommentEdit');
-		$c = CoOrgSmarty::$vars['blogCommentEdit'];
+		$this->assertVarSet('newComment');
+		$this->assertVarSet('editComment');
+		$c = CoOrgSmarty::$vars['editComment'];
 		$blog = CoOrgSmarty::$vars['blog'];
 		$this->assertEquals(1, $c->ID);
 		$this->assertEquals('xyzer', $blog->ID);
@@ -321,8 +324,10 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->login('nele');
 		$this->request('blog/comment/update', array('ID' => '2'));
 		
-		$this->assertFlashError(t('You are not allowed to edit this comment'));
-		$this->assertRedirected('blog/show/2010/4/11/xyz');
+		//$this->assertFlashError(t('You are not allowed to edit this comment'));
+		$this->assertFlashError('You don\'t have the rights to view this page');
+		//$this->assertRedirected('blog/show/2010/4/11/xyz');
+		$this->assertRedirected('');
 	}
 	
 	public function testUpdateAdnonymous()
@@ -358,16 +363,15 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		
 		$this->assertRendered('show');
 		$this->assertVarSet('blog');
-		$this->assertVarSet('blogComment');
-		$this->assertVarSet('blogCommentEdit');
-		$c = CoOrgSmarty::$vars['blogCommentEdit'];
+		$this->assertVarSet('newComment');
+		$this->assertVarSet('editComment');
+		$c = CoOrgSmarty::$vars['editComment'];
 		$blog = CoOrgSmarty::$vars['blog'];
 		$this->assertEquals(3, $c->ID);
 		$this->assertEquals('xyz', $blog->ID);
 		$this->assertFlashError('Could not save comment');
-		$this->assertVarSet('anonProfileEdit');
-		$p = CoOrgSmarty::$vars['anonProfileEdit'];
-		$this->assertEquals(1, $p->ID);
+		$this->assertNotNull($c->anonAuthor);
+		$this->assertEquals(1, $c->anonAuthor->ID);
 	}
 	
 	public function testUpdateAdnonymousNotAllowed()
@@ -381,8 +385,10 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		               'website' => 'safe.com'
 		               ));
 
-		$this->assertFlashError(t('You are not allowed to edit this comment'));
-		$this->assertRedirected('blog/show/2010/4/11/xyz');
+		//$this->assertFlashError(t('You are not allowed to edit this comment'));
+		$this->assertFlashError('You don\'t have the rights to view this page');
+		//$this->assertRedirected('blog/show/2010/4/11/xyz');
+		$this->assertRedirected('');
 	}
 	
 	public function testDelete()
@@ -414,8 +420,10 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->assertEquals(2, count($blog->comments));
 		$this->request('blog/comment/delete', array('ID' => 2));
 		
-		$this->assertFlashError('You are not allowed to delete this comment');
-		$this->assertRedirected('blog/show/2010/4/11/xyz');
+		//$this->assertFlashError('You are not allowed to delete this comment');
+		$this->assertFlashError('You don\'t have the rights to view this page');
+		//$this->assertRedirected('blog/show/2010/4/11/xyz');
+		$this->assertRedirected('');
 		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
 		$this->assertEquals(2, count($blog->comments));
 	}
@@ -423,6 +431,8 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 	public function testDeleteAnonymous()
 	{
 		$this->login('nathan');
+		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
+		$this->assertEquals(2, count($blog->comments));
 		$this->request('blog/comment/delete', array('ID' => 3));
 		
 		$this->assertFlashNotice('Deleted comment');
@@ -441,8 +451,10 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		$this->assertEquals(2, count($blog->comments));
 		$this->request('blog/comment/delete', array('ID' => 3));
 		
-		$this->assertFlashError('You are not allowed to delete this comment');
-		$this->assertRedirected('blog/show/2010/4/11/xyz');
+		//$this->assertFlashError('You are not allowed to delete this comment');
+		$this->assertFlashError('You don\'t have the rights to view this page');
+		//$this->assertRedirected('blog/show/2010/4/11/xyz');
+		$this->assertRedirected('');
 		$blog = Blog::getBlog('2010', '04', '11', 'xyz', 'en');
 		$this->assertEquals(2, count($blog->comments));
 	}
@@ -470,6 +482,7 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 			'commentID' => 2,
 			'feedback' => 'profanity'));
 		
+		//$this->assertFlashError('You don\'t have the rights to view this page');
 		$this->assertFlashError('You don\'t have the rights to view this page');
 		$this->assertRedirected('');
 	}

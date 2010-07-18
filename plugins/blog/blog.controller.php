@@ -86,11 +86,8 @@ class BlogController extends Controller
 	public function show($year, $month, $day, $id, $language = null)
 	{
 		$this->blog = $this->_blog;
-		if (!UserSession::get())
-		{
-			$this->anonProfile = new AnonProfile;
-		}
-		$this->spamOptions = BlogControllerHelper::spamOptions();
+		$helper = new BlogCommentControllerHelper($this, 'BlogComment');
+		$helper->show();
 		$this->render('show');
 	}
 	
@@ -230,18 +227,6 @@ class BlogController extends Controller
 		$this->blogs = $pager->execute($page, 10);
 		$this->blogpager = $pager;
 		return true;
-	}
-}
-
-class BlogControllerHelper
-{
-	public function spamOptions()
-	{
-		return array(
-			'spam' => t('Spam'),
-			'profanity' => t('Profanity'),
-			'low-quality' => t('Low Quality'),
-			'unwanted' => t('Annoying'));
 	}
 }
 

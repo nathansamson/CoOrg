@@ -32,7 +32,7 @@ class AdminBlogCommentController extends AdminBaseController
 		$qPager = Comment::getModerationQueue('BlogComment');
 		$this->queue = $qPager->execute($page, 20);
 		$this->qPager = $qPager;
-		$this->spamOptions = BlogControllerHelper::spamOptions();
+		$this->spamOptions = CommentsControllerHelper::spamOptions();
 		$this->render('admin/moderation-q');
 	}
 	

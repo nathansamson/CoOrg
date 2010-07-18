@@ -27,7 +27,6 @@ class AdminBlogCommentControllerTest extends CoOrgControllerTest
 		$this->login('uberadmin');
 		
 		$this->request('admin/blog/comment');
-		
 		$this->assertRendered('admin/moderation-q');
 		$this->assertVarSet('queue');
 		$this->assertVarSet('qPager');

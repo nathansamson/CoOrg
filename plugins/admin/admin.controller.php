@@ -35,13 +35,13 @@ abstract class AdminBaseController extends Controller
 	protected $_adminModule;
 	protected $_adminTab;
 
-	protected function render($tpl, $app = false, $base = 'base')
+	public function render($tpl, $app = false, $base = 'base')
 	{
 		if ($base == 'base' && $app == false)
 		{
 			CoOrg::loadPluginInfo('admin');
 			$this->_adminTabs = Admin::tabs($this->_adminModule, $this->_adminTab);
-		
+
 			parent::render($tpl, false, 'base.html.tpl|'.Controller::getTemplatePath('admin.html.tpl', 'admin'));
 		}
 		else

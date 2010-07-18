@@ -148,7 +148,8 @@ class BlogControllerTest extends CoOrgControllerTest
 	{
 		$this->request('blog/show/2010/04/11/xyz');
 		$this->assertVarSet('blog');
-		$this->assertVarSet('anonProfile');
+		$comment = CoOrgSmarty::$vars['newComment'];
+		$this->assertNotNull($comment->anonAuthor);
 		$this->assertRendered('show');
 	}
 	
@@ -156,8 +157,11 @@ class BlogControllerTest extends CoOrgControllerTest
 	{
 		$this->login();
 		$this->request('blog/show/2010/04/11/xyz');
+		
 		$this->assertVarSet('blog');
-		$this->assertFalse(array_key_exists('anonProfile', CoOrgSmarty::$vars));
+		$this->assertVarSet('newComment');
+		$comment = CoOrgSmarty::$vars['newComment'];
+		$this->assertNull($comment->anonAuthor);
 		$this->assertRendered('show');
 		$this->assertVarSet('spamOptions');
 	}
