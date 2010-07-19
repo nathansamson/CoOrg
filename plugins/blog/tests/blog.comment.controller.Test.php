@@ -175,7 +175,7 @@ class BlogCommentControllerTest extends CoOrgControllerTest
 		                            'body' => 'UNKNOWN BODY',
 		                            'date' => '**?**',
 		                            'messageURL' => 'http://www.test.info/blog/show/2010/4/10/some-other-blog#comment'.$blog->comments[0]->ID,
-		                            'moderationURL' => 'http://www.test.info/admin/comment/queue',
+		                            'moderationURL' => 'http://www.test.info/admin/blog/comment',
 		                            'site' => 'The Site'));
 		$config = new Config(COORG_TEST_CONFIG);
 		$this->assertLessThan(2, abs(time() - $config->get('blog/last-moderation-mail')));

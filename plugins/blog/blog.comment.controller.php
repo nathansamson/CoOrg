@@ -146,6 +146,7 @@ class BlogCommentControllerHelper extends SpamCommentsControllerHelper
 		$this->_commentRequests->delete = 'blog/comment/delete';
 		$this->_commentRequests->spam = 'blog/comment/spam';
 		$this->_commentRequests->notspam = 'blog/comment/notspam';
+		$this->_commentRequests->queue = 'admin/blog/comment';
 	}
 
 	public function showURL($commentOn, $comment)

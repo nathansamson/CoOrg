@@ -21,7 +21,7 @@
 
 abstract class CommentsControllerHelper extends ControllerHelper
 {
-	private $_commentClass;
+	protected $_commentClass;
 	private $_comment;
 	protected $_commentRequests;
 

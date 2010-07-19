@@ -26,6 +26,12 @@ class AdminBlogCommentController extends AdminBaseController
 	private $_comment;
 	protected $_adminModule = 'BlogAdminModule';
 	protected $_adminTab = 'BlogCommentsModerateAdminTab';
+	protected $_helper;
+
+	public function __construct()
+	{
+		$this->_helper = new AdminCommentsControllerHelper($this, 'BlogComment');
+	}
 
 	public function index($page = 1)
 	{
@@ -42,13 +48,7 @@ class AdminBlogCommentController extends AdminBaseController
 	*/
 	public function spam($commentID, $feedback, $from)
 	{
-		$this->_comment->spamStatus = PropertySpamStatus::SPAM;
-		$this->_comment->save();
-		
-		MollomMessage::feedback($this->_comment->spamSessionID, $feedback);
-		
-		$this->notice(t('Comment marked as spam'));
-		$this->redirect($from);
+		$this->_helper->spam($from, $this->_comment, $feedback);
 	}
 	
 	/**
@@ -57,11 +57,7 @@ class AdminBlogCommentController extends AdminBaseController
 	*/
 	public function notspam($commentID, $from)
 	{
-		$this->_comment->spamStatus = PropertySpamStatus::OK;
-		$this->_comment->save();
-		
-		$this->notice(t('Comment not marked as spam'));
-		$this->redirect($from);
+		$this->_helper->notspam($from, $this->_comment);
 	}
 	
 	protected function findComment($ID)

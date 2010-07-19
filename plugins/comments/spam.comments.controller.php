@@ -37,8 +37,8 @@ abstract class SpamCommentsControllerHelper extends CommentsControllerHelper
 				$mail->body = $comment->comment;
 				$mail->date = $comment->timePosted;
 				$mail->messageURL = $this->showURL($commentOn, $comment);
-				$mail->moderationURL = CoOrg::createFullURL(array('admin/comment/queue'));
-				$mail->totalModerationQueue = Comment::moderationQueueLength();
+				$mail->moderationURL = CoOrg::createFullURL(array($this->_commentRequests->queue));
+				$mail->totalModerationQueue = Comment::moderationQueueLength($this->_commentClass);
 				$site = $config->get('site/title');
 				$mail->site = $site;
 				$mail->to($receiver)

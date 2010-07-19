@@ -27,6 +27,7 @@ class AdminBlogCommentControllerTest extends CoOrgControllerTest
 		$this->login('uberadmin');
 		
 		$this->request('admin/blog/comment');
+
 		$this->assertRendered('admin/moderation-q');
 		$this->assertVarSet('queue');
 		$this->assertVarSet('qPager');
@@ -73,10 +74,10 @@ class AdminBlogCommentControllerTest extends CoOrgControllerTest
 		
 		$this->request('admin/blog/comment/notspam', array('commentID' => '666',
 		                                           'from' => 'blog/admin/comment/index/3'));
-		
+
 		$comment = BlogComment::get(666);
 		$this->assertEquals(PropertySpamStatus::OK, $comment->spamStatus);
-		$this->assertFlashNotice('Comment not marked as spam');
+		$this->assertFlashNotice('Comment unmarked as spam');
 		$this->assertRedirected('blog/admin/comment/index/3');
 	}
 	
