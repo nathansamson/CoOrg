@@ -21,5 +21,9 @@
 	{/if}
 	{input for=comment label="Comment" type=textarea required editor=lite}
 	
+	{if $commentCaptcha}
+		{foreign file="mollom.captcha.html.tpl" module="spam" captcha=$commentCaptcha}
+	{/if}
+	
 	{input type="submit" label="Post comment"}
 {/form}

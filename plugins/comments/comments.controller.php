@@ -66,7 +66,13 @@ abstract class CommentsControllerHelper extends ControllerHelper
 			$publicProfile->IP = Session::IP();
 			$comment->anonAuthor = $publicProfile;
 			
-			$this->checkSpamStatus($comment, $publicProfile);
+			if ($this->checkSpamStatus($comment, $publicProfile) === false)
+			{
+				$this->newComment = $comment;
+				$this->commentRequests = $this->_commentRequests;
+				$this->renderErrorSave($commentOn);
+				return;
+			}
 		}
 		if ($comment->spamStatus != PropertySpamStatus::SPAM)
 		{
@@ -85,7 +91,7 @@ abstract class CommentsControllerHelper extends ControllerHelper
 				$this->error(t('Your comment was not posted'));
 				$this->newComment = $comment;
 				$this->commentRequests = $this->_commentRequests;
-				$this->renderOnError($commentOn);
+				$this->renderErrorSave($commentOn);
 			}
 		}
 		else
@@ -127,7 +133,7 @@ abstract class CommentsControllerHelper extends ControllerHelper
 			$this->newComment = new $this->_commentClass;
 			$this->error(t('Could not save comment'));
 			$this->commentRequests = $this->_commentRequests;
-			$this->renderOnError($commentOn);
+			$this->renderErrorUpdate($commentOn);
 		}
 	}
 	
@@ -164,6 +170,16 @@ abstract class CommentsControllerHelper extends ControllerHelper
 	abstract protected function checkSpamStatus($comment, $profile);
 	abstract protected function beforeSuccess($commentOn, $comment);
 	
+	protected function renderErrorUpdate($commentOn)
+	{
+		$this->renderOnError($commentOn);
+	}
+	
+	protected function renderErrorSave($commentOn)
+	{
+		$this->renderOnError($commentOn);
+	}
+	
 	public static function spamOptions()
 	{
 		return array(
@@ -172,49 +188,6 @@ abstract class CommentsControllerHelper extends ControllerHelper
 			'low-quality' => t('Low Quality'),
 			'unwanted' => t('Annoying'));
 	}
-}
-
-abstract class CaptchaCommentsControllerHelper extends CommentsControllerHelper
-{
-	//abstract protected function renderOnError($commentOn, $captcha = null);
-	
-	/**
-	
-	$comment->anonAuthor = $publicProfile;
-			if (!$refreshCaptcha && !($audio || $image))
-			{
-				if (MollomCaptcha::check($captcha))
-				{
-					$comment->spamStatus = PropertySpamStatus::OK;
-				}
-				else
-				{
-					$this->newComment = $comment;
-					$this->renderOnError($commentOn, MollomCaptcha::refresh());
-					return;
-				}
-			}
-			else
-			{
-				$this->newComment = $comment;
-				if (!$refreshCaptcha)
-				{
-					if ($audio)
-					{
-						$this->renderOnError($commentOn, MollomCaptcha::refresh('audio'));
-					}
-					else
-					{
-						$this->renderOnError($commentOn, MollomCaptcha::refresh('image'));
-					}
-				}
-				else
-				{
-					$this->renderOnError($commentOn, MollomCaptcha::refresh());
-				}
-			}
-	
-	*/
 }
 
 ?>

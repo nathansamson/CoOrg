@@ -75,7 +75,10 @@ class AclBeforeController extends Controller
 		{
 			if ($this->_allowed !== null) return;
 			$this->_onlyDenied = false;
-			$this->_allowed = Acl::owns(UserSession::get()->username, $key) ? true : $this->_allowed;
+			if (UserSession::get())
+			{
+				$this->_allowed = Acl::owns(UserSession::get()->username, $key) ? true : $this->_allowed;
+			}
 		}
 	}
 	

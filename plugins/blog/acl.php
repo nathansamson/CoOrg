@@ -10,15 +10,4 @@ class BlogOwnership
 
 Acl::registerOwnsClass('Blog', new BlogOwnerShip);
 
-
-class BlogCommentOwnership
-{
-	public function owns($user, $comment)
-	{
-		return ($comment->authorID == $user);
-	}
-}
-
-Acl::registerOwnsClass('BlogComment', new BlogCommentOwnership);
-
 ?>
