@@ -10,6 +10,7 @@
 		
 		<script type="text/javascript" src="{'ckeditor/ckeditor.js'|static}"></script>
 		<script type="text/javascript" src="{'ckeditor/adapters/jquery.js'|static}"></script>
+		<script type="text/javascript" src="{'coorg.js'|static}"></script>
 		<script>
 			var COORGLANG = '{$coorgLanguage}'; 
 			$(document).ready(function() {
@@ -22,6 +23,10 @@
 					language: '{$coorgLanguage}',
 					toolbar: 'Lite',
 					customConfig: '{'ckeditor/coorgConfig.js'|static}'
+				});
+				
+				$('[placeholder]').each(function(index, element) {
+					new PlaceholderFake($(element));
 				});
 			});
 			

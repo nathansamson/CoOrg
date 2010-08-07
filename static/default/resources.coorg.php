@@ -14,6 +14,7 @@ CoOrg::resreg('/', 'images/icons/notspam.png', '884d265d50ed0116eb41fccc50629243
 CoOrg::resreg('/', 'ckeditor/ckeditor.js', 'fee9a6179471bf88e0ea4b6bc03042d7');
 CoOrg::resreg('/', 'ckeditor/adapters/jquery.js', '7adb098ba9310fca2f864b7dd6d798de');
 CoOrg::resreg('/', 'ckeditor/coorgConfig.js', 'a867222d1fc0ad87b87287fc574c8a0c');
+CoOrg::resreg('/', 'coorg.js', 'a867222d1fc0ad87b87287fc574c8a0c');
 
 // Keep this one for unittests.
 CoOrg::resreg('/', 'mockfile.css', 'A');

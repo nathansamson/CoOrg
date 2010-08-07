@@ -1,6 +1,8 @@
+{if $blogPager}
 {twowaypager pager=$blogpager request="blog/index" page=".*."
 	             coorgPrev='Newer posts'|_
 	             coorgNext='Older posts'|_}
+{/if}
 {foreach $blogs as $blog}
 	<article>
 		<header>
@@ -26,6 +28,8 @@
 		</footer>
 	</article>
 {/foreach}
+{if $blogPager}
 {twowaypager pager=$blogpager request="blog/index" page=".*."
-             coorgPrev='Newer posts'|_
-             coorgNext='Older posts'|_}
+	             coorgPrev='Newer posts'|_
+	             coorgNext='Older posts'|_}
+{/if}

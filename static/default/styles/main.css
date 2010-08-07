@@ -272,6 +272,10 @@ input, textarea, .editor, select {
 	margin-bottom: 10px;
 }
 
+.placeholder {
+	color: #666;
+}
+
 input.error, textarea.error, .editor.error, select.error {
 	border: solid 1px red;
 }
@@ -337,6 +341,29 @@ input[type="submit"] {
 
 input[type="submit"]:active {
 	background-image: -moz-linear-gradient(#F9A328, #FCBA5C);
+}
+
+[type="search"] {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	background-image: url('../images/icons/system-search.png');
+	background-repeat: no-repeat;
+	background-position: 2px center;
+	padding: 2px;
+	padding-left: 20px;
+	width: 100%;
+	margin: 0;
+}
+
+aside form {
+	margin: 5px 0;
+}
+
+aside [type="search"] {
+	height: 24px;
+	width: 100%;
+	margin: 0;
 }
 
 fieldset {

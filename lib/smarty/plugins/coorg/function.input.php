@@ -70,6 +70,7 @@ function smarty_function_input($params, $smarty)
 	$disabled = array_key_exists('disabled', $params);
 	$readonly = array_key_exists('readonly', $params);
 	$tabindex = array_key_exists('tabindex', $params) ? $params['tabindex'] : null;
+	$placeholder = array_key_exists('placeholder', $params) ? $params['placeholder'] : null;
 	
 	if ($type != 'submit')
 	{
@@ -189,6 +190,7 @@ function smarty_function_input($params, $smarty)
 	               ($class ? ' class="'.$class.'"' : '').
 	               ($size ? ' size="'.$size.'"' : '').
 	               ($readonly ? ' readonly="readonly"' : '').
+	               ($placeholder ? ' placeholder="'.$placeholder.'"' : '').
 	        '/>'.$p.$br;
 	    }
 	    else if ($type == 'textarea')

@@ -36,6 +36,7 @@
  * @variant month month datePosted
  * @variant day day datePosted
  * @extends Normalize title ID datePosted language
+ * @extends Searchable BlogSearchIndex @ID @datePosted @language title text:html :language:language
 */
 class Blog extends DBModel
 {

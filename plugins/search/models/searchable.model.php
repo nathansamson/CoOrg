@@ -62,7 +62,9 @@ class SearchNormalizer
 	
 	public function normal($in)
 	{
-		return $this->calculateRelevance(explode(' ', strtolower($in)));
+		return $this->calculateRelevance(explode(' ',
+		                   str_replace('	', ' ',
+		                   str_replace("\n", ' ', strtolower($in)))));
 	}
 	
 	public function html($in)
@@ -133,6 +135,7 @@ class Searchable implements IModelExtension
 	private $_relations = array();
 	protected $_keys = array();
 	private $_language;
+	private static $_searches;
 	
 	protected $_instance;
 
@@ -292,6 +295,24 @@ class Searchable implements IModelExtension
 		return array();
 	}
 	
+	public static function registerSearch($name, $class)
+	{
+		self::$_searches[$name] = $class;
+	}
+	
+	public static function doSearch($q, $language, $is)
+	{
+		CoOrg::loadPluginInfo('search');
+		$results = array();
+		foreach ($is as $i)
+		{
+			$r = self::$_searches[$i];
+			$r->results = SearchHack::callStatic($i, 'search', array($q, $language));
+			$results[] = $r;
+		}
+		return $results;
+	}
+	
 	protected function prepareQuery($terms, $identTerms, $class, $fields = null)
 	{
 		if (!$fields)
@@ -418,7 +439,7 @@ class Searchable implements IModelExtension
 		foreach ($this->_keys as $key)
 		{
 			$dbName = $key.'_db';
-			$connArgs[':__'.$key] = $this->_instance->$key;
+			$connArgs[':__'.$key] = $this->_instance->$dbName;
 		}
 		$connNames = implode(',', $this->_keys);
 		$connArgNames = implode(', ', array_keys($connArgs));
@@ -509,6 +530,14 @@ class Searchable implements IModelExtension
 			}
 		}
 		return false;
+	}
+}
+
+abstract class SearchHack extends DBModel
+{
+	public static function callStatic($a, $b, $c)
+	{
+		return parent::callStatic($a, $b, $c);
 	}
 }
 

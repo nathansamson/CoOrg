@@ -81,6 +81,43 @@ class Taggable extends Searchable
 		return $tags;
 	}
 	
+	public static function cloud($limit = 0)
+	{
+		$qs = 'SELECT * FROM 
+		                         (SELECT term AS tag, COUNT(*) AS cnt FROM 
+		                               SearchIndex
+		                            WHERE field=:tag
+		                            GROUP BY term';
+		if ($limit != 0)
+		{
+			$qs .= ' ORDER BY COUNT(*) * COUNT(*) * COUNT(*) * RAND() DESC LIMIT ' . $limit;
+		}
+		$qs .=  ' ) AS tmp ORDER BY tag';
+		
+		$qlimits = DB::prepare('SELECT MAX(cnt) AS max, MIN(cnt) AS min FROM (SELECT COUNT(*) AS cnt FROM SearchIndex
+		                               WHERE field=:tag GROUP BY term) AS tmp');
+		$qlimits->execute(array(':tag' => 'tag'));
+		$limits = $qlimits->fetch();
+		$max = $limits['max'];
+		$min = $limits['min'];
+		                               
+	
+		$q = DB::prepare($qs);
+		$q->execute(array(':tag' => 'tag'));
+		
+		$cloud = array();
+		$treshold = ($max - $min) / 4; // (5 levels, 4 boundaries);
+		foreach ($q->fetchAll() as $row)
+		{
+			$tag = new stdClass;
+			$tag->name = $row['tag'];
+			$tag->size = ($row['cnt'] - $min) ? ceil(($row['cnt'] - $min) / $treshold) : 1; // Even if min == cnt size => 1
+			$cloud[] = $tag;
+		}
+		
+		return $cloud;
+	}
+	
 	protected function createWheres($fields, $terms, $identTerms)
 	{
 		$wheres = parent::createWheres($fields, $terms, $identTerms);

@@ -46,10 +46,22 @@ function blog_install_db()
 	   FOREIGN KEY (ID) REFERENCES Comment(ID) ON DELETE CASCADE)
 	');
 	$s->execute();
+	
+	$s = DB::prepare('CREATE TABLE BlogSearchIndex (
+	   SID INTEGER,
+	   ID VARCHAR(256),
+	   language VARCHAR(6),
+	   datePosted DATE,
+	   FOREIGN KEY (ID, language, datePosted) REFERENCES Blog(ID, language, datePosted) ON DELETE CASCADE,
+	   FOREIGN KEY (SID) REFERENCES SearchIndex(SID) ON DELETE CASCADE)
+	');
+	$s->execute();
 }
 
 function blog_delete_db()
 {
+	$s = DB::prepare('DROP TABLE IF EXISTS BlogSearchIndex');
+	$s->execute();
 	$s = DB::prepare('DROP TABLE IF EXISTS BlogComment');
 	$s->execute();
 	$s = DB::prepare('DROP TABLE IF EXISTS Blog');
