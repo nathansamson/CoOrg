@@ -370,6 +370,22 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		                                           'parameterwith?and/')));
 	}
 	
+	public function testCreateURLWithPrefix()
+	{
+		CoOrg::config()->set('urlPrefix', ':language');
+		$this->assertEquals('en/a/b/c/d/parameterwith$3fand$2f',
+		                    CoOrg::createURL(array('a/b/c/d',
+		                                           'parameterwith?and/')));
+	}
+	
+	public function testCreateURLWithEmptyPrefix()
+	{
+		CoOrg::config()->set('urlPrefix', '');
+		$this->assertEquals('a/b/c/d/parameterwith$3fand$2f',
+		                    CoOrg::createURL(array('a/b/c/d',
+		                                           'parameterwith?and/')));
+	}
+	
 	public function testLoadPluginInfoSpecific()
 	{
 		$this->assertFalse(class_exists('Alpha2Info'));

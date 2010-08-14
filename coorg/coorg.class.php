@@ -274,6 +274,7 @@ class CoOrg {
 			
 			$urlPrefix = self::$_config->get('urlPrefix').'/';
 			$urlPrefix = str_replace(':language', $language, $urlPrefix);
+			if ($urlPrefix == '/') $urlPrefix = '';
 		}
 		foreach ($params as $k=>&$p)
 		{
