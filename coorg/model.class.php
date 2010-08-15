@@ -276,6 +276,11 @@ class Model
 		return $this->_properties;
 	}
 	
+	public static function getFieldNamesFor($class)
+	{
+		return array_keys(self::$_modelInfo[$class]['properties']);
+	}
+	
 	protected function extensions()
 	{
 		return $this->_extensions;

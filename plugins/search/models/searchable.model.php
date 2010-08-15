@@ -360,7 +360,12 @@ class Searchable implements IModelExtension
 			$fields = array();
 			foreach ($tree as $c)
 			{
-				$fields[] = $c . '.*';
+				foreach (Model::getFieldNamesFor($c) as $field)
+				{
+					// Fix duplicate columns problem (does not occur in SQLite, but does in MySQL)
+					if (! array_key_exists($field, $fields))
+						$fields[$field] = $c . '.'.$field;
+				}
 			}
 			return implode(', ', $fields);
 		}
@@ -476,7 +481,8 @@ class Searchable implements IModelExtension
 		$args = array();
 		foreach ($this->_keys as $key)
 		{
-			$args[':__'.$key] = $this->_instance->$key;
+			$dbName = $key . '_db';
+			$args[':__'.$key] = $this->_instance->$dbName;
 		}
 		
 		$q = DB::prepare($this->deleteIndexQueryString($all));

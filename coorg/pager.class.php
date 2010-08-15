@@ -40,7 +40,7 @@ abstract class Pager
 		$this->_page = $page;
 		$this->_elementsPerPage = $elementsPerPage;
 		$q = DB::prepare($this->getSelectQuery($page, $elementsPerPage));
-		$q->execute($this->_params);
+		$q->execute($this->_params);		
 		
 		$elements = array();
 		foreach ($q->fetchAll() as $row)

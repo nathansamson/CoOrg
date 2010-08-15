@@ -52,21 +52,23 @@ function search_install_db()
 		$s = DB::prepare('CREATE TABLE SearchFoo (
 		   title VARCHAR(64),
 		   someOtherPrimary VARCHAR(64),
+		   datePrimary DATE,
 		   language VARCHAR(6),
 		   identity VARCHAR(512),
 		   body TEXT,
 		   barTitle VARCHAR(64),
 		   barSomeOtherPrimary VARCHAR(64),
 		   FOREIGN KEY(barTitle, barSomeOtherPrimary) REFERENCES SearchBar(title, someOtherPrimary) ON DELETE SET NULL,
-		   PRIMARY KEY(title, someOtherPrimary)
+		   PRIMARY KEY(title, someOtherPrimary, datePrimary)
 		)');
 		$s->execute();
 	
 		$q = DB::prepare('CREATE TABLE SearchFooIndex (
 			SID INTEGER PRIMARY KEY,
 			title VARCHAR(64),
+			datePrimary DATE,
 			someOtherPrimary VARCHAR(64),
-			FOREIGN KEY(title, someOtherPrimary) REFERENCES SearchFoo(title, someOtherPrimary) ON DELETE CASCADE,
+			FOREIGN KEY(title, someOtherPrimary, datePrimary) REFERENCES SearchFoo(title, someOtherPrimary, datePrimary) ON DELETE CASCADE,
 			FOREIGN KEY(SID) REFERENCES SearchIndex(SID) ON DELETE CASCADE
 		)');
 		$q->execute();
@@ -74,10 +76,11 @@ function search_install_db()
 		$s = DB::prepare('CREATE TABLE SearchFooISA (
 		   title VARCHAR(64),
 		   someOtherPrimary VARCHAR(64),
+		   datePrimary DATE,
 		   someISAVar VARCHAR(32),
 		   otherVar INTEGER,
-		   FOREIGN KEY(title, someOtherPrimary) REFERENCES SearchFOO(title, someOtherPrimary) ON DELETE CASCADE,
-		   PRIMARY KEY(title, someOtherPrimary)
+		   FOREIGN KEY(title, someOtherPrimary, datePrimary) REFERENCES SearchFoo(title, someOtherPrimary, datePrimary) ON DELETE CASCADE,
+		   PRIMARY KEY(title, someOtherPrimary, datePrimary)
 		)');
 		$s->execute();
 		
@@ -100,6 +103,9 @@ function search_install_db()
 
 function search_delete_db()
 {
+	$s = DB::prepare('DROP TABLE IF EXISTS TaggingIndex');
+	$s->execute();
+
 	$s = DB::prepare('DROP TABLE IF EXISTS Tagging');
 	$s->execute();
 

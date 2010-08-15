@@ -21,12 +21,13 @@
 /**
  * @property primary; title String('Title', 64); required
  * @property primary; someOtherPrimary String('Primary', 64); required
+ * @property primary; datePrimary Date('Date primary'); required
  * @property language String('language', 6); required
  * @property body String('The Body'); required
  * @property identity String('Identity');
  * @property barTitle String('Title', 64);
  * @property barSomeOtherPrimary String('Primary', 64);
- * @extends Searchable SearchFooIndex @title @someOtherPrimary title identity:identity body:html :SearchBar:@barTitle:@barSomeOtherPrimary:body :language:language
+ * @extends Searchable SearchFooIndex @title @someOtherPrimary @datePrimary title identity:identity body:html :SearchBar:@barTitle:@barSomeOtherPrimary:body :language:language
 */
 class SearchFoo extends DBModel
 {
@@ -40,11 +41,12 @@ class SearchFoo extends DBModel
 		return self::callStatic('SearchFoo', 'search', array($terms, $language));
 	}
 	
-	public static function get($title, $primary)
+	public static function get($title, $primary, $date)
 	{
 		$q = DB::prepare('SELECT * FROM SearchFoo WHERE
-		                    title=:title AND someOtherPrimary=:primary');
-		$q->execute(array(':title' => $title, ':primary' => $primary));
+		                    title=:title AND someOtherPrimary=:primary AND datePrimary=:datePrimary');
+		$q->execute(array(':title' => $title, ':primary' => $primary,
+		                  ':datePrimary' => $date));
 		return self::fetch($q->fetch(), 'SearchFoo');
 	}
 }
@@ -106,6 +108,7 @@ class SearchableTest extends CoOrgModelTest
 		$foo = new SearchFoo;
 		$foo->title = 'My Title';
 		$foo->someOtherPrimary = 'other-primary';
+		$foo->datePrimary = '2010-01-01';
 		$foo->body = 'Somewhere over the rainbow goes, tudeludoedoe <bold>This is some text that has to be searched</bold>';
 		$foo->barTitle = 'Bar Title';
 		$foo->barSomeOtherPrimary = 'The Primary';
@@ -116,7 +119,10 @@ class SearchableTest extends CoOrgModelTest
 		$foo = new SearchFoo;
 		$foo->title = 'My Title';
 		$foo->someOtherPrimary = 'primary';
-		$foo->body = 'Lorem Ipsum Dolor Sit Amet Title is very important. So I put title here so its very high up into the list.';
+		$foo->datePrimary = '2010-06-01';
+		$foo->body = 'Lorem	Ipsum	Dolor
+		Sit Amet Title
+		is very important. So I put title here so its very high up into the list.';
 		$foo->language = 'en';
 		$foo->identity = 'kEEP me';
 		$foo->save();
@@ -124,6 +130,7 @@ class SearchableTest extends CoOrgModelTest
 		$foo = new SearchFoo;
 		$foo->title = 'My Other Title';
 		$foo->someOtherPrimary = 'primary';
+		$foo->datePrimary = '2010-08-01';
 		$foo->body = 'Aleia iacta est is not the title';
 		$foo->language = 'en';
 		$foo->save();
@@ -132,6 +139,7 @@ class SearchableTest extends CoOrgModelTest
 		$foo = new SearchFoo;
 		$foo->title = 'Mijn andere titel';
 		$foo->someOtherPrimary = 'primary';
+		$foo->datePrimary = '2010-09-01';
 		$foo->body = 'Dit is mijn nederlandse tekst, om te zien of het goed werkt. Put some english here (title) so it matches with title, but not when searching for english texts...';
 		$foo->language = 'nl';
 		$foo->save();
@@ -139,6 +147,7 @@ class SearchableTest extends CoOrgModelTest
 		$isa = new SearchFooISA;
 		$isa->title = 'Some Dodo';
 		$isa->someOtherPrimary = 'some-primary';
+		$isa->datePrimary = '2010-11-01';
 		$isa->body = 'I want you to search this ISA for me...';
 		$isa->language = 'en';
 		$isa->someISAVar = '...';
@@ -288,7 +297,7 @@ class SearchableTest extends CoOrgModelTest
 	
 	public function testUpdate()
 	{
-		$someFoo = SearchFoo::get('My Title', 'other-primary');
+		$someFoo = SearchFoo::get('My Title', 'other-primary', '2010-01-01');
 		$someFoo->body = 'No more talking about the song...';
 		$someFoo->save();
 		
@@ -312,7 +321,7 @@ class SearchableTest extends CoOrgModelTest
 		$q->execute(array(':title' => 'My Title', ':primary' => 'other-primary'));
 		$SIDS = $q->fetchAll();
 	
-		$someFoo = SearchFoo::get('My Title', 'other-primary');
+		$someFoo = SearchFoo::get('My Title', 'other-primary', '2010-01-01');
 		$someFoo->delete();
 		
 		// See if it is completely removed
@@ -334,6 +343,7 @@ class SearchableTest extends CoOrgModelTest
 		$someFoo = new SearchFoo;
 		$someFoo->title = 'My Title';
 		$someFoo->someOtherPrimary = 'other-primary';
+		$someFoo->datePrimary = '2010-01-01';
 		$someFoo->body = 'Empty body';
 		$someFoo->language = 'en';
 		$someFoo->save();
