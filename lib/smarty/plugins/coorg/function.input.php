@@ -84,7 +84,17 @@ function smarty_function_input($params, $smarty)
 			if ($type != 'password')
 			{
 				$rawAttribute = $forName. '_raw';
-				$value = htmlspecialchars($instance->$rawAttribute);
+				$value = $instance->$rawAttribute;
+				
+				if ($value === '1' && $instance->$forName === true)
+				{
+					$value = true;
+				}
+				
+				if (is_string($value))
+				{
+					$value = htmlspecialchars($value);
+				}
 			}
 			else
 			{
@@ -240,8 +250,8 @@ function smarty_function_input($params, $smarty)
 	    }
 	    else if ($type == 'checkbox')
 	    {
-	    	$checked = array_key_exists('checked', $params) || $value == 'checked';
-	    	$value = $value == 'checked' ? null : $value;
+	    	$checked = array_key_exists('checked', $params) || $value == 'checked' || $value === true;
+	    	$value = ($value == 'checked' || $value === true) ? null : $value;
 	    	$input = '<input type="'.$type.'" name="'.$name.'" '. 'id="'.$id.'"'.
 	               ($required ? ' required="required"' : '').
 	               ($disabled ? ' disabled="disabled"' : '').
