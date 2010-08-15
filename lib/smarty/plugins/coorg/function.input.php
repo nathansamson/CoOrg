@@ -240,11 +240,14 @@ function smarty_function_input($params, $smarty)
 	    }
 	    else if ($type == 'checkbox')
 	    {
+	    	$checked = array_key_exists('checked', $params) || $value == 'checked';
+	    	$value = $value == 'checked' ? null : $value;
 	    	$input = '<input type="'.$type.'" name="'.$name.'" '. 'id="'.$id.'"'.
 	               ($required ? ' required="required"' : '').
 	               ($disabled ? ' disabled="disabled"' : '').
-	               ($value ? ' checked="checked"' : '').
+	               ($checked ? ' checked="checked"' : '').
 	               ($class ? ' class="'.$class.'"' : '').
+	               ($value ? ' value="'.$value.'"' : '').
 	        '/>'.$br;
 	    }
 	    else

@@ -313,6 +313,12 @@ class Searchable implements IModelExtension
 		return $results;
 	}
 	
+	public static function searches()
+	{
+		CoOrg::loadPluginInfo('search');
+		return self::$_searches;
+	}
+	
 	protected function prepareQuery($terms, $identTerms, $class, $fields = null)
 	{
 		if (!$fields)

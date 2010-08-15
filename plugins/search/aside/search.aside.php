@@ -5,7 +5,6 @@ class SearchSearchAside extends AsideConfigurableController
 	public function run($widgetParams, $orient, $request)
 	{
 		$this->includeSearch = $widgetParams['includes'];
-		$this->includeSearch = array('Blog');
 		return $this->render('widgets/search');
 	}
 	
@@ -16,6 +15,9 @@ class SearchSearchAside extends AsideConfigurableController
 	
 	public function configure($widgetParams, $orient)
 	{
+		$this->includeSearch = $widgetParams['includes'] ? $widgetParams['includes'] : array();
+		$this->allIncludes = Searchable::searches();
+		return $this->renderConfigure('widgets/search-configure');
 	}
 }
 

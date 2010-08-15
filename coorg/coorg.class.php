@@ -423,7 +423,7 @@ class CoOrg {
 	public static function getWidgetInstance($widgetName)
 	{
 		$p = explode('/', $widgetName, 2);
-			
+
 		include_once(self::$_asides[$p[0]][$p[1]]);
 			
 		$pluginName = '';
