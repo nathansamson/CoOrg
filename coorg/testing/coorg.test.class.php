@@ -56,9 +56,9 @@ class CoOrgControllerTest extends CoOrgModelTest
 		Header::$redirect = '__none__';
 	}
 
-	protected function request($request, $postParams = array())
+	protected function request($request, $postParams = array(), $isPost = true)
 	{
-		CoOrg::process($request, $postParams, $postParams != array());
+		CoOrg::process($request, $postParams, $postParams != array() && $isPost);
 	}
 
 	protected function assertVarSet($key)
