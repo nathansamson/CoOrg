@@ -386,6 +386,13 @@ class CoOrgTest extends PHPUnit_Framework_TestCase {
 		                                           'parameterwith?and/')));
 	}
 	
+	public function testCreateURLWithoutPrefixToRoot()
+	{
+		CoOrg::config()->set('urlPrefix', '');
+		CoOrg::config()->set('path', '/');
+		$this->assertEquals('/', CoOrg::createURL(array('')));
+	}
+	
 	public function testLoadPluginInfoSpecific()
 	{
 		$this->assertFalse(class_exists('Alpha2Info'));

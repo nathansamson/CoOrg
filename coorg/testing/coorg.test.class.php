@@ -101,6 +101,7 @@ class CoOrgControllerTest extends CoOrgModelTest
 	
 	protected function assertRedirected($to)
 	{
+		if ($to == '') $to = '/';
 		$this->assertEquals($to, Header::$redirect);
 	}
 	

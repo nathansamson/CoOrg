@@ -129,7 +129,7 @@ class CoOrg {
 	
 		self::normalizeRequest($request);
 		$url = $request;
-		if ($request == '') $request = 'home';
+		if ($request == '/' || $request == '') $request = 'home';
 		$requestParams = explode('/', $request);
 		
 		$controllerName = ucfirst(array_shift($requestParams));
@@ -640,7 +640,7 @@ class CoOrg {
 	
 	private static function normalizeRequest(&$request)
 	{
-		while (strlen($request) > 0 && $request[strlen($request)-1] == '/')
+		while (strlen($request) > 1 && $request[strlen($request)-1] == '/')
 		{
 			$request = substr($request, 0, strlen($request) - 1);
 		}

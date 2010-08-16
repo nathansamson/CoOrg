@@ -96,7 +96,7 @@ class UserPasswordController extends Controller
 			     ->subject(t('%site: Your account information', array('site' => $site)))
 			     ->send('mails/passwordreset');
 			$this->notice(t('A mail has been sent to you. Please follow the directions to set a new password for your account.'));
-			$this->redirect('');
+			$this->redirect('/');
 		}
 		else
 		{
@@ -131,12 +131,12 @@ class UserPasswordController extends Controller
 			     ->subject(t('%site: Your new password', array('site' => $site)))
 			     ->send('mails/passwordrenew');
 			$this->notice('A mail has been sent to you, containing your new password');
-			$this->redirect('');
+			$this->redirect('/');
 		}
 		else
 		{
 			$this->error(t('Invalid key'));
-			$this->redirect('');
+			$this->redirect('/');
 		}
 	}
 }

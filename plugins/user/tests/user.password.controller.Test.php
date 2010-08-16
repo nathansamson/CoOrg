@@ -51,7 +51,7 @@ class UserPasswordControllerTest extends CoOrgControllerTest
 		                            'renewURL' => '**?**',
 		                            'site' => 'The Site'));
 		$this->assertFlashNotice('A mail has been sent to you. Please follow the directions to set a new password for your account.');
-		$this->assertRedirected('');
+		$this->assertRedirected('/');
 	}
 	
 	public function testConfirmResetCorrectEmail()
@@ -67,7 +67,7 @@ class UserPasswordControllerTest extends CoOrgControllerTest
 		                            'renewURL' => '**?**',
 		                            'site' => 'The Site'));
 		$this->assertFlashNotice('A mail has been sent to you. Please follow the directions to set a new password for your account.');
-		$this->assertRedirected('');
+		$this->assertRedirected('/');
 	}
 	
 	public function testConfirmResetInCorrectUsername()
@@ -176,7 +176,7 @@ class UserPasswordControllerTest extends CoOrgControllerTest
 		                            'loginURL' => 'http://www.test.info/user/login',
 		                            'site' => 'The Site'));
 		$this->assertFlashNotice('A mail has been sent to you, containing your new password');
-		$this->assertRedirected('');
+		$this->assertRedirected('/');
 		
 	}
 	
@@ -189,7 +189,7 @@ class UserPasswordControllerTest extends CoOrgControllerTest
 		$this->request('user/password/renew/dvorak/nokey');
 		
 		$this->assertFlashError('Invalid key');
-		$this->assertRedirected('');
+		$this->assertRedirected('/');
 	}
 }
 
