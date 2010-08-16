@@ -18,18 +18,21 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function smarty_modifier_linkyfy($text, $request)
+function smarty_modifier_linkyfy($text, $type)
 {
 	$args = func_get_args();
 	array_shift($args);
-	if ($request != 'e')
+	switch ($type)
 	{
-		$url = call_user_func(array('CoOrg', 'createURL'), $args);
-	}
-	else
-	{
-		$url = htmlspecialchars($args[1]);
-		$target = '_blank';
+		case 'e':
+			$url = htmlspecialchars($args[1]);
+			$target = '_blank';	
+			break;
+		case 'b':
+			$target = '_blank';
+			array_shift($args);
+		default:
+			$url = call_user_func(array('CoOrg', 'createURL'), $args);	
 	}
 	return '<a href="'.$url.'"'.
 	    ($target ? ' target="'.$target.'"' : '').

@@ -35,7 +35,11 @@
 			{form request="admin/layout/save" nobreaks id=$widgetName}
 				{input value=$widgetName name="widgetName"}
 				
-				{input type=select type=select options=$panels name="panelID" nolabel}
+				{if is_array($panels)}
+					{input type=select options=$panels name="panelID" nolabel}
+				{else}
+					{input name="panelID" value=$panels}
+				{/if}
 				
 				{input type="submit" stock="list-add" nolabel}
 			{/form}

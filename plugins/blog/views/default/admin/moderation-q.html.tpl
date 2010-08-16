@@ -28,5 +28,9 @@
 	{/foreach}
 	</table>
 	
+	<p class="notice">
+		{'A feed is available for the all unmoderated comments, so you can check them in your favourite feed reader'|_|linkyfy:b:'blog.atom/comment/unmoderated'}
+	</p>
+	
 	{pager pager=$qPager request="admin/blog/comment/index" page='.*.' coorgWidth=11}
 {/block}

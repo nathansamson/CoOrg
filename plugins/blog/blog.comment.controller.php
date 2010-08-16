@@ -29,6 +29,12 @@ class BlogCommentController extends Controller
 		$this->_commentHelper = new BlogCommentControllerHelper($this, 'BlogComment');
 	}
 
+	public function unmoderated()
+	{
+		$this->commentPager = Comment::getModerationQueue('BlogComment');
+		$this->render('unmoderated');
+	}
+
 	/**
 	 * @before findBlog $blogID $blogDate $blogLanguage
 	*/

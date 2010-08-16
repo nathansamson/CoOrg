@@ -36,6 +36,8 @@
 			}
 		</script>
 	<!-- %%$$EXTRASTYLESHEETSCOMEHERE$$%% -->
+	
+		{aside name="__site__"}
 	</head>
 	<body>
 		<header>

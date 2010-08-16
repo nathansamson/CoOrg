@@ -18,9 +18,8 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-abstract class AsideController
+abstract class BaseWidgetController
 {
-
 	private $_viewsPath;
 	private $_smarty;
 	private $_data = null;
@@ -30,9 +29,6 @@ abstract class AsideController
 		$this->_smarty = $smarty;
 		$this->_viewsPath = $viewsPath;
 	}
-	
-	abstract function run($widgetParams, $orient, $request);
-	abstract function preview($widgetParams, $orient);
 	
 	protected function render($tpl)
 	{
@@ -78,6 +74,18 @@ abstract class AsideController
 		}
 		return $tpl->fetch();
 	}
+}
+
+abstract class SiteWidgetController extends BaseWidgetController
+{
+	abstract function run($widgetParams, $request);
+	abstract function preview($widgetParams);
+}
+
+abstract class AsideController extends BaseWidgetController
+{
+	abstract function run($widgetParams, $orient, $request);
+	abstract function preview($widgetParams, $orient);
 }
 
 abstract class AsideConfigurableController extends AsideController

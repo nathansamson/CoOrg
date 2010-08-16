@@ -433,14 +433,29 @@ class CoOrg {
 		}
 		
 		$className = $pluginName.ucfirst($p[1]).'Aside';
+		if (! class_exists($className))
+		{
+			$className = $pluginName.ucfirst($p[1]).'Widget';
+		}
+		
 		return new $className(null, null);
+	}
+	
+	public function tagURI()
+	{
+		$args = func_get_args();
+		return 'tag:'.self::config()->get('site/taguri/host.') . ',' .
+		              self::config()->get('site/taguri/date') .
+		          ':' . implode('/', $args);
 	}
 	
 	public static function aside($name, $smarty, $preview = false,
 	                             $edit = false, $widgetID = null)
 	{
-		if ($name)
+		$siteWidgetsOnly = false;
+		if ($name && $name != '__list_site__')
 		{
+			$siteWidgetsOnly = $name == '__site__';
 			if ($name == 'main')
 			{
 				$orient = CoOrg::PANEL_ORIENT_VERTICAL;
@@ -455,6 +470,7 @@ class CoOrg {
 		else
 		{
 			$orient = CoOrg::PANEL_ORIENT_VERTICAL;
+			$siteWidgetsOnly = $name == '__list_site__';
 			$preview = true;
 			$items = array();
 			foreach (self::$_asides as $plugin => $pWidgets)
@@ -489,14 +505,27 @@ class CoOrg {
 				$pluginName .= ucfirst($pluginNamePart);
 			}
 			$className = $pluginName.ucfirst($p[1]).'Aside';
+			if (! class_exists($className))
+			{
+				$className = $pluginName.ucfirst($p[1]).'Widget';
+			}
 			$i = new $className($smarty, dirname(self::$_asides[$p[0]][$p[1]]).'/../views/');
+			if (($i instanceof SiteWidgetController && !$siteWidgetsOnly) ||
+			    (!($i instanceof SiteWidgetController) && $siteWidgetsOnly))
+			{			
+				continue;
+			}
+			
 			
 			if (!$preview)
 			{
 				$r = self::$_requestParameters;
 				if ($r == null) $r = array();
 				array_unshift($r, self::$_request);
-				array_unshift($r, $orient);
+				if (!($i instanceof SiteWidgetController))
+				{
+					array_unshift($r, $orient);
+				}
 				array_unshift($r, $widgetParams);
 				$s .= call_user_func_array(array($i, 'run'), $r);
 			}
@@ -504,9 +533,10 @@ class CoOrg {
 			{
 				$i->widgetID = $key;
 				$i->panelID = $name;
-				if ($name && $key > 0) $i->widgetUp = $key - 1;
-				if ($name && $key < count($items) - 1) $i->widgetDown = $key + 1;
-				if ($name && $i instanceof AsideConfigurableController)
+				$isRelocatable = $name && $name != '__list_site__';
+				if ($isRelocatable && $key > 0) $i->widgetUp = $key - 1;
+				if ($isRelocatable && $key < count($items) - 1) $i->widgetDown = $key + 1;
+				if ($isRelocatable && $i instanceof AsideConfigurableController)
 				{
 					$i->widgetConfigure = true;
 				}
@@ -516,6 +546,11 @@ class CoOrg {
 					$i->panels = array('main' => 'Main',
 					                   'navigation-left' => 'Navigation (Left)',
 					                   'navigation-right' => 'Navigation (Right)');
+				}
+				else if ($name == '__list_site__')
+				{
+					$i->widgetName = $widget;
+					$i->panels = '__site__';
 				}
 				if (!($edit && $key == $widgetID))
 				{
@@ -649,11 +684,12 @@ class CoOrg {
 	private static function findController($controllerName, $requestParams,
 	                                       $params, $post,
 	                                       $controllerID = null, $request = null,
-	                                       $parentClasses = array())
+	                                       $parentClasses = array(),
+	                                       $renderType = null)
 	{
 		if (strpos($controllerName, '.') !== false)
 		{
-			$type = substr($controllerName, strpos($controllerName, '.') + 1);
+			$renderType = substr($controllerName, strpos($controllerName, '.') + 1);
 			$controllerName = substr($controllerName, 0, strpos($controllerName, '.'));
 		}
 		if ($controllerID == null) $controllerID = strtolower($controllerName);
@@ -692,9 +728,9 @@ class CoOrg {
 				if (!$mock)
 				{
 					$path = dirname(self::$_controllers[$controllerID]['fullpath']);
-					if (isset($type))
+					if ($renderType)
 					{
-						$controllerClass->init($path.'/views/', self::$_appdir, $type);
+						$controllerClass->init($path.'/views/', self::$_appdir, $renderType);
 					}
 					else
 					{
@@ -761,7 +797,8 @@ class CoOrg {
 					$subRequest = $request . '/'.$actionName;
 					return self::findController($subController, $requestParams,
 					                            $params, $post, $subControllerID,
-					                            $subRequest, $parentClasses);
+					                            $subRequest, $parentClasses,
+					                            $renderType);
 				}
 				else
 				{

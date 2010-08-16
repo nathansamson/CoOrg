@@ -21,14 +21,11 @@
 				<updated>{$blog->timePosted|date_format:'c'}</updated>
 			{/if}
 			<published>{$blog->timePosted|date_format:'c'}</published>
-			<id>{CoOrg::createFullURL(array('blog/show', $blog->year,
-			                                         $blog->month, $blog->day,
-			                                         $blog->ID), CoOrg::getLanguage())}</id>
-			<!--<summary type="html">{$blog->text|format:none|truncate:100|escape}</summary>-->
+			<id>{CoOrg::tagURI('blog', $blog->language, $blog->datePosted, $blog->ID)}</id>
+			<summary type="html">{$blog->text|format:none|truncate:100|escape}</summary>
 			<content type="html">
 					{$blog->text|format:all|escape}
 			</content>
 		</entry>
 	{/foreach}
-	
 </feed>

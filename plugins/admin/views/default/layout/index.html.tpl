@@ -31,8 +31,21 @@
 		<br />
 	</div>
 	
-	<h2>{'Available widgets'}</h2>
+	<h2>{'Available widgets'|_}</h2>
 	<div class="preview vertical" id="widget-list">
 		{aside preview}
+	</div>
+	
+	<h2>{'Site widgets'|_}</h2>
+	<p class="notice">
+		{'Site widgets are a special case of widgets that is doing things in the background for the whole page. These will not be directly visible to the visitor of your site (but can give visible results, like setting the RSS icon in the URL bar of your browser)'|_}
+	</p>
+	<div class="preview vertical" id="widget-list">
+		{aside name="__list_site__" preview}
+	</div>
+	
+	<h3>{'Installed site widgets'|_}</h3>
+	<div class="preview vertical" id="widget-list">
+		{aside name="__site__" preview}
 	</div>
 {/block}
