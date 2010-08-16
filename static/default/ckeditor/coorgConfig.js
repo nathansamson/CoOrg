@@ -15,6 +15,10 @@ CKEDITOR.editorConfig = function( config )
     config.resize_enabled = false;
     config.toolbarCanCollapse = false;
     config.stylesSet = 'coorg:coorgStyles.js';
-    config.removePlugins = 'elementspath';
+    config.removePlugins = 'elementspath,scayt';
+    config.disableNativeSpellchecker = false;
+    
+    // If we choose to enable scayt again, we have to set our own language...
+    // config.scayt_sLang = COORGLANG;
 };
 
