@@ -17,6 +17,11 @@ function smarty_modifier_format($text, $type)
             'return preg_replace("/ [^ =]*'.$allowattributes.'=(\"[^\"]*\"|\'[^\']*\')/i", "", $matches[0]);'   
         ),$text); 
 	
+	// This fixes a problem for some feed readers (showing to much whitespace)
+	// Feed readers that we are aware of that benefit from this change
+	//  * Liferea 1.7 (Webkit based)
+	$text = str_replace("\r\n", '', $text);
+	
 	return $text;
 }
 

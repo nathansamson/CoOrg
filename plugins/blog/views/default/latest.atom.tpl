@@ -12,14 +12,22 @@
 	{foreach $blogs as $blog}
 		<entry>
 			<title>{$blog->title|escape}</title>
-			<link href="" />
+			<link href="{CoOrg::createFullURL(array('blog/show', $blog->year,
+			                                         $blog->month, $blog->day,
+			                                         $blog->ID), CoOrg::getLanguage())}" />
 			{if $blog->timeEdited}
 				<updated>{$blog->timeEdited|date_format:'c'}</updated>
 			{else}
 				<updated>{$blog->timePosted|date_format:'c'}</updated>
 			{/if}
-			<id></id>
-			<summary>{$blog->text|format:none|truncate:100}</summary>
+			<published>{$blog->timePosted|date_format:'c'}</published>
+			<id>{CoOrg::createFullURL(array('blog/show', $blog->year,
+			                                         $blog->month, $blog->day,
+			                                         $blog->ID), CoOrg::getLanguage())}</id>
+			<!--<summary type="html">{$blog->text|format:none|truncate:100|escape}</summary>-->
+			<content type="html">
+					{$blog->text|format:all|escape}
+			</content>
 		</entry>
 	{/foreach}
 	
