@@ -1,5 +1,5 @@
 <?php
 
-CoOrg::resreg('comments', 'comments.css', '252d98cce983ffdf7f6f5b346529f3a9');
+CoOrg::resreg('comments', 'comments.css', '9783e3b3800bf69bf418957ca2c46053');
 
 ?>

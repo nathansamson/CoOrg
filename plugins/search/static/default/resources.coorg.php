@@ -1,5 +1,5 @@
 <?php
 
-CoOrg::resreg('search', 'styles/tagcloud.css', '53e03e1f4f640dfab1c546368a24bf20');
+CoOrg::resreg('search', 'styles/tagcloud.css', 'cb7243bd989db2bc12b9acc0fae3b6b4');
 
 ?>
