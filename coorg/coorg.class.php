@@ -446,9 +446,9 @@ class CoOrg {
 	public function tagURI()
 	{
 		$args = func_get_args();
-		return 'tag:'.self::config()->get('site/taguri/host.') . ',' .
+		return 'tag:'.self::config()->get('site/taguri/host') . ',' .
 		              self::config()->get('site/taguri/date') .
-		          ':' . implode('/', $args);
+		          ':' . implode('/', array_map('rawurlencode', $args));
 	}
 	
 	public static function aside($name, $smarty, $preview = false,
