@@ -49,6 +49,11 @@ abstract class BaseWidgetController
 		$this->_data->assign($var, $value);
 	}
 	
+	final public function __get($var)
+	{
+		return $this->_smarty->getTemplateVars($var);
+	}
+	
 	protected function doRender($tpl, $base = null)
 	{
 		$theme = CoOrg::getTheme();
@@ -88,6 +93,8 @@ abstract class AsideController extends BaseWidgetController
 	abstract function preview($widgetParams, $orient);
 }
 
+abstract class WidgetController extends AsideController {}
+
 abstract class AsideConfigurableController extends AsideController
 {	
 	abstract function configure($widgetParams, $orient);
@@ -97,5 +104,7 @@ abstract class AsideConfigurableController extends AsideController
 		return $this->doRender($tpl, 'layout-configure.html.tpl');
 	}
 }
+
+abstract class ConfigurableWidgetController extends AsideConfigurableController {}
 
 ?>

@@ -264,6 +264,8 @@ class CoOrg {
 		{
 			$params = array($params);
 		}
+		if (count($params) == 1 && $params[0] == 'home/index') $params = array();
+		
 		$urlPrefix = '';
 		if (self::$_config->has('urlPrefix'))
 		{
