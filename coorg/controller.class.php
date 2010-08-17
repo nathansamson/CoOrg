@@ -42,7 +42,7 @@ class Controller extends ControllerBase
 		$this->_tplPath = $path;
 		$this->_appPath = $appPath;
 		$this->_renderType = $renderType;
-		$this->_contentTypes = array('atom' => 'application/xml+atom');
+		$this->_contentTypes = array('atom' => 'application/atom+xml');
 	}
 	
 	public function isPost($name)
