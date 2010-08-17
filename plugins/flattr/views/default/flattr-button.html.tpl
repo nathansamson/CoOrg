@@ -9,5 +9,5 @@
 		title="{$flattrTitle}"
 		rev="flattr;uid:{$flattrUID};{if $flattrTags}tags:{implode(',', $flattrTags)};{/if}category:{$flattrCategory};button:{$flattrButton};language:{$flattrLanguage};"
 		href="{$flattrLink}"
-		language="{$flattrLanguage}">{$flattrDescription}</a>
+		language="{$flattrLanguage}">{strip_tags($flattrDescription)}</a>
 </section>
