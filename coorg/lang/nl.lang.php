@@ -12,4 +12,16 @@ $_['Add'] = 'Toevoegen';
 $_['Save'] = 'Opslaan';
 $_['Language'] = 'Taal';
 $_['Not a valid choice for %n'] = 'Geen geldige keuze voor %n';
+$_['Audio Captcha'] = '';
+$_['Image Captcha'] = '';
+$_['Iamge Captcha'] = '';
+$_['Refresh Captcha'] = '';
+$_['Mark as spam'] = '';
+$_['Unmark as spam'] = '';
+$_['You have to upload a file'] = '';
+$_['The file transfer was not complete, please try again'] = '';
+$_['The filesize is too large'] = '';
+$_['The file upload failed, please try again'] = '';
+$_['This is not a valid image file (only png, jpeg and gif are supported)'] = '';
+$_['The file resolution is too large, maximum is %x x %y'] = '';
 ?>

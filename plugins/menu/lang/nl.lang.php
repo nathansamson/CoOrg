@@ -17,7 +17,6 @@ $_['Name already exists'] = 'Naam al in gebruik';
 $_['Title'] = 'Titel';
 $_['Provider not found'] = 'Provider niet gevonden';
 $_['Edit %m'] = '%m bewerken';
-$_['Go back'] = 'Keer terug';
 $_['Entries'] = 'Items';
 $_['Add entry'] = 'Voeg item toe';
 $_['Edit menu properties'] = 'Wijzig menu instellingen';
@@ -29,4 +28,5 @@ $_['Create menu'] = 'Menu opslaan';
 $_['Edit menu'] = 'Menu opslaan';
 $_['Deleted menu "%n"'] = 'Menu "%n" verwijderd';
 $_['Save menu entry'] = 'Menuitem opslaan';
+$_['Manage menus'] = '';
 ?>
