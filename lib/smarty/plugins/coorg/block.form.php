@@ -51,6 +51,7 @@ function smarty_block_form($params, $content, $smarty)
 	return '<form method="'.$method.'" action="'.$URL.'"'.
 	          ($form->formID ? ' id="'.$form->formID.'"': '').
 	          ($form->file_upload ? ' enctype="multipart/form-data"' : '').
+	          ($form->nobreaks ? ' class="sparse"' : '').
 	          '>'.$content.'</form>';
 }
 

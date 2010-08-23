@@ -256,8 +256,16 @@ label {
 	display: block;
 }
 
+.sparse label {
+	display: inline;
+}
+
 label.required {
 	font-weight: bold;
+}
+
+label.option {
+	margin-left: 4em;
 }
 
 p.form-error {
@@ -283,6 +291,10 @@ input.error, textarea.error, .editor.error, select.error {
 input[readonly] {
 	background-color: #BBB;
 	color: #666;
+}
+
+.sparse br {
+	display: none;
 }
 
 select {
