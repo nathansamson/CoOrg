@@ -46,6 +46,10 @@ class TextInput extends UserInput
 			}
 			$this->_inputAttributes->size = $chars;
 		}
+		if ($class = self::getParameter($params, 'class'))
+		{
+			$this->_inputClasses[] = $class;
+		}
 		if ($autocomplete = self::getParameter($params, 'autocomplete'))
 		{
 			$this->_autocomplete = $autocomplete;
