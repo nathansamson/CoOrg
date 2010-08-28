@@ -21,6 +21,7 @@
 class TextInput extends UserInput
 {
 	private $_type;
+	private $_autocomplete;
 
 	public function __construct($type)
 	{
@@ -45,6 +46,10 @@ class TextInput extends UserInput
 			}
 			$this->_inputAttributes->size = $chars;
 		}
+		if ($autocomplete = self::getParameter($params, 'autocomplete'))
+		{
+			$this->_autocomplete = $autocomplete;
+		}
 	}
 
 	public function render()
@@ -59,8 +64,23 @@ class TextInput extends UserInput
 		{
 			$this->_inputAttributes->value = $this->_value;
 		}
+		else
+		{
+			// It is possible that the same inputis rendered more than once
+			// (eg for the ListInput), and the value is changed to null.
+			unset($this->_inputAttributes->value);
+		}
 		$input .= $this->renderOptions();
 		$input .= '/><br />';
+		if ($this->_autocomplete)
+		{
+			$input .= '<script>';
+			if ($this->_autocomplete)
+			{
+				$input .= 'CoOrgAutoSuggest($("#'.$this->getID().'"), "'.CoOrg::createURL($this->_autocomplete) .'")';
+			}
+			$input .= '</script>';
+		}
 		return $input;
 	}
 }

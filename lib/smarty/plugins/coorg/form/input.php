@@ -60,6 +60,8 @@ abstract class FormElement
 				return new DateInput();
 			case 'file':
 				return new FileInput();
+			case 'list':
+				return new TextListInput();
 			case 'textarea':
 				return new Textarea();
 			case 'select':
@@ -123,13 +125,18 @@ abstract class LabeledFormElement extends FormElement
 	
 	protected function getID()
 	{
+		$idName = $this->_name;
+		if (strpos($idName, '[]') === strlen($idName) - 2)
+		{
+			$idName = substr($idName, 0, -2);
+		}
 		if ($this->_idPrefix)
 		{
-			return $this->_idPrefix . '_' . $this->_name;
+			return $this->_idPrefix . '_' . $idName;
 		}
 		else
 		{
-			return $this->_name;
+			return $idName;
 		}
 	}
 }
@@ -249,19 +256,62 @@ abstract class UserInput extends LabeledFormElement implements IUserInput
 	}
 }
 
-class HiddenInput extends FormElement
+class HiddenInput extends FormElement implements IUserInput
 {
+	public function __construct()
+	{
+		$this->_inputAttributes = new stdClass;
+	}
+
+	public function required()
+	{
+		$this->_inputAttributes->required = true;
+	}
+
+	public function readonly()
+	{
+		$this->_inputAttributes->readonly = true;
+	}
+	
+	public function disable()
+	{
+		$this->_inputAttributes->disabled = true;
+	}
+
+	public function setObject($instance, $objectName)
+	{
+		$this->_objectName = $objectName;
+		$this->_instance = $instance;
+		
+		$rawName = $objectName.'_raw';
+		$this->setValue($instance->$rawName);
+	}
+	
+	public function setValue($value)
+	{
+		$this->_value = $value;
+	}
+	
+	public function setPlaceholder($p)
+	{
+		$this->_inputAttributes->placeholder = $p;
+	}
+	
 	public function setSpecificParameters(&$params)
 	{		
 	}
 	
 	public function render()
 	{
+		$input = '<input type="hidden" name="'.$this->_name.'"';
+		$input .= ' value="' . $this->_value . '" />';
+		return $input;
 	}
 }
 
 include_once dirname(__FILE__).'/textinput.php';
 include_once dirname(__FILE__).'/fileinput.php';
+include_once dirname(__FILE__).'/textlistinput.php';
 include_once dirname(__FILE__).'/textarea.php';
 include_once dirname(__FILE__).'/select.php';
 include_once dirname(__FILE__).'/checkbox.php';

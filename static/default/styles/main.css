@@ -522,13 +522,31 @@ a img {
 	margin-right: 5px;
 }
 
-#bigasspopup {
+.autocomplete {
+	position: absolute;
+	list-style-type: none;
+	border: solid 1px black;
 	background-color: white;
-	border: 5px solid #444;
-	padding: 10px;
-	position: fixed;
-	top: 50%;
-	right: 50%;
-	-moz-box-shadow: 4px 4px 8px;
+	margin-top: -11px;
+	padding: 0;
+	max-height: 15em;
+	overflow: auto;
+}
+
+.autocomplete li {
+	padding: 5px 10px;
+	border-bottom: solid 1px #444;
+}
+
+.autocomplete li:last-child {
+	border-bottom: none;
+}
+
+.autocomplete li:hover {
+	cursor: pointer;
+}
+
+.autocomplete li.selected {
+	background-color: #F9A328;
 }
 
