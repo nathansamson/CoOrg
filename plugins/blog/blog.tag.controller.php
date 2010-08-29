@@ -18,32 +18,36 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class SearchController extends Controller
+class BlogTagController extends Controller
 {
-	public function index($s, $i)
+	protected $_blog;
+
+	/**
+	 * @before get $date $ID $language
+	 * @Acl owns $:_blog
+	*/
+	public function save($date, $ID, $language, $tag, $from)
 	{
-		$this->searchResults = Searchable::doSearch($s, 'nl', $i);
-		$this->searchQuery = $s;
-		$this->searchIncludes = $i;
-		$this->render('searchresults');
+		$this->_blog->tag($tag);
+		$this->redirect($from);
 	}
 	
-	public function tag($tag)
+	/**
+	 * @before get $date $ID $language
+	 * @Acl owns $:_blog
+	*/
+	public function delete($date, $ID, $language, $tag, $from)
 	{
-		$this->searchResults = Taggable::selectNodes($tag, CoOrg::getLanguage());
-		$this->render('tagresults');
+		$this->_blog->untag($tag);
+		$this->redirect($from);
 	}
 	
-	public function tagcloud()
+	protected function get($date, $ID, $language)
 	{
-		$this->tagcloud = Taggable::cloud();
-		$this->render('tagcloud');
-	}
-	
-	public function tagsuggest($search)
-	{
-		$this->suggestions = Taggable::suggestTags($search);
-		$this->render('suggestions');
+		print_r($_POST);
+		list($year, $month, $day) = explode('-', $date);
+		$this->_blog = Blog::getBlog($year, $month, $day, $ID, $language);
+		return true;
 	}
 }
 

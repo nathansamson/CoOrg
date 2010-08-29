@@ -44,7 +44,8 @@ class BlogController extends Controller
 	*/
 	public function create()
 	{
-		$this->blog = new Blog('', '', '', CoOrg::getLanguage());
+		$b = new Blog('', '', '', CoOrg::getLanguage());;
+		$this->blog = $b;
 		$this->render('create');
 	}
 	
@@ -52,12 +53,13 @@ class BlogController extends Controller
 	 * @Acl allow blog-writer
 	 * @Acl allow blog-admin
 	*/
-	public function save($title, $text)
+	public function save($title, $text, $tags)
 	{
 		$blog = new Blog($title, UserSession::get()->username, $text, CoOrg::getLanguage());
 		$config = BlogConfig::get();
 		$blog->commentsAllowed = $config->enableComments;
 		if ($config->enableCommentsFor)
+		$blog->tags = $tags;
 		{
 			$blog->commentsCloseDate = time()+60*60*24*$config->enableCommentsFor;
 		}

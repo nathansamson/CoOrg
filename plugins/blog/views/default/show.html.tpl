@@ -2,6 +2,7 @@
 
 {block name='content'}
 {stylesheet file={'styles/blog.css'|static:'blog'}}
+{stylesheet file={'styles/tags.css'|static:'search'}}
 <article class="fullpage">
 <header>
 	{if Acl::owns(UserSession::get()->username, $blog)}
@@ -20,6 +21,17 @@
 </header>
 {$blog->text|format:all}
 
+{assign var=tags value=$blog->tags()}
+{if $tags}
+<p>
+	{'This is filed under: '|_}
+	<ul class="taglist">
+	{foreach $tags as $tag}
+		<li>{a request="search/tag" tag=$tag}{$tag}{/a}</li>
+	{/foreach}
+	</ul>
+</p>
+{/if}
 
 {if Acl::owns(UserSession::get()->username, $blog)}
 	{assign var=comments value=$blog->comments}

@@ -20,6 +20,7 @@
 
 require_once 'coorg/properties/property.interface.php';
 require_once 'coorg/properties/string.class.php';
+require_once 'coorg/properties/stringlist.class.php';
 require_once 'coorg/properties/email.class.php';
 require_once 'coorg/properties/integer.class.php';
 require_once 'coorg/properties/date.class.php';

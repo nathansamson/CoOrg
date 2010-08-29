@@ -36,7 +36,8 @@
  * @variant month month datePosted
  * @variant day day datePosted
  * @extends Normalize title ID datePosted language
- * @extends Searchable BlogSearchIndex @ID @datePosted @language title text:html :language:language
+ * @property nodb writeonly; tags StringList('Tags');
+ * @extends Taggable BlogSearchIndex @ID @datePosted @language title text:html :language:language
 */
 class Blog extends DBModel
 {
@@ -235,6 +236,7 @@ class Blog extends DBModel
 	
 	protected function beforeInsert()
 	{
+		parent::beforeInsert();
 		if ($this->datePosted_db == null)
 			$this->datePosted = time();
 		$this->timePosted = time();
@@ -244,8 +246,18 @@ class Blog extends DBModel
 		}
 	}
 	
+	protected function afterInsert()
+	{
+		parent::afterInsert();
+		foreach ($this->tags as $tag)
+		{
+			$this->tag($tag);
+		}
+	}
+	
 	protected function beforeUpdate()
 	{
+		parent::beforeUpdate();
 		$this->timeEdited = time();
 		if ($this->commentsOpenFor !== null)
 		{

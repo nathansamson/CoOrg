@@ -759,8 +759,16 @@ class CoOrg {
 						}
 						if (array_key_exists($fParam->getName(), $inputParams))
 						{
-							$params[$fParam->getPosition()] =
-							                  $inputParams[$fParam->getName()];
+							$inputParam = $inputParams[$fParam->getName()]; 
+							if (is_array($inputParam))
+							{
+								foreach ($inputParam as $k => $p)
+								{
+									if ($p == '')
+										unset($inputParam[$k]);
+								}
+							}
+							$params[$fParam->getPosition()] = $inputParam;
 							unset($inputParams[$fParam->getName()]);
 						}
 						else if ($fParam->isDefaultValueAvailable())

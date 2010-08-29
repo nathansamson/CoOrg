@@ -20,6 +20,8 @@
 
 class Taggable extends Searchable
 {
+	private static $_searches;
+
 	public function __construct($args)
 	{
 		parent::__construct($args);
@@ -36,7 +38,7 @@ class Taggable extends Searchable
 		        parent::hasPublicMethod($name));
 	}
 	
-	public function tagged($tag, $language, $orderBy)
+	public function tagged($tag, $language, $orderBy = null)
 	{
 		$terms = array();
 		$identTerms = array($tag);
@@ -45,8 +47,9 @@ class Taggable extends Searchable
 		              ':language' => $language);
 	
 		$q = $this->prepareQuery($terms, $identTerms, $this->_class, array('tag'));
-		$q .= ' GROUP BY ' . implode(',', $this->_keys) . '
-		        ORDER BY ' . $orderBy;
+		$q .= ' GROUP BY ' . implode(',', $this->_keys);
+		if ($orderBy)
+		        $q .= ' ORDER BY ' . $orderBy;
 		return new SearchPager($q, $args, $this->_class);
 	}
 	
@@ -116,6 +119,37 @@ class Taggable extends Searchable
 		}
 		
 		return $cloud;
+	}
+	
+	public static function suggestTags($search)
+	{
+		$q = DB::prepare('SELECT term FROM SearchIndex WHERE LOWER(term) LIKE LOWER(:input) GROUP BY term ORDER BY term');
+		$q->execute(array(':input' => '%'.$search.'%'));
+		
+		$suggestions = array();
+		foreach ($q->fetchAll() as $row)
+		{
+			$suggestions[] = $row['term'];
+		}
+		return $suggestions;
+	}
+	
+	public static function registerSearch($name, $class)
+	{
+		parent::registerSearch($name, $class);
+		self::$_searches[$name] = $class;
+	}
+	
+	public static function selectNodes($tag, $language)
+	{
+		CoOrg::loadPluginInfo('search');
+		$results = array();
+		foreach (self::$_searches as $table => $r)
+		{
+			$r->results = SearchHack::callStatic($table, 'tagged', array($tag, $language));
+			$results[] = $r;
+		}
+		return $results;
 	}
 	
 	protected function createWheres($fields, $terms, $identTerms)

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2010 Nathan Samson <nathansamson at gmail dot com>
  *
@@ -18,32 +19,22 @@
   * along with CoOrg.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class SearchController extends Controller
+class PropertyStringList extends Property
 {
-	public function index($s, $i)
+	public function __construct($name)
 	{
-		$this->searchResults = Searchable::doSearch($s, 'nl', $i);
-		$this->searchQuery = $s;
-		$this->searchIncludes = $i;
-		$this->render('searchresults');
+		parent::__construct($name);
+		$this->_value = array();
 	}
 	
-	public function tag($tag)
+	public function validate($for)
 	{
-		$this->searchResults = Taggable::selectNodes($tag, CoOrg::getLanguage());
-		$this->render('tagresults');
+		return true;
 	}
-	
-	public function tagcloud()
+
+	protected function toDB($value)
 	{
-		$this->tagcloud = Taggable::cloud();
-		$this->render('tagcloud');
-	}
-	
-	public function tagsuggest($search)
-	{
-		$this->suggestions = Taggable::suggestTags($search);
-		$this->render('suggestions');
+		throw new Exception('This is a NODB value');
 	}
 }
 

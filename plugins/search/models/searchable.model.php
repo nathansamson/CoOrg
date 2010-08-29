@@ -514,7 +514,8 @@ class Searchable implements IModelExtension
 		$args = array();
 		foreach ($this->_keys as $key)
 		{
-			$args[':__'.$key] = $this->_instance->$key;
+			$dbName = $key . '_db';
+			$args[':__'.$key] = $this->_instance->$dbName;
 		}
 		$args[':term'] = $term;
 		$args[':field'] = $field;

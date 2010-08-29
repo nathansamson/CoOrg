@@ -42,4 +42,28 @@
 		
 		{input type=submit label="coorg|Save"}
 	{/form}
+	
+	<h2>{'search|Tags'|_}</h2>
+	{stylesheet file={'styles/tags.css'|static:'search'}}
+	<ol class="taglist">
+	{foreach $blog->tags() as $tag}
+		<li>{$tag} {button request="blog/tag/delete"
+		                   param_date=$blog->datePosted|date_format:'Y-m-d'
+		                   param_ID=$blog->ID
+		                   param_language=$blog->language
+		                   param_tag=$tag
+		                   coorgStock="list-remove"
+		                   param_from=$coorgRequest}{/button}</li>
+	{/foreach}
+	</ol>
+	
+	{form request='blog/tag/save' instance=$blog nobreaks}
+		{input value=$blog->datePosted|date_format:'Y-m-d' name=date}
+		{input for=ID}
+		{input for=language}
+		{input name=from value=$coorgRequest}
+		
+		{input type="text" nolabel placeholder={'search|Tag'|_} name="tag" autocomplete="search.xml/tagsuggest"}
+		{input type="submit" nolabel stock="list-add"}
+	{/form}
 {/block}

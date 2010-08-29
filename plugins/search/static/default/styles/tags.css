@@ -1,0 +1,66 @@
+.tag-cloud {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+.tag-cloud li {
+	display: inline;
+	margin: 0 2px;
+	padding: 0;
+}
+
+.tag-cloud a {
+	text-decoration: none;
+	text-wrap: none;
+}
+
+.tag-1 {
+	font-size: 11px;
+}
+
+.tag-2 {
+	font-size: 13px;
+}
+
+.tag-3 {
+	font-size: 15px;
+}
+
+.tag-4 {
+	font-size: 17px;
+}
+
+.tag-5 {
+	font-size: 19px;
+}
+
+.taglist {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	margin: 8px 0 8px 0;
+}
+
+.taglist li {
+	padding: 4px;
+	padding-right: 14px;
+	border: solid 1px #444;
+	-moz-border-radius: 0 16px 16px 0;
+	display: inline;
+	background-color: #F9A328;
+}
+
+.taglist a {
+	text-decoration: none;
+}
+
+.taglist a:hover {
+	color: white !important;
+}
+
+.taglist label {
+	display: inline;
+}

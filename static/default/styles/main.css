@@ -278,6 +278,7 @@ input, textarea, .editor, select {
 	border: solid 1px #666666;
 	font-size: 1em;
 	margin-bottom: 10px;
+	margin-right: 10px;
 }
 
 .placeholder {

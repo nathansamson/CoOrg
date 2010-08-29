@@ -3,7 +3,7 @@
 {/block}
 
 {block name="widget-preview"}
-{stylesheet file={'styles/tagcloud.css'|static:'search'}}
+{stylesheet file={'styles/tags.css'|static:'search'}}
 
 <ul class="tag-cloud">
 	<li class="tag-1"><a href="#">Lorem</a></li>
