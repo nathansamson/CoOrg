@@ -118,7 +118,32 @@ function CoOrgAutoSuggest(inputNode, request, isList)
 	var currentSelected = null;
 	var currentMouseSelected = null;
 	if (isList == null) isList = false;
-	var removeOlTimeout = null;
+	
+	
+	/*
+	 * We want to hide the suggestion/completion list when the user clicks
+	 * outside it.
+	 * The first plan was to simply look at the blur event (for the iput), 
+	 * and detach the ol when it occured.
+	 * This caused the mouseclick on the li's to not trigger so we had an
+	 * unusable list.
+	 * We now have some workarounds with detecting various events in different
+	 * stages.
+	 *
+	 *  1. We get a mousedown on a li. (clickEnteredOl will be true)
+	 *  2. We get a blur on the input. If clickEnteredOl = true, the ol
+	 *     will not detach. We set weHadABlur to true.
+	 *  3. The user releases mouse.
+	 *       a) He releases it in the li => mouseclick on the li. We select
+	 *          the correct element and hide the list.
+	 *       b) He releases it outside the li. We will not hide the ol, and do nothing.
+	 *
+	 * Another possibility is, that the mouse goes down outside the li/ol.
+	 * We get a blur, and will immediately hide the ol.
+	*/
+	var clickEnteredOl = false;
+	var weHadABlur = false;
+	$('body').mouseup(onMouseUp);
 	
 	function beginRequest(a)
 	{
@@ -146,6 +171,7 @@ function CoOrgAutoSuggest(inputNode, request, isList)
 		$(data).find('suggestions suggestion').each(function(index, element) {
 			$('<li>'+$(element).text()+'</li>').
 			       mouseenter(onMouseEnterLi).
+			       mousedown(onMouseDownLi).
 			       click(onMouseClickLi).
 			       appendTo(ol);
 		});
@@ -157,6 +183,16 @@ function CoOrgAutoSuggest(inputNode, request, isList)
 			$(ol).detach();
 	}
 	
+	function onMouseUp()
+	{
+		if (weHadABlur && !clickEnteredOl)
+		{
+			$(ol).detach();
+			weHadABlur = false;
+		}
+		clickEnteredOl = false;
+	}
+	
 	function onMouseEnterLi(event)
 	{
 		if (currentSelected) currentSelected.toggleClass('selected', false);
@@ -166,13 +202,13 @@ function CoOrgAutoSuggest(inputNode, request, isList)
 		currentMouseSelected.toggleClass('selected', true);
 	}
 	
+	function onMouseDownLi(event)
+	{
+		clickEnteredOl = true;
+	}
+	
 	function onMouseClickLi(event)
 	{
-		if (removeOlTimeout)
-		{
-			clearTimeout(removeOlTimeout);
-			removeOlTimeout = null;
-		}
 		choose($(this));
 	}
 	
@@ -281,6 +317,7 @@ function CoOrgAutoSuggest(inputNode, request, isList)
 			$(inputNode).trigger('list-add');
 		}
 		$(ol).detach();
+		$(ol).empty();
 	}
 	
 	function onFocus()
@@ -291,18 +328,9 @@ function CoOrgAutoSuggest(inputNode, request, isList)
 	
 	function onBlur(event)
 	{
-		// Urgh. I don't like this hack.
-		// If we hide the ol immediately, the mouse click does not propagate.
-		// We delay detachment of ol, to give the mouseclick event a chance.
-		// When the mouseclick happens, it clears this timeout.
-		// Did I say already, that I don't like this approach?
-		removeOlTimeout = setTimeout(detachOl, 300);
-	}
-	
-	function detachOl()
-	{
-		removeOlTimeout = null;
-		$(ol).detach();
+		if (!clickEnteredOl)
+			$(ol).detach();
+		weHadABlur = true;
 	}
 	
 	inputNode.keypress(keypress);
