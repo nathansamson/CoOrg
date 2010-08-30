@@ -28,6 +28,27 @@ class CheckboxInput extends OptionsFormElement
 		                        ($selected ? ' checked="checked"' : '').'/>'.$option.'</label>';
 	}
 	
+	public function setSpecificParameters(&$params)
+	{
+		parent::setSpecificParameters($params);
+		if ($checked = self::getBoolParameter($params, 'checked'))
+		{
+			$this->_inputAttributes->checked = true;
+		}
+	}
+	
+	public function setValue($value)
+	{
+		if ($value === true)
+		{
+			$this->_inputAttributes->checked = true;
+		}
+		else
+		{
+			parent::setValue($value);
+		}
+	}
+	
 	public function render()
 	{
 		if ($this->_options != array())
@@ -38,8 +59,8 @@ class CheckboxInput extends OptionsFormElement
 		{
 			return '<label>
 		                 <input type="checkbox" name="'.$this->_name.'" 
-		                        value="_" '.$this->renderOptions().
-		                        ($this->_value ? ' checked="checked"' : '').'/>'.$this->_label.'</label>';
+		                        value="'. ($this->_value ? $this->_value : '_') .'" '.$this->renderOptions().
+		                        '/>'.$this->_label.'</label>';
 		}
 	}
 }

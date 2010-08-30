@@ -24,6 +24,11 @@ abstract class OptionsFormElement extends UserInput
 
 	abstract protected function renderOption($key, $label, $selected);
 	
+	protected function renderOptionGroup($label, $options)
+	{
+		return $this->renderOptionTags($options);
+	}
+	
 	public function setSpecificParameters(&$params)
 	{
 		if ($options = self::getParameter($params, 'options'))
@@ -35,18 +40,26 @@ abstract class OptionsFormElement extends UserInput
 		}
 	}
 	
-	protected function renderOptionTags()
+	protected function renderOptionTags($options = null)
 	{
 		$s = '';
-		foreach ($this->_options as $key => $option)
+		$options = $options ? $options : $this->_options;
+		foreach ($options as $key => $option)
 		{
-			if (is_array($this->_value))
+			if (!is_array($option))
 			{
-				$s .= $this->renderOption($key, $option, in_array($key, $this->_value));
+				if (is_array($this->_value))
+				{
+					$s .= $this->renderOption($key, $option, in_array($key, $this->_value));
+				}
+				else
+				{
+					$s .= $this->renderOption($key, $option, $key == $this->_value);
+				}
 			}
 			else
 			{
-				$s .= $this->renderOption($key, $option, $key == $this->_value);
+				$s .= $this->renderOptionGroup($option['label'], $option['options']);
 			}
 		}
 		return $s;
@@ -74,6 +87,11 @@ class SelectInput extends OptionsFormElement
 	protected function renderOption($key, $label, $selected)
 	{
 		return '<option value="'.$key.'"' . ($selected ? ' selected="selected"' : '') . '>'.$label.'</option>';
+	}
+	
+	protected function renderOptionGroup($label, $options)
+	{
+		return '<optgroup label="'.$label.'">' . $this->renderOptionTags($options) . '</optgroup>';
 	}
 	
 	public function render()
