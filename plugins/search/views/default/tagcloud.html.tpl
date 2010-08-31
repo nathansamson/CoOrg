@@ -3,7 +3,7 @@
 {/block}
 
 {block name="content"}
-	{stylesheet file={'styles/tagcloud.css'|static:'search'}}
+	{stylesheet file={'styles/tags.css'|static:'search'}}
 
 	<h1>{'All tags'|_}</h1>
 
