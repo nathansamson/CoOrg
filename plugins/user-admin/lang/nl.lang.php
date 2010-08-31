@@ -10,5 +10,5 @@ $_['New password'] = 'Nieuw wachtwoord';
 $_['New password (confirm)'] = 'Nieuw wachtwoord (bevestigen)';
 $_['Save user'] = 'Gebruiker opslaan';
 $_['User admin'] = 'Gebruikersbeheer';
-$_['Manage users'] = '';
+$_['Manage users'] = 'Beheer gebruikers';
 ?>

@@ -1,0 +1,29 @@
+<?php
+$_['Your comment has been posted'] = 'Uw reactie is geplaatst';
+$_['Your comment was not posted'] = 'Uw reactie werd niet geplaatst';
+$_['Your comment has been marked as spam, and will not appear'] = 'Uw reactie werd gemarkeerd als spam, en zal niet verschijnen';
+$_['Could not save comment'] = 'Kon reactie niet opslaan';
+$_['Deleted comment'] = 'Reactie verwijdert';
+$_['Comment marked as spam'] = 'Reactie gemarkeerd als spam';
+$_['Comment unmarked as spam'] = 'Reacte gedemarkeerd als spam';
+$_['Spam'] = 'Spam';
+$_['Profanity'] = 'Beledigend';
+$_['Low Quality'] = 'Lage kwaliteit';
+$_['Annoying'] = 'Vervelend';
+$_['Name'] = 'Naam';
+$_['Email'] = 'Email';
+$_['Website'] = 'Website';
+$_['Title'] = 'Titel';
+$_['Comment'] = 'Reactie';
+$_['Spam Session ID'] = 'Spam Sessie ID';
+$_['%site: New comment to moderate'] = '%site: Nieuwe reactie om te modereren';
+$_['By %name on %date'] = 'Door %name op %date';
+$_['Personal information'] = 'Persoonlijke informatie';
+$_['IP'] = 'IP';
+$_['Save comment'] = 'Reactie opslaan';
+$_['Post comment'] = 'Reactie plaatsen';
+$_['Notice that their are  in total %X messages waiting to be moderated.'] = 'Er zijn in totaal nog %X andere berichten die wachten om gemodereerd te worden.';
+$_['You can find them at %link'] = 'U kunt ze vinden op %link';
+$_['The message was posted on %date and the title was "%title".'] = 'De reactie werd geplaatst op %date met als titel "%title".';
+$_['I hope it was not really spam, but a meningful and intresting message!'] = 'Ik hoop dat het geen echte spam was, maar een betekenisvolle en interessant bericht!';
+?>

@@ -50,11 +50,13 @@ class TPLExtracter extends Extracter
 		{
 			if (in_array($search, $matches[1]))
 			{
+				echo "Found: ";
 				echo $this->_file . "\n";
 			}
 		
 			if (in_array($search, $smatches[1]))
 			{
+				echo "Found: ";
 				echo $this->_file . "\n";
 			}
 		}
@@ -89,6 +91,7 @@ class PHPExtracter extends Extracter
 			global $search;
 			if ($search == $m)
 			{
+				echo "Found: ";
 				echo $this->_file . "\n";
 			}
 		}
@@ -122,16 +125,26 @@ class StringDictionary
 	public function save()
 	{
 		$o = "<?php\n";
+		$count = 0;
+		$translated = 0;
 		foreach ($this->_dict as $key => $trans)
 		{
+			$count++;
+			if ($trans) $translated++;
 			$skey = str_replace('\'', '\\\'', $key);
 			$strans = str_replace('\'', '\\\'', $trans);
 			$o .= '$_[\''.$skey.'\'] = \''.$strans."';\n";
 		}
 		$o .= '?>';
 		
-		var_dump($this->_file);
 		file_put_contents($this->_file, $o);
+		
+		echo 'Saved ' . $this->_file;
+		if ($translated != $count)
+		{
+			echo ' '.$translated.'/'.$count . ' ('.round($translated/$count*100) . '%)';
+		}
+		echo "\n";
 	}
 	
 	private function removeOld(&$strings)

@@ -28,5 +28,5 @@ $_['Create menu'] = 'Menu opslaan';
 $_['Edit menu'] = 'Menu opslaan';
 $_['Deleted menu "%n"'] = 'Menu "%n" verwijderd';
 $_['Save menu entry'] = 'Menuitem opslaan';
-$_['Manage menus'] = '';
+$_['Manage menus'] = 'Beheer menus';
 ?>

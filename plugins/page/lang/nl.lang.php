@@ -24,5 +24,5 @@ $_['Original page'] = 'Originele tekst';
 $_['Translate this page'] = 'Vertaal deze pagina';
 $_['Start translation'] = 'Start vertaling';
 $_['Other languages'] = 'Andere talen';
-$_['Manage pages'] = '';
+$_['Manage pages'] = 'Beheer inhoud';
 ?>
