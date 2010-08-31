@@ -74,4 +74,6 @@ $_['Leave a reply'] = 'Een reactie achterlaten';
 $_['Blog feeds'] = 'Blog nieuwsfeeds';
 $_['Lists the feeds of the blog'] = 'Lijst de nieuwsfeeds van de blog';
 $_['This is filed under: '] = 'Trefwoorden: ';
+$_['Newer posts'] = 'Nieuwere berichten';
+$_['Older posts'] = 'Oudere berichten';
 ?>

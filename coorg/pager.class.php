@@ -35,9 +35,12 @@ abstract class Pager
 		$this->_params = $params;
 	}
 
-	public function execute($page, $elementsPerPage)
+	public function execute($page, $elementsPerPage, $isSpecialFirstPage = false)
 	{
-		$this->_page = $page;
+		if (!$isSpecialFirstPage)
+			$this->_page = $page;
+		else
+			$this->_page = -1;
 		$this->_elementsPerPage = $elementsPerPage;
 		$q = DB::prepare($this->getSelectQuery($page, $elementsPerPage));
 		$q->execute($this->_params);		
@@ -68,7 +71,10 @@ abstract class Pager
 		$noPages = ceil($elements / $this->_elementsPerPage);
 		if ($this->_page < $noPages)
 		{
-			return $this->_page + 1;
+			if ($this->_page > 0)
+				return $this->_page + 1;
+			else
+				return 1; // Special case for $isSpecialPage ($this->_page < 1)
 		}
 		else
 		{
