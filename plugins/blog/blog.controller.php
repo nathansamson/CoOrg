@@ -59,10 +59,10 @@ class BlogController extends Controller
 		$config = BlogConfig::get();
 		$blog->commentsAllowed = $config->enableComments;
 		if ($config->enableCommentsFor)
-		$blog->tags = $tags;
 		{
 			$blog->commentsCloseDate = time()+60*60*24*$config->enableCommentsFor;
 		}
+		$blog->tags = $tags;
 		
 		try
 		{
