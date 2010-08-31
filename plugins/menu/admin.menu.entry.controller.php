@@ -21,9 +21,11 @@
 /**
  * @Acl allow admin-menu-edit
 */
-class AdminMenuEntryController extends Controller
+class AdminMenuEntryController extends AdminBaseController
 {
 	private $_entry;
+	
+	protected $_adminModule = 'MenuAdminModule';
 
 	public function save($menuID, $language, $title, $entryID, $data)
 	{

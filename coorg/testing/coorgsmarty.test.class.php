@@ -23,7 +23,7 @@ include_once 'lib/smarty/Smarty.class.php';
 class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 {
 	public static $vars = array();
-	public static $renderedOutput;
+	public static $renderedOutput = '';
 	public static $renderedTemplate;
 	public static $notices = array();
 	public static $errors = array();
@@ -37,7 +37,7 @@ class CoOrgSmarty extends Smarty implements ICoOrgSmarty
 
 	public static function clearAll()
 	{
-		self::$renderedOutput = null;
+		self::$renderedOutput = '';
 		self::$vars = array();
 		self::$notices = array();
 		self::$errors = array();

@@ -96,6 +96,7 @@ class CoOrgControllerTest extends CoOrgModelTest
 			$type = 'html';
 			$match = preg_match('/'.$tpl.'.'.$type.'.tpl$/', CoOrgSmarty::$renderedTemplate) == 1;
 		}
+		$this->assertNotRegExp('/This space is intentionally left blank/', CoOrgSmarty::$renderedOutput);
 		$this->assertTrue($match, "'$otpl' rendered");
 	}
 	

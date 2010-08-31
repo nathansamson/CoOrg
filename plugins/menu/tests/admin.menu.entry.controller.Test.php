@@ -77,6 +77,28 @@ class AdminMenuEntryControllerTest extends CoOrgControllerTest
 		$this->assertFlashError('Entry was not saved');
 	}
 	
+	public function testSaveNoTitleFailiure()
+	{
+		$this->login('dvorak');
+		$this->request('admin/menu/entry/save', array(
+		                  'menuID' => 'main',
+		                  'language' => 'nl',
+		                  'title' => '',
+		                  'entryID' => 'URLMenuEntryProvider',
+		                  'data' => 'http://belgium.be'));
+
+		$this->assertRendered('edit');
+		$this->assertVarSet('newEntry');
+		$this->assertVarSet('providerActionCombos');
+		$this->assertVarSet('menu');
+		$this->assertVarSet('adminlanguage');
+		$this->assertVarIs('adminlanguage', 'nl');
+		$entry = CoOrgSmarty::$vars['newEntry'];
+		$this->assertEquals('nl', $entry->language);
+		$this->assertEquals('main', $entry->menuID);
+		$this->assertFlashError('Entry was not saved');
+	}
+	
 	public function testSaveNotFound()
 	{
 		$this->login('dvorak');
