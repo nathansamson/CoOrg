@@ -44,7 +44,6 @@ class BlogTagController extends Controller
 	
 	protected function get($date, $ID, $language)
 	{
-		print_r($_POST);
 		list($year, $month, $day) = explode('-', $date);
 		$this->_blog = Blog::getBlog($year, $month, $day, $ID, $language);
 		return true;
