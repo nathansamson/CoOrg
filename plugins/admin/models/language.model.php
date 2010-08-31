@@ -57,6 +57,19 @@ class Language extends DBModel
 		return $l;
 	}
 	
+	public static function languageCodes()
+	{
+		$q = DB::prepare('SELECT language FROM Language ORDER BY language');
+		$q->execute();
+		
+		$l = array();
+		foreach ($q->fetchAll() as $row)
+		{
+			$l[] = $row['language'];
+		}
+		return $l;
+	}
+	
 	protected function validate($for)
 	{
 		parent::validate($for);

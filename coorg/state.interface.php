@@ -40,6 +40,7 @@ interface ISession
 	static function getSite();
 	static function getReferrer();
 	static function getFileUpload($name);
+	static function getPreferredLanguages();
 }
 
 ?>

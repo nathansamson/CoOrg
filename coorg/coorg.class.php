@@ -151,7 +151,36 @@ class CoOrg {
 		}
 		else
 		{
-			if (self::$_config->has('defaultLanguage'))
+			$found = false;
+			//TODO: move Language DB to default install
+			//      and unittest this... (in the CoOrg tests).
+			if (class_exists('Language'))
+			{
+				$preferredLanguages = Session::getPreferredLanguages();
+				$installedLanguages = Language::languageCodes(); // This is in the admin class, but should really be in the default instal
+			
+				foreach ($preferredLanguages as $lc)
+				{
+					if (in_array($lc, $installedLanguages))
+					{
+						$found = true;
+						I18n::setLanguage($lc);
+						break;
+					}
+					else if (strpos($lc, '-'))
+					{
+						$slc = substr($lc, 0, strpos($lc, '-'));
+						if (in_array($slc, $installedLanguages))
+						{
+							$found = true;
+							I18n::setLanguage($slc);
+							break;
+						}
+					}
+				}
+			}
+			
+			if (!$found && self::$_config->has('defaultLanguage'))
 			{
 				I18n::setLanguage(self::$_config->get('defaultLanguage'));
 			}

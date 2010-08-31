@@ -142,6 +142,7 @@ class Session implements ISession
 {
 	private static $_keys = array();
 	private static $_uploads = array();
+	public static $preferredLanguages = array();
 	public static $referrer = '';
 	public static $site =  '';
 
@@ -204,6 +205,11 @@ class Session implements ISession
 		{
 			return new MockFileUpload(null, null, UPLOAD_ERR_NO_FILE);
 		}
+	}
+	
+	public static function getPreferredLanguages()
+	{
+		return self::$preferredLanguages;
 	}
 }
 
