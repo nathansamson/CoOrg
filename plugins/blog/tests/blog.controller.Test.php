@@ -385,7 +385,7 @@ class BlogControllerTest extends CoOrgControllerTest
 	{
 		$this->request('blog.atom/latest');
 		
-		$this->assertContentType('application/xml+atom');
+		$this->assertContentType('application/atom+xml');
 		$this->assertVarSet('blogs');
 		$blogs = CoOrgSmarty::$vars['blogs'];
 		$this->assertEquals(5, count($blogs));
