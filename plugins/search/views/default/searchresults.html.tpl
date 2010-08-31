@@ -2,7 +2,7 @@
 
 {block name="content"}
 	<h1>{'Search results'|_}</h1>
-	{form request="search" id="search-results"}
+	{form request="search" id="search-results" method=get}
 		{input name=s type=search value=$searchQuery placeholder={'Search'|_} nolabel}
 		
 		{foreach $searchIncludes as $i}

@@ -30,6 +30,7 @@
  * @property writeonly; originalLanguage String('', 6);
  * @property writeonly; originalID String('', 256);
  * @extends Normalize title ID language
+ * @extends Searchable PageSearchIndex @ID @language title content:html :language:language
 */
 class Page extends DBModel
 {

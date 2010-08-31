@@ -25,7 +25,7 @@ function search_install_db()
    	   field VARCHAR(32),
    	   term VARCHAR(128),
 	   relevance INTEGER,
-	   content TEXT)
+	   xSearchContent TEXT)
 	');
 	$s->execute();
 	

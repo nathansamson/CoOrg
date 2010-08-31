@@ -53,10 +53,22 @@ function page_install_db()
 		     FROM PageLanguage
 	');
 	$q->execute();
+	
+	$s = DB::prepare('CREATE TABLE PageSearchIndex (
+	   SID INTEGER,
+	   ID VARCHAR(256),
+	   language VARCHAR(6),
+	   FOREIGN KEY (ID, language) REFERENCES Page(ID, language) ON DELETE CASCADE,
+	   FOREIGN KEY (SID) REFERENCES SearchIndex(SID) ON DELETE CASCADE)
+	');
+	$s->execute();
 }
 
 function page_delete_db()
 {
+	$s = DB::prepare('DROP TABLE IF EXISTS PageSearchIndex');
+	$s->execute();
+
 	$s = DB::prepare('DROP VIEW IF EXISTS PageLanguagesBidiV');
 	$s->execute();
 
